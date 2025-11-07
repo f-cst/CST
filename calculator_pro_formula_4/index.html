@@ -513,15 +513,11 @@
         .card-value {
             font-weight: bold;
             font-size: 14px;
-            cursor: pointer;
             transition: all 0.2s ease;
             padding: 4px;
             border-radius: 3px;
         }
 
-        .card-value:hover {
-            background-color: rgba(52, 152, 219, 0.1);
-        }
 
         .card-actions {
             margin-top: 10px;
@@ -2748,15 +2744,6 @@
                     mobileCardsContainer.appendChild(card);
                 });
                 
-                // اضافه کردن event listener برای کپی کردن از کارت‌ها
-                document.querySelectorAll('.card-value').forEach(element => {
-                    element.addEventListener('click', function() {
-                        const value = this.getAttribute('data-value');
-                        if (value) {
-                            copyToClipboardFromCard(this, value);
-                        }
-                    });
-                });
                 
                 document.querySelectorAll('.edit-calculation').forEach(btn => {
                     btn.addEventListener('click', async function() {
@@ -2788,39 +2775,6 @@
             }
         }
 
-        // تابع کپی کردن از کارت‌ها
-        function copyToClipboardFromCard(element, text) {
-            navigator.clipboard.writeText(text).then(() => {
-                const originalText = element.textContent;
-                element.textContent = 'کپی شد!';
-                element.style.backgroundColor = 'var(--button-success)';
-                element.style.color = 'white';
-                
-                setTimeout(() => {
-                    element.textContent = originalText;
-                    element.style.backgroundColor = '';
-                    element.style.color = '';
-                }, 1500);
-            }).catch(err => {
-                const textArea = document.createElement('textarea');
-                textArea.value = text;
-                document.body.appendChild(textArea);
-                textArea.select();
-                document.execCommand('copy');
-                document.body.removeChild(textArea);
-                
-                const originalText = element.textContent;
-                element.textContent = 'کپی شد!';
-                element.style.backgroundColor = 'var(--button-success)';
-                element.style.color = 'white';
-                
-                setTimeout(() => {
-                    element.textContent = originalText;
-                    element.style.backgroundColor = '';
-                    element.style.color = '';
-                }, 1500);
-            });
-        }
 
         // تابع حذف محاسبه
         async function deleteCalculation(id) {
