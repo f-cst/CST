@@ -1,7 +1,6 @@
 const CACHE_NAME = 'cst-robot-v1.0.1';
-
-// فقط این URLها رو کش کن
 const urlsToCache = [
+  './',
   './index.html',
   './manifest.json',
   './icons/icon-192x192.png',
@@ -17,8 +16,14 @@ self.addEventListener('install', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
+  // فقط درخواست‌های GET رو مدیریت کن
+  if (event.request.method !== 'GET') return;
+  
   event.respondWith(
     caches.match(event.request)
-      .then((response) => response || fetch(event.request))
+      .then((response) => {
+        // اگر فایل در کش نیست، از شبکه بگیر
+        return response || fetch(event.request);
+      })
   );
 });
