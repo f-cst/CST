@@ -1,7 +1,8 @@
 {
+  "start_url": "/cst/index.html",
+  "scope": "/cst/",
   "name": "ربات CST",
-  "short_name": "CST Robot", 
-  "start_url": ".",
+  "short_name": "CST Robot",
   "display": "standalone",
   "background_color": "#6a11cb",
   "theme_color": "#2575fc",
