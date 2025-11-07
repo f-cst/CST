@@ -544,7 +544,10 @@
             console.log('کد فعلی (آپدیت):', generateTOTP());
         }, 10000);
 
-        // ==================== PWA INSTALL ====================
+
+
+
+// ==================== PWA INSTALL ====================
 let deferredPrompt;
 const installButton = document.createElement('button');
 
@@ -569,19 +572,37 @@ function createInstallButton() {
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     `;
     
+    installButton.addEventListener('mouseenter', () => {
+        installButton.style.transform = 'translateY(-2px)';
+        installButton.style.boxShadow = '0 6px 20px rgba(0,0,0,0.4)';
+    });
+    
+    installButton.addEventListener('mouseleave', () => {
+        installButton.style.transform = 'translateY(0)';
+        installButton.style.boxShadow = '0 4px 15px rgba(0,0,0,0.3)';
+    });
+    
     installButton.addEventListener('click', installPWA);
     document.body.appendChild(installButton);
     installButton.style.display = 'none';
 }
 
-// رویداد پیشنهاد نصب
+// رویداد پیشنهاد نصب - همیشه دکمه رو نشون بده
 window.addEventListener('beforeinstallprompt', (e) => {
     console.log('قابلیت نصب فعال شد');
     e.preventDefault();
     deferredPrompt = e;
     
+    // همیشه دکمه رو نمایش بده (حتی اگر مرورگر آیکون داره)
     createInstallButton();
     installButton.style.display = 'block';
+    
+    // مخفی کردن خودکار پس از ۱۵ ثانیه (اختیاری)
+    setTimeout(() => {
+        if (installButton.style.display !== 'none') {
+            installButton.style.display = 'none';
+        }
+    }, 15000);
 });
 
 // تابع نصب
@@ -593,6 +614,12 @@ function installPWA() {
             if (choiceResult.outcome === 'accepted') {
                 console.log('کاربر نصب را پذیرفت');
                 installButton.style.display = 'none';
+            } else {
+                console.log('کاربر از نصب صرف نظر کرد');
+                // دکمه رو مخفی کن بعد از رد نصب
+                setTimeout(() => {
+                    installButton.style.display = 'none';
+                }, 3000);
             }
             deferredPrompt = null;
         });
@@ -606,30 +633,22 @@ window.addEventListener('appinstalled', (evt) => {
     deferredPrompt = null;
 });
 
-  <script>
-    // ثبت Service Worker جهانی
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js')
-          .then(reg => console.log('✅ Service Worker ثبت شد', reg))
-          .catch(err => console.log('❌ خطا در ثبت SW:', err));
-      });
-    }
-
-// تشخیص حالت نمایش
-function detectDisplayMode() {
-    if (window.matchMedia('(display-mode: standalone)').matches) {
-        console.log('در حالت standalone اجرا می‌شود');
-        document.body.classList.add('standalone');
-    } else if (window.matchMedia('(display-mode: fullscreen)').matches) {
-        console.log('در حالت fullscreen اجرا می‌شود');
-    } else {
-        console.log('در مرورگر اجرا می‌شود');
-    }
+// ثبت Service Worker
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function() {
+        navigator.serviceWorker.register('/cst/sw.js')
+            .then(function(registration) {
+                console.log('ServiceWorker ثبت شد: ', registration.scope);
+            })
+            .catch(function(error) {
+                console.log('خطا در ثبت ServiceWorker: ', error);
+            });
+    });
 }
 
-// اجرا پس از لود صفحه
-window.addEventListener('load', detectDisplayMode);
+
+
+		
     </script>
 </body>
 </html>
