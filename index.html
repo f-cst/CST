@@ -705,17 +705,13 @@ window.addEventListener('appinstalled', (evt) => {
     deferredPrompt = null;
 });
 
-// ثبت Service Worker
+// ثبت Service Worker با fallback
 if ('serviceWorker' in navigator) {
-    window.addEventListener('load', function() {
-        navigator.serviceWorker.register('/cst/sw.js')
-            .then(function(registration) {
-                console.log('✅ ServiceWorker ثبت شد: ', registration.scope);
-            })
-            .catch(function(error) {
-                console.log('❌ خطا در ثبت ServiceWorker: ', error);
-            });
-    });
+    navigator.serviceWorker.register('/cst/sw.js')
+        .then(reg => console.log('✅ SW ثبت شد'))
+        .catch(err => console.log('❌ خطای SW:', err));
+} else {
+    console.log('⚠️ مرورگر از Service Worker پشتیبانی نمی‌کند');
 }
 
 	// تشخیص قابلیت‌های PWA
