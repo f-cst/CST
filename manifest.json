@@ -1,0 +1,12 @@
+{
+  "start_url": "./",
+  "scope": "./",
+  "icons": [
+    {
+      "src": "./icons/icon-72x72.png",
+      "sizes": "72x72",
+      "type": "image/png"
+    },
+    // ...
+  ]
+}
