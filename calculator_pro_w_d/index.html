@@ -1820,7 +1820,7 @@ if(exportBtn) exportBtn.addEventListener('click', ()=>{
   const url = URL.createObjectURL(blob); 
   const a = document.createElement('a'); 
   a.href = url; 
-  a.download = 'calc-pro-1-v3-'+new Date().toISOString().slice(0,10)+'.json'; 
+  a.download = 'calculator_pro_w_d-'+new Date().toISOString().slice(0,10)+'.json'; 
   document.body.appendChild(a); 
   a.click(); 
   a.remove(); 
