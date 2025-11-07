@@ -199,25 +199,31 @@
             display: none;
         }
         
-        .mobile-tabs {
-            display: none;
-            flex-direction: column;
-            background: var(--header-bg);
-            overflow: hidden;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            margin-top: 5px;
-            border-radius: 8px;
-        }
-        
-        .mobile-tab {
-            padding: 10px 15px;
-            cursor: pointer;
-            font-weight: 600;
-            border-bottom: 1px solid var(--border-color);
-            color: var(--text-color);
-            font-size: 0.9rem;
-        }
-        
+.mobile-tabs {
+    display: none;
+    flex-direction: column;
+    background: var(--header-bg);
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    margin-top: 5px;
+    border-radius: 0; /* تغییر از 8px به 0 */
+}
+
+.mobile-tab {
+    padding: 10px 15px;
+    cursor: pointer;
+    font-weight: 600;
+    border-bottom: 1px solid var(--border-color);
+    color: var(--text-color);
+    font-size: 0.9rem;
+    border-radius: 0; /* اضافه کردن این خط */
+}
+
+
+    .mobile-tab:last-child {
+    border-bottom: none; /* حذف border از آخرین آیتم */
+}
+
         .mobile-tab.active {
             background: var(--primary-color);
             color: white;
