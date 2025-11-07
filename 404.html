@@ -3,9 +3,14 @@
 <head>
     <meta charset="utf-8">
     <title>ربات CST</title>
-    <script>window.location.href = './index.html';</script>
+    <script>
+        // ریدایرکت به صفحه اصلی
+        if (window.location.pathname === '/cst/') {
+            window.location.href = '/cst/index.html';
+        }
+    </script>
 </head>
 <body>
-    <p>در حال انتقال... <a href="./index.html">اینجا کلیک کنید</a></p>
+    <p>در حال انتقال به صفحه اصلی... <a href="/cst/index.html">اینجا کلیک کنید</a></p>
 </body>
 </html>
