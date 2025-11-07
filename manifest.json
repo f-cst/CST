@@ -1,14 +1,13 @@
 {
   "name": "ربات CST",
-  "short_name": "CST-Robot",
-  "description": "وب اپلیکیشن ربات CST قابل نصب روی موبایل، دسکتاپ، اندروید و آیفون",
-  "start_url": "./index.html",
-  "scope": "./",
+  "short_name": "CST Robot",
+  "description": "سیستم مدیریت و تحلیل ربات CST", 
+  "start_url": "/cst/",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#0d6efd",
-  "orientation": "portrait-primary",
-
+  "background_color": "#6a11cb",
+  "theme_color": "#2575fc",
+  "orientation": "any",
+  "scope": "/cst/",
   "icons": [
     {
       "src": "icons/icon-192x192.png",
@@ -19,30 +18,6 @@
       "src": "icons/icon-512x512.png",
       "sizes": "512x512",
       "type": "image/png"
-    },
-    {
-      "src": "icons/apple-touch-icon-180x180.png",
-      "sizes": "180x180",
-      "type": "image/png",
-      "purpose": "any"
     }
-  ],
-
-  "screenshots": [
-    {
-      "src": "screenshots/wide-desktop.png",
-      "sizes": "1280x720",
-      "type": "image/png",
-      "form_factor": "wide"
-    },
-    {
-      "src": "screenshots/mobile-narrow.png",
-      "sizes": "540x960",
-      "type": "image/png",
-      "form_factor": "narrow"
-    }
-  ],
-
-  "lang": "fa-IR",
-  "dir": "rtl"
+  ]
 }
