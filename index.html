@@ -630,8 +630,10 @@
         });
 
 
-// ثبت Service Worker - نسخه ساده
-
+// ثبت Service Worker
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('./sw.js');
+}
 
         // تشخیص حالت نمایش
         function detectDisplayMode() {
