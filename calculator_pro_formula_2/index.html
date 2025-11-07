@@ -82,145 +82,15 @@
             transition: all 0.3s ease;
         }
 
-.header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 12px 20px;
-    background: inherit;
-    position: relative;
-}
-
-.header h1 {
-    font-size: 22px;
-    font-weight: 600;
-    margin: 0;
-    flex: 1;
-    text-align: center;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    padding: 0 15px;
-}
-
-.mobile-menu-toggle,
-.theme-toggle {
-    width: 44px;
-    height: 44px;
-    border: none;
-    background: transparent;
-    border-radius: 8px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 18px;
-    flex-shrink: 0;
-    z-index: 100;
-    outline: none;
-    box-shadow: none;
-    -webkit-tap-highlight-color: transparent;
-    -webkit-touch-callout: none;
-    -webkit-user-select: none;
-    user-select: none;
-}
-
-/* حذف کامل تمام effects در حالت‌های مختلف */
-.mobile-menu-toggle:focus,
-.mobile-menu-toggle:active,
-.mobile-menu-toggle:hover,
-.theme-toggle:focus,
-.theme-toggle:active,
-.theme-toggle:hover {
-    background: transparent !important;
-    border: none !important;
-    box-shadow: none !important;
-    outline: none !important;
-    transform: none !important;
-}
-
-/* موبایل */
-@media only screen and (max-width: 768px) {
-    .header {
-        padding: 10px 15px;
-    }
-    
-    .header h1 {
-        font-size: 18px;
-        padding: 0 10px;
-    }
-    
-    .mobile-menu-toggle,
-    .theme-toggle {
-        width: 40px;
-        height: 40px;
-        font-size: 16px;
-        background: transparent;
-        border: none;
-        box-shadow: none;
-        outline: none;
-        -webkit-tap-highlight-color: transparent;
-    }
-    
-    /* حذف effects در موبایل */
-    .mobile-menu-toggle:focus,
-    .mobile-menu-toggle:active,
-    .mobile-menu-toggle:hover,
-    .theme-toggle:focus,
-    .theme-toggle:active,
-    .theme-toggle:hover {
-        background: transparent !important;
-        border: none !important;
-        box-shadow: none !important;
-        outline: none !important;
-        transform: none !important;
-    }
-}
-
-/* موبایل‌های کوچک */
-@media only screen and (max-width: 480px) {
-    .header {
-        padding: 8px 10px;
-    }
-    
-    .header h1 {
-        font-size: 16px;
-        padding: 0 8px;
-    }
-    
-    .mobile-menu-toggle,
-    .theme-toggle {
-        width: 36px;
-        height: 36px;
-        font-size: 14px;
-        background: transparent;
-        border: none;
-        box-shadow: none;
-        outline: none;
-        -webkit-tap-highlight-color: transparent;
-    }
-    
-    /* حذف effects در موبایل کوچک */
-    .mobile-menu-toggle:focus,
-    .mobile-menu-toggle:active,
-    .mobile-menu-toggle:hover,
-    .theme-toggle:focus,
-    .theme-toggle:active,
-    .theme-toggle:hover {
-        background: transparent !important;
-        border: none !important;
-        box-shadow: none !important;
-        outline: none !important;
-        transform: none !important;
-    }
-}
-
-/* موبایل‌های خیلی کوچک */
-@media only screen and (max-width: 360px) {
-    .header h1 {
-        font-size: 14px;
-    }
-}
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            position: relative;
+            min-height: 60px;
+        }
 
         h1, h2, h3 {
             color: var(--header-color);
@@ -235,16 +105,16 @@
             color: var(--text-color);
             transition: transform 0.3s ease;
             position: absolute;
-            left: 10px;
+            left: 0;
             top: 50%;
             transform: translateY(-50%);
-            outline: none;
-            box-shadow: none;
-            -webkit-tap-highlight-color: transparent;
+            z-index: 101;
+            padding: 8px 12px;
         }
 
         .theme-toggle:hover {
             transform: translateY(-50%) scale(1.1);
+            background-color: transparent !important;
         }
 
         /* استایل‌های تب‌ها - بهبود یافته برای اسکرول */
@@ -307,7 +177,7 @@
             display: block;
         }
 
-        /* منوی همبرگری برای موبایل - بهبود یافته */
+        /* منوی همبرگری برای موبایل - کاملاً اصلاح شده */
         .mobile-menu-toggle {
             display: none;
             background: none;
@@ -317,29 +187,29 @@
             color: var(--text-color);
             padding: 8px 12px;
             position: absolute;
-            right: 10px;
+            right: 0;
             top: 50%;
             transform: translateY(-50%);
+            /* حذف کامل تمام کادرها و effects */
             background-color: transparent !important;
             border: none !important;
             box-shadow: none !important;
-            outline: none !important;
+            border-radius: 0 !important;
             z-index: 100;
-            -webkit-tap-highlight-color: transparent;
-            -webkit-touch-callout: none;
-            -webkit-user-select: none;
-            user-select: none;
+            transition: color 0.3s ease;
         }
 
-        /* حذف کامل تمام effects برای منوی همبرگری */
-        .mobile-menu-toggle:focus,
-        .mobile-menu-toggle:active,
         .mobile-menu-toggle:hover {
-            background: transparent !important;
+            background-color: transparent !important;
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .mobile-menu-toggle:active,
+        .mobile-menu-toggle:focus {
+            background-color: transparent !important;
+            outline: none;
             border: none !important;
             box-shadow: none !important;
-            outline: none !important;
-            transform: translateY(-50%) !important;
         }
 
         .mobile-tabs {
@@ -524,38 +394,6 @@
             border-radius: 4px;
             font-size: 14px;
         }
-
-    .signature {
-    color: white;
-    text-align: center;
-    padding: 16px;
-    font-family: Vazirmatn, system-ui;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 10px;
-    backdrop-filter: blur(5px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    font-size: 14px;
-    font-weight: 500;
-    display: block;
-    margin: 30px auto;
-    width: fit-content;
-    max-width: 90%;
-    box-sizing: border-box;
-}
-
-@media only screen and (max-width: 768px) {
-    .signature {
-        font-size: 14px;
-        padding: 15px;
-    }
-}
-
-@media only screen and (max-width: 480px) {
-    .signature {
-        font-size: 12px;
-        padding: 13px;
-    }
-}
 
         /* استایل‌های جدول برای دسکتاپ */
         .table-container {
@@ -1038,8 +876,9 @@
             .header {
                 flex-direction: row;
                 align-items: center;
-                padding-left: 50px;
-                padding-right: 50px;
+                padding-left: 45px;
+                padding-right: 45px;
+                min-height: 50px;
             }
             
             .input-row {
@@ -1082,10 +921,12 @@
             }
             
             h1 {
-                font-size: 20px;
+                font-size: 18px;
                 text-align: center;
                 flex: 1;
-                margin: 0 10px;
+                margin: 0 5px;
+                padding: 0 10px;
+                line-height: 1.2;
             }
 
             .tabs {
@@ -1094,22 +935,6 @@
             
             .mobile-menu-toggle {
                 display: block;
-                background: transparent !important;
-                border: none !important;
-                box-shadow: none !important;
-                outline: none !important;
-                -webkit-tap-highlight-color: transparent;
-            }
-            
-            /* حذف effects در موبایل */
-            .mobile-menu-toggle:focus,
-            .mobile-menu-toggle:active,
-            .mobile-menu-toggle:hover {
-                background: transparent !important;
-                border: none !important;
-                box-shadow: none !important;
-                outline: none !important;
-                transform: translateY(-50%) !important;
             }
             
             .mobile-tabs {
@@ -1194,12 +1019,15 @@
             }
             
             .header {
-                padding-left: 45px;
-                padding-right: 45px;
+                padding-left: 40px;
+                padding-right: 40px;
+                min-height: 45px;
             }
             
             h1 {
-                font-size: 18px;
+                font-size: 16px;
+                margin: 0 2px;
+                padding: 0 5px;
             }
             
             /* بهبود بیشتر برای موبایل‌های کوچک */
@@ -1221,6 +1049,16 @@
                 padding: 1px 2px;
                 font-size: 8px;
                 min-width: 18px;
+            }
+
+            .mobile-menu-toggle {
+                font-size: 24px;
+                padding: 6px 10px;
+            }
+
+            .theme-toggle {
+                font-size: 20px;
+                padding: 6px 10px;
             }
         }
 
@@ -1273,6 +1111,38 @@
             width: auto;
             margin: 0;
         }
+		
+    .signature {
+    color: white;
+    text-align: center;
+    padding: 16px;
+    font-family: Vazirmatn, system-ui;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    font-size: 14px;
+    font-weight: 500;
+    display: block;
+    margin: 30px auto;
+    width: fit-content;
+    max-width: 90%;
+    box-sizing: border-box;
+}
+
+@media only screen and (max-width: 768px) {
+    .signature {
+        font-size: 14px;
+        padding: 15px;
+    }
+}
+
+@media only screen and (max-width: 480px) {
+    .signature {
+        font-size: 12px;
+        padding: 13px;
+    }
+}
     </style>
 </head>
 <body>
