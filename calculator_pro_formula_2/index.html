@@ -119,6 +119,24 @@
     z-index: 100;
     outline: none;
     box-shadow: none;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+/* حذف کامل تمام effects در حالت‌های مختلف */
+.mobile-menu-toggle:focus,
+.mobile-menu-toggle:active,
+.mobile-menu-toggle:hover,
+.theme-toggle:focus,
+.theme-toggle:active,
+.theme-toggle:hover {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    outline: none !important;
+    transform: none !important;
 }
 
 /* موبایل */
@@ -141,6 +159,21 @@
         border: none;
         box-shadow: none;
         outline: none;
+        -webkit-tap-highlight-color: transparent;
+    }
+    
+    /* حذف effects در موبایل */
+    .mobile-menu-toggle:focus,
+    .mobile-menu-toggle:active,
+    .mobile-menu-toggle:hover,
+    .theme-toggle:focus,
+    .theme-toggle:active,
+    .theme-toggle:hover {
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        outline: none !important;
+        transform: none !important;
     }
 }
 
@@ -164,6 +197,21 @@
         border: none;
         box-shadow: none;
         outline: none;
+        -webkit-tap-highlight-color: transparent;
+    }
+    
+    /* حذف effects در موبایل کوچک */
+    .mobile-menu-toggle:focus,
+    .mobile-menu-toggle:active,
+    .mobile-menu-toggle:hover,
+    .theme-toggle:focus,
+    .theme-toggle:active,
+    .theme-toggle:hover {
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        outline: none !important;
+        transform: none !important;
     }
 }
 
@@ -192,6 +240,7 @@
             transform: translateY(-50%);
             outline: none;
             box-shadow: none;
+            -webkit-tap-highlight-color: transparent;
         }
 
         .theme-toggle:hover {
@@ -276,6 +325,21 @@
             box-shadow: none !important;
             outline: none !important;
             z-index: 100;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+
+        /* حذف کامل تمام effects برای منوی همبرگری */
+        .mobile-menu-toggle:focus,
+        .mobile-menu-toggle:active,
+        .mobile-menu-toggle:hover {
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+            outline: none !important;
+            transform: translateY(-50%) !important;
         }
 
         .mobile-tabs {
@@ -1034,6 +1098,18 @@
                 border: none !important;
                 box-shadow: none !important;
                 outline: none !important;
+                -webkit-tap-highlight-color: transparent;
+            }
+            
+            /* حذف effects در موبایل */
+            .mobile-menu-toggle:focus,
+            .mobile-menu-toggle:active,
+            .mobile-menu-toggle:hover {
+                background: transparent !important;
+                border: none !important;
+                box-shadow: none !important;
+                outline: none !important;
+                transform: translateY(-50%) !important;
             }
             
             .mobile-tabs {
