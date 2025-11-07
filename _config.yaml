@@ -2,7 +2,7 @@ title: "ربات CST"
 description: "سیستم مدیریت ربات CST"
 theme: null
 plugins: []
-include:
+include: ["*"]
   - index.html
   - manifest.json
   - sw.js
