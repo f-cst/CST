@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>سیستم مدیریت جفت ارزها - فارکس</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
+<style>
         :root {
             --primary-color: #2a5298;
             --secondary-color: #1e3c72;
@@ -59,15 +59,92 @@
             margin: 0 auto;
         }
         
-        header {
-            text-align: center;
-            margin-bottom: 20px;
-            color: var(--text-color);
+        /* استایل شیشه‌ای برای هدر */
+        .header-glass {
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            border-radius: 16px;
+            padding: 20px 30px;
+            box-shadow: 
+                0 8px 32px 0 rgba(31, 38, 135, 0.2),
+                inset 0 1px 0 0 rgba(255, 255, 255, 0.3);
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
-            gap: 15px;
+            gap: 20px;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        /* افکت شیشه‌ای برای حالت تاریک */
+        .dark-mode .header-glass {
+            background: rgba(30, 30, 30, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 
+                0 8px 32px 0 rgba(0, 0, 0, 0.3),
+                inset 0 1px 0 0 rgba(255, 255, 255, 0.1);
+        }
+
+        /* دکمه‌های شیشه‌ای */
+        .glass-btn {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 12px;
+            padding: 10px 18px;
+            color: var(--text-color);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 
+                0 4px 15px 0 rgba(31, 38, 135, 0.1),
+                inset 0 1px 0 0 rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.9rem;
+        }
+
+        .glass-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 
+                0 6px 20px 0 rgba(31, 38, 135, 0.2),
+                inset 0 1px 0 0 rgba(255, 255, 255, 0.3);
+        }
+
+        /* عنوان در باکس شیشه‌ای */
+        .header-glass h1 {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 700;
+            font-size: 1.8rem;
+            margin: 0;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        /* افکت نور پس‌زمینه */
+        .header-glass::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+            z-index: -1;
+        }
+
+        header {
+            text-align: center;
+            color: var(--text-color);
         }
         
         .header-controls {
@@ -75,24 +152,6 @@
             gap: 10px;
             align-items: center;
             flex-wrap: wrap;
-        }
-        
-        h1 {
-            font-size: 1.8rem; /* کاهش سایز */
-            margin-bottom: 5px;
-        }
-        
-        .theme-toggle {
-            background: var(--primary-color);
-            border: none;
-            color: white;
-            padding: 8px 12px;
-            border-radius: 6px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 0.9rem;
         }
         
         .tabs {
@@ -696,6 +755,27 @@
                 font-size: 13px;
             }
             
+            .header-glass {
+                padding: 15px 20px;
+                flex-direction: column;
+                text-align: center;
+                gap: 15px;
+            }
+            
+            .header-glass h1 {
+                font-size: 1.5rem;
+            }
+            
+            .header-controls {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .glass-btn {
+                padding: 8px 15px;
+                font-size: 0.9rem;
+            }
+            
             .tabs {
                 display: none;
             }
@@ -732,17 +812,6 @@
                 gap: 0;
             }
             
-            header {
-                flex-direction: column;
-                gap: 12px;
-                text-align: center;
-            }
-            
-            .header-controls {
-                width: 100%;
-                justify-content: center;
-            }
-            
             .calculator-grid {
                 grid-template-columns: 1fr; /* فقط در موبایل تک ستونه */
             }
@@ -764,10 +833,6 @@
                 margin: 10px;
             }
             
-            h1 {
-                font-size: 1.5rem;
-            }
-            
             .section-title {
                 font-size: 1.1rem;
             }
@@ -777,6 +842,20 @@
             body {
                 padding: 8px;
                 font-size: 12px;
+            }
+            
+            .header-glass {
+                padding: 12px 15px;
+                border-radius: 12px;
+            }
+            
+            .header-glass h1 {
+                font-size: 1.3rem;
+            }
+            
+            .glass-btn {
+                padding: 7px 12px;
+                font-size: 0.85rem;
             }
             
             .category-header {
@@ -849,6 +928,14 @@
                 padding: 5px;
             }
             
+            .header-glass {
+                padding: 10px 12px;
+            }
+            
+            .header-glass h1 {
+                font-size: 1.2rem;
+            }
+            
             .tab-content {
                 padding: 10px;
             }
@@ -862,6 +949,11 @@
             }
             
             .btn {
+                padding: 6px 10px;
+                font-size: 0.8rem;
+            }
+            
+            .glass-btn {
                 padding: 6px 10px;
                 font-size: 0.8rem;
             }
