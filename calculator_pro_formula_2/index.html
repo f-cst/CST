@@ -108,7 +108,7 @@
     width: 44px;
     height: 44px;
     border: none;
-    background: transparent; /* تغییر: حذف background */
+    background: transparent;
     border-radius: 8px;
     cursor: pointer;
     display: flex;
@@ -117,6 +117,8 @@
     font-size: 18px;
     flex-shrink: 0;
     z-index: 100;
+    outline: none;
+    box-shadow: none;
 }
 
 /* موبایل */
@@ -135,7 +137,10 @@
         width: 40px;
         height: 40px;
         font-size: 16px;
-        background: transparent; /* تغییر: حذف background در موبایل */
+        background: transparent;
+        border: none;
+        box-shadow: none;
+        outline: none;
     }
 }
 
@@ -155,7 +160,10 @@
         width: 36px;
         height: 36px;
         font-size: 14px;
-        background: transparent; /* تغییر: حذف background در موبایل کوچک */
+        background: transparent;
+        border: none;
+        box-shadow: none;
+        outline: none;
     }
 }
 
@@ -182,6 +190,8 @@
             left: 10px;
             top: 50%;
             transform: translateY(-50%);
+            outline: none;
+            box-shadow: none;
         }
 
         .theme-toggle:hover {
@@ -261,7 +271,10 @@
             right: 10px;
             top: 50%;
             transform: translateY(-50%);
-            /* حذف شده: background-color, border, box-shadow */
+            background-color: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+            outline: none !important;
             z-index: 100;
         }
 
@@ -596,7 +609,7 @@
 
         /* استایل‌های بهبود یافته برای مدیریت جفت ارزها */
         .category-section {
-            margin: 8px 0; /* کاهش فاصله بین دسته‌بندی‌ها */
+            margin: 8px 0;
             padding: 12px;
             background-color: var(--category-bg);
             border-radius: 8px;
@@ -682,7 +695,7 @@
         .category-pairs {
             display: flex;
             flex-direction: column;
-            gap: 2px; /* کاهش فاصله بین جفت ارزها */
+            gap: 2px;
             margin-top: 8px;
             transition: all 0.3s ease;
         }
@@ -696,13 +709,13 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 6px 8px; /* کاهش padding */
-            margin: 1px 0; /* کاهش فاصله بین آیتم‌ها */
+            padding: 6px 8px;
+            margin: 1px 0;
             background-color: var(--result-bg);
             border-radius: 4px;
             border: 1px solid var(--input-border);
             transition: all 0.3s ease;
-            min-height: 36px; /* کاهش ارتفاع */
+            min-height: 36px;
             cursor: grab;
         }
 
@@ -1017,24 +1030,25 @@
             
             .mobile-menu-toggle {
                 display: block;
-                background: transparent; /* تغییر: حذف background */
-                border: none; /* تغییر: حذف border */
-                box-shadow: none; /* تغییر: حذف box-shadow */
+                background: transparent !important;
+                border: none !important;
+                box-shadow: none !important;
+                outline: none !important;
             }
             
             .mobile-tabs {
-                display: none; /* تغییر: منو به صورت پیش‌فرض بسته است */
+                display: none;
             }
             
             /* بهبود نمایش جفت ارزها در موبایل */
             .category-section {
                 padding: 10px;
-                margin: 6px 0; /* کاهش بیشتر فاصله در موبایل */
+                margin: 6px 0;
             }
             
             .category-header {
                 padding: 6px 10px;
-                flex-direction: row; /* حفظ حالت افقی در موبایل */
+                flex-direction: row;
                 align-items: center;
                 gap: 8px;
             }
