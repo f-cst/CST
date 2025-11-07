@@ -738,14 +738,8 @@ function pruneOldEntries(){
   if(kept.length !== entries.length) storageSet('entries', kept);
 }
 
-// مدیریت وضعیت باکس‌ها بر اساس دستگاه
-document.addEventListener('DOMContentLoaded', function() {
-    initializeBoxStates();
-});
-
-window.addEventListener('resize', function() {
-    initializeBoxStates();
-});
+// مدیریت وضعیت باکس‌ها بر اساس دستگاه - فقط هنگام لود صفحه
+initializeBoxStates();
 
   
 // ---------- event listeners ----------
