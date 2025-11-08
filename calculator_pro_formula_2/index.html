@@ -408,7 +408,8 @@
         /* استایل‌های جدول برای دسکتاپ - بهبود یافته برای اسکرول */
         .table-container {
             overflow-x: auto;
-            overflow-y: hidden;
+            overflow-y: auto; /* تغییر از hidden به auto برای فعال کردن اسکرول عمودی */
+            max-height: 60vh; /* محدود کردن ارتفاع برای ایجاد اسکرول عمودی در صورت نیاز */
             margin: 20px 0;
             cursor: grab;
             scroll-behavior: smooth;
@@ -419,6 +420,7 @@
         }
 
         .table-container::-webkit-scrollbar {
+            width: 8px;
             height: 8px;
         }
 
@@ -452,6 +454,7 @@
             text-align: right;
             border-bottom: 1px solid var(--input-border);
             white-space: nowrap;
+            user-select: text; /* فعال کردن انتخاب متن */
         }
 
         th {
@@ -468,6 +471,21 @@
 
         tr:hover {
             background-color: var(--table-row-hover);
+        }
+
+        .table-cell {
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .table-cell:hover {
+            background-color: var(--table-row-hover);
+            transform: translateY(-1px);
+        }
+
+        .table-cell.copied {
+            background-color: var(--success-bg) !important;
+            color: var(--success-color) !important;
         }
 
         .action-buttons {
@@ -538,8 +556,22 @@
         }
 
         .card-value {
+            cursor: pointer;
+            transition: all 0.2s ease;
             font-weight: bold;
             font-size: 14px;
+            padding: 4px;
+            border-radius: 3px;
+        }
+
+        .card-value:hover {
+            background-color: var(--button-primary);
+            color: white;
+        }
+
+        .card-value.copied {
+            background-color: var(--success-bg) !important;
+            color: var(--success-color) !important;
         }
 
         .card-actions {
@@ -1310,10 +1342,10 @@
                             <th>جفت ارز</th>
                             <th>عدد اول</th>
                             <th>عدد دوم</th>
-                            <th>فرمول 1</th>
-                            <th>فرمول 2</th>
-                            <th>فرمول 3</th>
-                            <th>فرمول 4</th>
+                            <th>فرمول ۱</th>
+                            <th>فرمول ۲</th>
+                            <th>فرمول ۳</th>
+                            <th>فرمول ۴</th>
                             <th>عملیات</th>
                         </tr>
                     </thead>
@@ -1688,12 +1720,17 @@
             let startXTable = 0;
             let scrollLeftTable = 0;
 
-            // Wheel event: فقط اسکرول عمودی (deltaY)، افقی را نادیده بگیر
+            // Wheel event: هندل کردن هر دو جهت اسکرول (عمودی و افقی) بدون تداخل
             tableContainer.addEventListener('wheel', (e) => {
-                e.preventDefault(); // جلوگیری از اسکرول پیش‌فرض
-                if (e.deltaX !== 0) return; // اگر افقی باشه (نادر)، نادیده بگیر
-                
-                tableContainer.scrollTop += e.deltaY; // فقط عمودی
+                e.preventDefault(); // جلوگیری از اسکرول پیش‌فرض صفحه
+                if (e.deltaY !== 0) {
+                    // اسکرول عمودی: مستقیم به scrollTop
+                    tableContainer.scrollTop += e.deltaY;
+                }
+                if (e.deltaX !== 0) {
+                    // اسکرول افقی: مستقیم به scrollLeft
+                    tableContainer.scrollLeft += e.deltaX;
+                }
             }, { passive: false });
 
             // شروع drag برای اسکرول افقی
@@ -1750,6 +1787,34 @@
                 if (!isDesktopOrTablet) {
                     isDraggingTable = false;
                 }
+            });
+        }
+
+        // تابع کپی کردن متن (بهبود یافته برای جدول و کارت‌ها)
+        function copyToClipboard(element, text = null) {
+            const textToCopy = text || element.textContent.trim() || element.dataset.value;
+            
+            if (!textToCopy) return;
+            
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                element.classList.add('copied');
+                showNotification('کپی شد! (' + textToCopy + ')', 'success', 2000);
+                setTimeout(() => {
+                    element.classList.remove('copied');
+                }, 1500);
+            }).catch(err => {
+                const textArea = document.createElement('textarea');
+                textArea.value = textToCopy;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                
+                element.classList.add('copied');
+                showNotification('کپی شد! (' + textToCopy + ')', 'success', 2000);
+                setTimeout(() => {
+                    element.classList.remove('copied');
+                }, 1500);
             });
         }
 
@@ -2524,20 +2589,28 @@
                 calculations.forEach(calc => {
                     const row = document.createElement('tr');
                     row.innerHTML = `
-                        <td>${formatDate(calc.date)}</td>
-                        <td>${calc.currencyPair}</td>
-                        <td>${formatNumberDisplay(calc.inputY1, calc.inputFormatY1)}</td>
-                        <td>${formatNumberDisplay(calc.inputY2, calc.inputFormatY2)}</td>
-                        <td>${formatNumberDisplay(calc.result1, calc.inputFormatY1)}</td>
-                        <td>${formatNumberDisplay(calc.result2, calc.inputFormatY1)}</td>
-                        <td>${formatNumberDisplay(calc.result3, calc.inputFormatY2)}</td>
-                        <td>${formatNumberDisplay(calc.result4, calc.inputFormatY2)}</td>
+                        <td class="table-cell" data-copy="${formatDate(calc.date)}">${formatDate(calc.date)}</td>
+                        <td class="table-cell" data-copy="${calc.currencyPair}">${calc.currencyPair}</td>
+                        <td class="table-cell" data-copy="${formatNumberDisplay(calc.inputY1, calc.inputFormatY1)}">${formatNumberDisplay(calc.inputY1, calc.inputFormatY1)}</td>
+                        <td class="table-cell" data-copy="${formatNumberDisplay(calc.inputY2, calc.inputFormatY2)}">${formatNumberDisplay(calc.inputY2, calc.inputFormatY2)}</td>
+                        <td class="table-cell" data-copy="${formatNumberDisplay(calc.result1, calc.inputFormatY1)}">${formatNumberDisplay(calc.result1, calc.inputFormatY1)}</td>
+                        <td class="table-cell" data-copy="${formatNumberDisplay(calc.result2, calc.inputFormatY1)}">${formatNumberDisplay(calc.result2, calc.inputFormatY1)}</td>
+                        <td class="table-cell" data-copy="${formatNumberDisplay(calc.result3, calc.inputFormatY2)}">${formatNumberDisplay(calc.result3, calc.inputFormatY2)}</td>
+                        <td class="table-cell" data-copy="${formatNumberDisplay(calc.result4, calc.inputFormatY2)}">${formatNumberDisplay(calc.result4, calc.inputFormatY2)}</td>
                         <td class="action-buttons">
                             <button class="action-btn edit-calculation" data-id="${calc.id}">ویرایش</button>
                             <button class="action-btn danger delete-calculation" data-id="${calc.id}">حذف</button>
                         </td>
                     `;
                     tableBody.appendChild(row);
+                });
+                
+                // اضافه کردن event listener برای کپی در جدول
+                document.querySelectorAll('#calculationsTableBody .table-cell').forEach(cell => {
+                    cell.addEventListener('click', function(e) {
+                        if (e.target.tagName === 'BUTTON') return; // جلوگیری از تداخل با دکمه‌ها
+                        copyToClipboard(this, this.dataset.copy);
+                    });
                 });
                 
                 calculations.forEach(calc => {
@@ -2551,27 +2624,27 @@
                         <div class="card-content">
                             <div class="card-item">
                                 <div class="card-label">عدد اول</div>
-                                <div class="card-value">${formatNumberDisplay(calc.inputY1, calc.inputFormatY1)}</div>
+                                <div class="card-value" data-value="${formatNumberDisplay(calc.inputY1, calc.inputFormatY1)}">${formatNumberDisplay(calc.inputY1, calc.inputFormatY1)}</div>
                             </div>
                             <div class="card-item">
                                 <div class="card-label">عدد دوم</div>
-                                <div class="card-value">${formatNumberDisplay(calc.inputY2, calc.inputFormatY2)}</div>
+                                <div class="card-value" data-value="${formatNumberDisplay(calc.inputY2, calc.inputFormatY2)}">${formatNumberDisplay(calc.inputY2, calc.inputFormatY2)}</div>
                             </div>
                             <div class="card-item">
-                                <div class="card-label">فرمول 1</div>
-                                <div class="card-value">${formatNumberDisplay(calc.result1, calc.inputFormatY1)}</div>
+                                <div class="card-label">فرمول ۱</div>
+                                <div class="card-value" data-value="${formatNumberDisplay(calc.result1, calc.inputFormatY1)}">${formatNumberDisplay(calc.result1, calc.inputFormatY1)}</div>
                             </div>
                             <div class="card-item">
-                                <div class="card-label">فرمول 2</div>
-                                <div class="card-value">${formatNumberDisplay(calc.result2, calc.inputFormatY1)}</div>
+                                <div class="card-label">فرمول ۲</div>
+                                <div class="card-value" data-value="${formatNumberDisplay(calc.result2, calc.inputFormatY1)}">${formatNumberDisplay(calc.result2, calc.inputFormatY1)}</div>
                             </div>
                             <div class="card-item">
-                                <div class="card-label">فرمول 3</div>
-                                <div class="card-value">${formatNumberDisplay(calc.result3, calc.inputFormatY2)}</div>
+                                <div class="card-label">فرمول ۳</div>
+                                <div class="card-value" data-value="${formatNumberDisplay(calc.result3, calc.inputFormatY2)}">${formatNumberDisplay(calc.result3, calc.inputFormatY2)}</div>
                             </div>
                             <div class="card-item">
-                                <div class="card-label">فرمول 4</div>
-                                <div class="card-value">${formatNumberDisplay(calc.result4, calc.inputFormatY2)}</div>
+                                <div class="card-label">فرمول ۴</div>
+                                <div class="card-value" data-value="${formatNumberDisplay(calc.result4, calc.inputFormatY2)}">${formatNumberDisplay(calc.result4, calc.inputFormatY2)}</div>
                             </div>
                         </div>
                         <div class="card-actions">
@@ -2580,6 +2653,14 @@
                         </div>
                     `;
                     mobileCardsContainer.appendChild(card);
+                });
+                
+                // اضافه کردن event listener برای کپی در کارت‌ها
+                document.querySelectorAll('#mobileCardsContainer .card-value').forEach(value => {
+                    value.addEventListener('click', function(e) {
+                        if (e.target.tagName === 'BUTTON') return; // جلوگیری از تداخل با دکمه‌ها
+                        copyToClipboard(this);
+                    });
                 });
                 
                 document.querySelectorAll('.edit-calculation').forEach(btn => {
@@ -3118,31 +3199,6 @@
             }
         }
         
-        // تابع کپی کردن متن
-        function copyToClipboard(element) {
-            const textToCopy = element.dataset.value;
-            
-            if (!textToCopy) return;
-            
-            navigator.clipboard.writeText(textToCopy).then(() => {
-                element.classList.add('copied');
-                setTimeout(() => {
-                    element.classList.remove('copied');
-                }, 1500);
-            }).catch(err => {
-                const textArea = document.createElement('textarea');
-                textArea.value = textToCopy;
-                document.body.appendChild(textArea);
-                textArea.select();
-                document.execCommand('copy');
-                document.body.removeChild(textArea);
-                
-                element.classList.add('copied');
-                setTimeout(() => {
-                    element.classList.remove('copied');
-                }, 1500);
-            });
-        }
 
         // تابع تغییر تب - اصلاح شده برای مدیریت منوی موبایل
         function switchTab(tabName) {
