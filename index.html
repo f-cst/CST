@@ -50,7 +50,13 @@
             padding: 0;
             overflow: hidden;
             min-height: 100vh;
-            background-attachment: fixed; /* رفع مشکل رنگ‌های پشت زمینه */
+        }
+        
+        /* پس‌زمینه ساده برای موبایل */
+        @media (max-width: 768px) {
+            body {
+                background: #2575fc !important; /* فقط رنگ آبی در موبایل */
+            }
         }
         
         body.standalone {
@@ -69,11 +75,20 @@
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
             border: 1px solid rgba(255, 255, 255, 0.2);
             max-width: 450px;
-            width: 90%; /* برای موبایل بهتر */
+            width: 90%;
             text-align: center;
             position: relative;
             margin: auto;
-            min-height: auto; /* رفع مشکل ارتفاع */
+        }
+        
+        /* استایل برای موبایل */
+        @media (max-width: 768px) {
+            .login-container {
+                background-color: rgba(255, 255, 255, 0.15);
+                margin: 20px auto;
+                padding: 30px 20px;
+                width: 95%;
+            }
         }
         
         h1 {
@@ -406,8 +421,8 @@
             
             .login-container {
                 padding: 30px 20px;
-                margin: 20px;
-                width: 95%; /* عرض بیشتر در موبایل */
+                margin: 20px auto;
+                width: 95%;
             }
             
             h1 {
@@ -456,7 +471,7 @@
             
             .login-container {
                 padding: 25px 15px;
-                margin: 15px;
+                margin: 15px auto;
             }
             
             .setup-guide {
@@ -500,20 +515,11 @@
             
             .login-container {
                 padding: 20px 12px;
-                margin: 10px;
+                margin: 10px auto;
             }
             
             h1 {
                 font-size: 1.5rem;
-            }
-        }
-        
-        /* رفع مشکل گرادیانت برای موبایل */
-        @media (max-width: 768px) {
-            body {
-                background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
-                background-attachment: fixed;
-                background-size: cover;
             }
         }
         
@@ -749,16 +755,80 @@
             });
         }
 
-        // ==================== MOUSE WHEEL SCROLL FOR TABS ====================
+        // ==================== ADVANCED SCROLL FOR TABS ====================
         function initMouseWheelScroll() {
             const tabsScrollContainer = document.getElementById('tabsScrollContainer');
+            const tabs = document.getElementById('tabs');
             
-            if (!tabsScrollContainer) return;
+            if (!tabsScrollContainer || !tabs) return;
             
-            // اسکرول با چرخ موس (همراه با حفظ اسکرول بار)
+            // اسکرول با چرخ موس
             tabsScrollContainer.addEventListener('wheel', function(e) {
                 e.preventDefault();
                 this.scrollLeft += e.deltaY;
+            });
+            
+            // اسکرول با کلیک و درگ روی هر قسمتی از تب‌ها
+            let isDragging = false;
+            let startX;
+            let scrollLeft;
+            
+            // برای کل کانتینر تب‌ها
+            tabsScrollContainer.addEventListener('mousedown', function(e) {
+                isDragging = true;
+                startX = e.pageX - this.offsetLeft;
+                scrollLeft = this.scrollLeft;
+                this.style.cursor = 'grabbing';
+                this.style.userSelect = 'none';
+            });
+            
+            // برای خود تب‌ها (اگر کاربر روی تب کلیک کرد)
+            tabs.addEventListener('mousedown', function(e) {
+                isDragging = true;
+                startX = e.pageX - tabsScrollContainer.offsetLeft;
+                scrollLeft = tabsScrollContainer.scrollLeft;
+                tabsScrollContainer.style.cursor = 'grabbing';
+                tabsScrollContainer.style.userSelect = 'none';
+            });
+            
+            document.addEventListener('mouseup', function() {
+                isDragging = false;
+                tabsScrollContainer.style.cursor = 'grab';
+                tabsScrollContainer.style.userSelect = 'auto';
+            });
+            
+            document.addEventListener('mousemove', function(e) {
+                if (!isDragging) return;
+                e.preventDefault();
+                const x = e.pageX - tabsScrollContainer.offsetLeft;
+                const walk = (x - startX) * 2;
+                tabsScrollContainer.scrollLeft = scrollLeft - walk;
+            });
+            
+            // برای تاچ دیوایس‌ها
+            let touchStartX;
+            let touchScrollLeft;
+            
+            tabsScrollContainer.addEventListener('touchstart', function(e) {
+                touchStartX = e.touches[0].pageX;
+                touchScrollLeft = this.scrollLeft;
+            });
+            
+            tabs.addEventListener('touchstart', function(e) {
+                touchStartX = e.touches[0].pageX;
+                touchScrollLeft = tabsScrollContainer.scrollLeft;
+            });
+            
+            tabsScrollContainer.addEventListener('touchmove', function(e) {
+                if (!touchStartX) return;
+                e.preventDefault();
+                const x = e.touches[0].pageX;
+                const walk = (x - touchStartX) * 2;
+                this.scrollLeft = touchScrollLeft - walk;
+            });
+            
+            tabsScrollContainer.addEventListener('touchend', function() {
+                touchStartX = null;
             });
         }
 
