@@ -2908,10 +2908,10 @@
             const themeToggle = document.getElementById('themeToggle');
             if (document.body.classList.contains('dark-mode')) {
                 themeToggle.textContent = '☀️';
-                localStorage.setItem('theme_2', 'dark');
+                localStorage.setItem('theme_1', 'dark');
             } else {
                 themeToggle.textContent = '🌙';
-                localStorage.setItem('theme_2', 'light');
+                localStorage.setItem('theme_1', 'light');
             }
         }
         
@@ -3090,7 +3090,7 @@
         }
 
         // بارگذاری حالت ذخیره شده
-        if (localStorage.getItem('theme') === 'dark') {
+        if (localStorage.getItem('theme_1') === 'dark') {
             document.body.classList.add('dark-mode');
             document.getElementById('themeToggle').textContent = '☀️';
         }
