@@ -417,7 +417,8 @@
         /* استایل‌های جدول برای دسکتاپ - بهبود یافته برای اسکرول */
         .table-container {
             overflow-x: auto;
-            overflow-y: hidden;
+            overflow-y: auto; /* تغییر از hidden به auto برای فعال کردن اسکرول عمودی */
+            max-height: 60vh; /* محدود کردن ارتفاع برای ایجاد اسکرول عمودی در صورت نیاز */
             margin: 20px 0;
             cursor: grab;
             scroll-behavior: smooth;
@@ -428,6 +429,7 @@
         }
 
         .table-container::-webkit-scrollbar {
+            width: 8px;
             height: 8px;
         }
 
@@ -1783,12 +1785,17 @@
             let startXTable = 0;
             let scrollLeftTable = 0;
 
-            // Wheel event: فقط اسکرول عمودی (deltaY)، افقی را نادیده بگیر
+            // Wheel event: هندل کردن هر دو جهت اسکرول (عمودی و افقی) بدون تداخل
             tableContainer.addEventListener('wheel', (e) => {
-                e.preventDefault(); // جلوگیری از اسکرول پیش‌فرض
-                if (e.deltaX !== 0) return; // اگر افقی باشه (نادر)، نادیده بگیر
-                
-                tableContainer.scrollTop += e.deltaY; // فقط عمودی
+                e.preventDefault(); // جلوگیری از اسکرول پیش‌فرض صفحه
+                if (e.deltaY !== 0) {
+                    // اسکرول عمودی: مستقیم به scrollTop
+                    tableContainer.scrollTop += e.deltaY;
+                }
+                if (e.deltaX !== 0) {
+                    // اسکرول افقی: مستقیم به scrollLeft
+                    tableContainer.scrollLeft += e.deltaX;
+                }
             }, { passive: false });
 
             // شروع drag برای اسکرول افقی
