@@ -2,12 +2,12 @@
   "name": "ربات CST",
   "short_name": "CST Robot",
   "description": "سیستم مدیریت ربات CST",
-  "start_url": "/cst/",
+"start_url": "/cst/",
   "display": "standalone",
   "background_color": "#6a11cb",
   "theme_color": "#2575fc",
   "orientation": "any",
-  "scope": "/cst/",
+"scope": "/cst/"
   "icons": [
     {
       "src": "icons/icon-72x72.png",
