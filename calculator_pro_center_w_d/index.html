@@ -1917,13 +1917,10 @@
     if(resetButton) resetButton.addEventListener('click', ()=>{
       if(inputY1) inputY1.value=''; 
       if(inputY2) inputY2.value=''; 
-      if(noteInput) noteInput.value=''; 
-      if(datePicker) datePicker.value=''; 
       if(resultsList1) resultsList1.innerHTML=''; 
       if(resultsList2) resultsList2.innerHTML=''; 
       if(analysisResult) analysisResult.innerHTML=''; 
       if(errorMessage) errorMessage.textContent=''; 
-      if(voiceStatus) voiceStatus.textContent='';
     });
 
     /* ---------- تابع کپی به کلیپ‌بورد ---------- */
@@ -1968,7 +1965,7 @@
         // فعال کردن حالت چندتاریخی
         singleDateSection.classList.add('hidden');
         multiDateSection.classList.remove('hidden');
-        toggleMultiDateBtn.textContent = 'بازگشت به حالت عادی';
+        toggleMultiDateBtn.textContent = 'بازگشت به حالت ع��دی';
         toggleMultiDateBtn.classList.remove('bg-blue-600');
         toggleMultiDateBtn.classList.add('bg-gray-600');
         
