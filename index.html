@@ -306,6 +306,91 @@
             opacity: 0.9;
         }
         
+        /* ========== RESPONSIVE TABS FOR ALL SIZES ========== */
+        /* حالت‌های مختلف برای تمام سایزها */
+        
+        /* حالت بسیار فشرده - برای سایزهای بسیار کوچک */
+        @media (max-width: 500px) {
+            .tabs-container {
+                padding: 8px 5px;
+            }
+            
+            .tab {
+                padding: 8px 10px;
+                min-width: 45px;
+                justify-content: center;
+                border-radius: 10px;
+            }
+            
+            .tab-text {
+                display: none !important;
+            }
+            
+            .tab i {
+                font-size: 1.1rem;
+                margin: 0;
+            }
+        }
+        
+        /* حالت فشرده برای دسکتاپ کوچک */
+        @media (min-width: 501px) and (max-width: 700px) {
+            .tab {
+                padding: 10px 12px;
+                min-width: 50px;
+                justify-content: center;
+            }
+            
+            .tab-text {
+                display: none !important;
+            }
+            
+            .tab i {
+                font-size: 1.2rem;
+                margin: 0;
+            }
+        }
+        
+        /* حالت نیمه فشرده */
+        @media (min-width: 701px) and (max-width: 900px) {
+            .tab {
+                padding: 10px 12px;
+                min-width: 60px;
+            }
+            
+            .tab-text {
+                font-size: 0.7rem;
+            }
+            
+            .tab i {
+                font-size: 1rem;
+            }
+        }
+        
+        /* حالت مخفف شده */
+        @media (min-width: 901px) and (max-width: 1100px) {
+            .tab {
+                padding: 10px 14px;
+                min-width: 80px;
+            }
+            
+            .tab-text {
+                font-size: 0.75rem;
+            }
+            
+            .tab-text.long {
+                display: none;
+            }
+            
+            .tab-text.short {
+                display: inline;
+            }
+        }
+        
+        /* حالت عادی */
+        .tab-text.short {
+            display: none;
+        }
+
         /* ========== IFRAME CONTAINER ========== */
         .iframe-container {
             flex: 1;
@@ -529,36 +614,43 @@
     </div>
 
     <div class="main-content" id="mainContent">
-        <div class="tabs-container">
+        <div class="tabs-container" id="tabsContainer">
             <div class="tabs-scroll-container" id="tabsScrollContainer">
                 <div class="tabs" id="tabs">
                     <div class="tab active" onclick="openTab(0)">
                         <i class="fa fa-align-justify"></i>
-                        Calculator Pro W/D
+                        <span class="tab-text long">Calculator Pro W/D</span>
+                        <span class="tab-text short">Calc W/D</span>
                     </div>
                     <div class="tab" onclick="openTab(1)">
                         <i class="fa fa-bar-chart"></i>
-                        Calculator Pro Formula 4
+                        <span class="tab-text long">Calculator Pro Formula 4</span>
+                        <span class="tab-text short">Formula 4</span>
                     </div>
                     <div class="tab" onclick="openTab(2)">
                         <i class="fa fa-area-chart"></i>
-                        Calculator Pro Formula 2
+                        <span class="tab-text long">Calculator Pro Formula 2</span>
+                        <span class="tab-text short">Formula 2</span>
                     </div>
                     <div class="tab" onclick="openTab(3)">
                         <i class="fa fa-indent"></i>
-                        Calculator Pro Center W/D
+                        <span class="tab-text long">Calculator Pro Center W/D</span>
+                        <span class="tab-text short">Center W/D</span>
                     </div>
                     <div class="tab" onclick="openTab(4)">
                         <i class="fa fa-line-chart"></i>
-                        Cst Analyzer
+                        <span class="tab-text long">Cst Analyzer</span>
+                        <span class="tab-text short">Analyzer</span>
                     </div>
                     <div class="tab" onclick="openTab(5)">
                         <i class="fa fa-exchange-alt"></i>
-                        Forex Manager
+                        <span class="tab-text long">Forex Manager</span>
+                        <span class="tab-text short">Forex</span>
                     </div>
                     <div class="tab" onclick="openTab(6)">
                         <i class="fa fa-calculator"></i>
-                        Calculator Pro C/D
+                        <span class="tab-text long">Calculator Pro C/D</span>
+                        <span class="tab-text short">Calc C/D</span>
                     </div>
                 </div>
             </div>
