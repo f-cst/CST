@@ -56,6 +56,7 @@
             padding: 0;
             overflow: hidden;
             min-height: 100vh;
+            position: relative;
         }
         
         /* پس‌زمینه ساده فقط برای موبایل‌های کوچک */
@@ -74,8 +75,9 @@
         
         /* ========== LOGIN STYLES ========== */
         .login-container {
-            background-color: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
+            background-color: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(5px); saturate(200%);
+            -webkit-backdrop-filter: blur(5px); saturate(200%);
             border-radius: 20px;
             padding: 40px;
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
@@ -85,15 +87,19 @@
             text-align: center;
             position: relative;
             margin: auto;
+            overflow: hidden;
+            isolation: isolate;
         }
         
         /* استایل برای موبایل */
         @media (max-width: 480px) {
             .login-container {
-                background-color: rgba(255, 255, 255, 0.15);
+                background-color: rgba(255, 255, 255, 0.05);
                 margin: 20px auto;
                 padding: 30px 20px;
                 width: 95%;
+                backdrop-filter: blur(8px); saturate(200%);
+                -webkit-backdrop-filter: blur(8px); saturate(200%);
             }
         }
         
@@ -127,7 +133,7 @@
             padding: 15px;
             border-radius: 10px;
             border: 1px solid rgba(255, 255, 255, 0.3);
-            background: rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.08);
             color: white;
             font-size: 1.1rem;
             transition: all 0.3s ease;
@@ -177,11 +183,13 @@
         }
         
         .setup-guide {
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.05);
             padding: 15px;
             border-radius: 10px;
             margin-bottom: 20px;
             text-align: right;
+            backdrop-filter: blur(5px); saturate(200%);
+            -webkit-backdrop-filter: blur(5px); saturate(200%);
         }
         
         .setup-guide h3 {
@@ -208,9 +216,10 @@
             text-align: center;
             padding: 16px;
             font-family: Vazirmatn, system-ui;
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.05);
             border-radius: 10px;
-            backdrop-filter: blur(5px);
+            backdrop-filter: blur(5px); saturate(200%);
+            -webkit-backdrop-filter: blur(5px); saturate(200%);
             border: 1px solid rgba(255, 255, 255, 0.2);
             font-size: 14px;
             font-weight: 500;
@@ -223,8 +232,9 @@
 
         /* ========== TAB STYLES ========== */
         .tabs-container {
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(15px);
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(5px); saturate(200%);
+            -webkit-backdrop-filter: blur(5px); saturate(200%);
             border-radius: 0 0 20px 20px;
             padding: 15px 10px;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
@@ -234,6 +244,7 @@
             position: relative;
             z-index: 1000;
             flex-shrink: 0;
+            overflow: hidden;
         }
         
         .tabs-scroll-container {
@@ -284,11 +295,13 @@
             color: white;
             cursor: pointer;
             transition: all 0.3s ease;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.05);
             font-size: 0.85rem;
             font-weight: 500;
             white-space: nowrap;
             min-width: fit-content;
+            backdrop-filter: blur(5px); saturate(200%);
+            -webkit-backdrop-filter: blur(5px); saturate(200%);
         }
         
         .tab:hover {
@@ -446,6 +459,8 @@
         @media (max-width: 480px) {
             .tabs-container {
                 padding: 10px 12px;
+                backdrop-filter: blur(12px);
+                -webkit-backdrop-filter: blur(12px);
             }
             
             .tab {
@@ -453,10 +468,8 @@
                 font-size: 0.7rem;
                 gap: 4px;
                 border-radius: 10px;
-            }
-            
-            .tab i {
-                font-size: 0.9rem;
+                backdrop-filter: blur(8px);
+                -webkit-backdrop-filter: blur(8px);
             }
             
             h1 {
@@ -514,6 +527,36 @@
             
             h1 {
                 font-size: 1.5rem;
+            }
+        }
+        
+        /* ========== FIXES FOR BACKDROP-FILTER ISSUES ========== */
+        /* جلوگیری از خطوط شیشه‌ای ناخواسته */
+        .login-container::before,
+        .tabs-container::before,
+        .setup-guide::before,
+        .signature::before,
+        .login-signature::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: inherit;
+            border-radius: inherit;
+            z-index: -1;
+        }
+        
+        /* بهبود عملکرد backdrop-filter در مرورگرهای مختلف */
+        @supports not (backdrop-filter: blur(10px)) {
+            .login-container,
+            .tabs-container,
+            .setup-guide,
+            .signature,
+            .login-signature,
+            .tab {
+                background: rgba(255, 255, 255, 0.2) !important;
             }
         }
         
@@ -660,13 +703,34 @@
             detectDeviceType();
             updateThemeColor();
             handleDesktopResponsiveTabs();
+            
+            // اعمال فیکس‌های بصری برای جلوگیری از خطوط شیشه‌ای
+            setTimeout(applyVisualFixes, 100);
         });
 
         // اعمال در تغییر سایز صفحه
         window.addEventListener('resize', () => {
             updateThemeColor();
             handleDesktopResponsiveTabs();
+            applyVisualFixes();
         });
+
+        // ==================== VISUAL FIXES FOR GLASS EFFECT ====================
+        function applyVisualFixes() {
+            // این تابع مشکلات بصری backdrop-filter را رفع می‌کند
+            const elements = document.querySelectorAll('.login-container, .tabs-container, .setup-guide, .signature, .login-signature, .tab');
+            
+            elements.forEach(element => {
+                // اطمینان از اینکه border-radius به درستی اعمال شده
+                const computedStyle = window.getComputedStyle(element);
+                const borderRadius = computedStyle.borderRadius;
+                
+                // اگر border-radius مشکل دارد، آن را تنظیم کن
+                if (borderRadius === '0px' && element.classList.contains('login-container')) {
+                    element.style.borderRadius = '20px';
+                }
+            });
+        }
 
         // ==================== AUTHENTICATION ====================
         const secretKey = 'JBSWY3DPEHPK3PXP';
