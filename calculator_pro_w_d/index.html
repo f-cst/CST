@@ -2037,7 +2037,7 @@ safeForEach(numericFields, (field) => {
       startVoiceRecognition();
     } else if(isVoiceActive) {
       const fieldName = getFieldName(field);
-      if(voiceStatus) voiceStatus.textContent = `🎤 در حال گوش دادن برای ${fieldName}... عدد را بگویید`;
+      if(voiceStatus) voiceStatus.textContent = `🎤 در حال گوش دادن لطفاً عدد را بگویید`;
     }
   });
 });
