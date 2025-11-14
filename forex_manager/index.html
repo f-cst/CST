@@ -282,6 +282,7 @@
         
         .btn-primary:hover {
             background: var(--secondary-color);
+            color: white;
         }
         
         .btn-success {
@@ -291,6 +292,7 @@
         
         .btn-success:hover {
             background: #219653;
+            color: white;
         }
         
         .btn-danger {
@@ -300,6 +302,7 @@
         
         .btn-danger:hover {
             background: #c0392b;
+            color: white;
         }
         
         .btn-warning {
@@ -309,6 +312,7 @@
         
         .btn-warning:hover {
             background: #e67e22;
+            color: white;
         }
         
         .btn-info {
@@ -318,6 +322,7 @@
         
         .btn-info:hover {
             background: #2980b9;
+            color: white;
         }
         
         .currency-category {
@@ -652,6 +657,30 @@
             padding: 15px;
             border-radius: 6px;
             border: 1px solid var(--border-color);
+        }
+        
+        /* === FIX FOR RESTORE DATA BUTTON === */
+        #restore-data {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 10px 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.85rem;
+            margin-top: 10px;
+        }
+        
+        #restore-data:hover {
+            background: var(--secondary-color);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
         }
         
         .modal {
