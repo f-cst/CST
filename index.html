@@ -268,7 +268,7 @@
         
         .tabs {
             display: flex;
-            gap: 8px;
+            gap: 8px; /* تغییر: gap پیش‌فرض */
             min-width: min-content;
             user-select: none;
         }
@@ -316,74 +316,24 @@
             display: inline;
         }
 
-        /* فقط برای دسکتاپ: حالت آیکون فقط - برای تمام سایزهای کوچک */
-        @media (min-width: 769px) and (max-width: 1100px) {
-            /* فقط آیکون - متن کاملاً مخفی */
-            .tab-text {
-                display: none !important;
-            }
-            
+        /* تغییر: برای دسکتاپ عریض (بالای 1301px): متن long کامل */
+        @media (min-width: 1301px) {
             .tab {
-                min-width: 60px;
-                justify-content: center;
-                padding: 12px 16px;
-            }
-            
-            .tab i {
-                font-size: 1.5rem;
-                margin: 0;
-            }
-        }
-        
-        /* فقط برای دسکتاپ: صفحات بسیار کوچک (کمتر از 600px اما بیشتر از موبایل) */
-        @media (min-width: 769px) and (max-width: 600px) {
-            .tab-text {
-                display: none !important;
-            }
-            
-            .tab {
-                min-width: 50px;
-                justify-content: center;
-                padding: 10px 14px;
-            }
-            
-            .tab i {
-                font-size: 1.4rem;
-                margin: 0;
-            }
-            
-            .tabs-container {
-                padding: 10px 8px;
-            }
-        }
-        
-        /* فقط برای دسکتاپ: صفحات خیلی خیلی کوچک */
-        @media (min-width: 769px) and (max-width: 450px) {
-            .tab-text {
-                display: none !important;
-            }
-            
-            .tab {
-                min-width: 45px;
-                justify-content: center;
-                padding: 8px 12px;
+                padding: 12px 18px;
+                font-size: 0.9rem;
+                gap: 10px;
             }
             
             .tab i {
                 font-size: 1.3rem;
-                margin: 0;
-            }
-            
-            .tabs-container {
-                padding: 8px 6px;
             }
             
             .tabs {
-                gap: 6px;
+                gap: 10px;
             }
         }
-        
-        /* فقط برای دسکتاپ: صفحه متوسط */
+
+        /* تغییر: برای دسکتاپ متوسط (1101-1300px): متن short نمایش بده، فشرده‌تر */
         @media (min-width: 1101px) and (max-width: 1300px) {
             .tab-text.long {
                 display: none;
@@ -396,13 +346,100 @@
             .tab {
                 padding: 10px 14px;
                 font-size: 0.8rem;
+                gap: 6px; /* فشرده‌تر */
             }
             
             .tab i {
                 font-size: 1.1rem;
             }
+            
+            .tabs {
+                gap: 6px; /* gap کمتر */
+            }
         }
-
+        
+        /* فقط برای دسکتاپ: حالت آیکون فقط - برای 769-1100px */
+        @media (min-width: 769px) and (max-width: 1100px) {
+            /* فقط آیکون - متن کاملاً مخفی */
+            .tab-text {
+                display: none !important;
+            }
+            
+            .tab {
+                min-width: 60px;
+                justify-content: center;
+                padding: 12px 16px;
+                gap: 0; /* بدون gap برای آیکون */
+            }
+            
+            .tab i {
+                font-size: 1.5rem;
+                margin: 0;
+            }
+            
+            .tabs {
+                gap: 5px; /* gap کمتر برای فشرده شدن */
+            }
+            
+            .tabs-container {
+                padding: 12px 8px;
+            }
+        }
+        
+        /* فقط برای دسکتاپ: صفحات کوچک (769-600px) */
+        @media (min-width: 769px) and (max-width: 600px) {
+            .tab-text {
+                display: none !important;
+            }
+            
+            .tab {
+                min-width: 50px;
+                justify-content: center;
+                padding: 10px 14px;
+                gap: 0;
+            }
+            
+            .tab i {
+                font-size: 1.4rem;
+                margin: 0;
+            }
+            
+            .tabs-container {
+                padding: 10px 8px;
+            }
+            
+            .tabs {
+                gap: 4px; /* حتی کمتر */
+            }
+        }
+        
+        /* فقط برای دسکتاپ: صفحات خیلی کوچک (769-450px) */
+        @media (min-width: 769px) and (max-width: 450px) {
+            .tab-text {
+                display: none !important;
+            }
+            
+            .tab {
+                min-width: 45px;
+                justify-content: center;
+                padding: 8px 12px;
+                gap: 0;
+            }
+            
+            .tab i {
+                font-size: 1.3rem;
+                margin: 0;
+            }
+            
+            .tabs-container {
+                padding: 8px 6px;
+            }
+            
+            .tabs {
+                gap: 3px; /* فشرده‌ترین */
+            }
+        }
+        
         /* ========== IFRAME CONTAINER ========== */
         .iframe-container {
             flex: 1;
@@ -620,37 +657,37 @@
                     <div class="tab active" onclick="openTab(0)">
                         <i class="fa fa-align-justify"></i>
                         <span class="tab-text long">Calculator Pro W/D</span>
-                        <span class="tab-text short">Calc W/D</span>
+                        <span class="tab-text short">Calc WD</span> <!-- تغییر: کوتاه‌تر برای فشرده‌تر شدن -->
                     </div>
                     <div class="tab" onclick="openTab(1)">
                         <i class="fa fa-bar-chart"></i>
                         <span class="tab-text long">Calculator Pro Formula 4</span>
-                        <span class="tab-text short">Formula 4</span>
+                        <span class="tab-text short">Form 4</span> <!-- تغییر: کوتاه‌تر -->
                     </div>
                     <div class="tab" onclick="openTab(2)">
                         <i class="fa fa-area-chart"></i>
                         <span class="tab-text long">Calculator Pro Formula 2</span>
-                        <span class="tab-text short">Formula 2</span>
+                        <span class="tab-text short">Form 2</span> <!-- تغییر: کوتاه‌تر -->
                     </div>
                     <div class="tab" onclick="openTab(3)">
                         <i class="fa fa-indent"></i>
                         <span class="tab-text long">Calculator Pro Center W/D</span>
-                        <span class="tab-text short">Center W/D</span>
+                        <span class="tab-text short">Ctr WD</span> <!-- تغییر: کوتاه‌تر -->
                     </div>
                     <div class="tab" onclick="openTab(4)">
                         <i class="fa fa-line-chart"></i>
                         <span class="tab-text long">Cst Analyzer</span>
-                        <span class="tab-text short">Analyzer</span>
+                        <span class="tab-text short">Anlz</span> <!-- تغییر: کوتاه‌تر -->
                     </div>
                     <div class="tab" onclick="openTab(5)">
                         <i class="fa fa-exchange-alt"></i>
                         <span class="tab-text long">Forex Manager</span>
-                        <span class="tab-text short">Forex</span>
+                        <span class="tab-text short">Frx</span> <!-- تغییر: کوتاه‌تر -->
                     </div>
                     <div class="tab" onclick="openTab(6)">
                         <i class="fa fa-calculator"></i>
                         <span class="tab-text long">Calculator Pro C/D</span>
-                        <span class="tab-text short">Calc C/D</span>
+                        <span class="tab-text short">Calc CD</span> <!-- تغییر: کوتاه‌تر -->
                     </div>
                 </div>
             </div>
