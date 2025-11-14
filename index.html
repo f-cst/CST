@@ -306,7 +306,7 @@
             opacity: 0.9;
         }
         
-        /* ========== RESPONSIVE TABS - ONLY FOR DESKTOP ========== */
+        /* ========== RESPONSIVE TABS - ONLY FOR DESKTOP (با کلاس .is-desktop) ========== */
         /* حالت پیش‌فرض: متن بلند نمایش داده میشه، متن کوتاه مخفیه */
         .tab-text.short {
             display: none;
@@ -316,126 +316,126 @@
             display: inline;
         }
 
-        /* تغییر: برای دسکتاپ عریض (بالای 1301px): متن long کامل */
+        /* تغییر: برای دسکتاپ عریض (بالای 1301px): متن long کامل - فقط اگر .is-desktop */
         @media (min-width: 1301px) {
-            .tab {
+            .is-desktop .tab {
                 padding: 12px 18px;
                 font-size: 0.9rem;
                 gap: 10px;
             }
             
-            .tab i {
+            .is-desktop .tab i {
                 font-size: 1.3rem;
             }
             
-            .tabs {
+            .is-desktop .tabs {
                 gap: 10px;
             }
         }
 
-        /* تغییر: برای دسکتاپ متوسط (1101-1300px): متن short نمایش بده، فشرده‌تر */
+        /* تغییر: برای دسکتاپ متوسط (1101-1300px): متن short نمایش بده، فشرده‌تر - فقط اگر .is-desktop */
         @media (min-width: 1101px) and (max-width: 1300px) {
-            .tab-text.long {
+            .is-desktop .tab-text.long {
                 display: none;
             }
             
-            .tab-text.short {
+            .is-desktop .tab-text.short {
                 display: inline;
             }
             
-            .tab {
+            .is-desktop .tab {
                 padding: 10px 14px;
                 font-size: 0.8rem;
                 gap: 6px; /* فشرده‌تر */
             }
             
-            .tab i {
+            .is-desktop .tab i {
                 font-size: 1.1rem;
             }
             
-            .tabs {
+            .is-desktop .tabs {
                 gap: 6px; /* gap کمتر */
             }
         }
         
-        /* فقط برای دسکتاپ: حالت آیکون فقط - برای 769-1100px */
+        /* فقط برای دسکتاپ: حالت آیکون فقط - برای 769-1100px - فقط اگر .is-desktop */
         @media (min-width: 769px) and (max-width: 1100px) {
             /* فقط آیکون - متن کاملاً مخفی */
-            .tab-text {
+            .is-desktop .tab-text {
                 display: none !important;
             }
             
-            .tab {
+            .is-desktop .tab {
                 min-width: 60px;
                 justify-content: center;
                 padding: 12px 16px;
                 gap: 0; /* بدون gap برای آیکون */
             }
             
-            .tab i {
+            .is-desktop .tab i {
                 font-size: 1.5rem;
                 margin: 0;
             }
             
-            .tabs {
+            .is-desktop .tabs {
                 gap: 5px; /* gap کمتر برای فشرده شدن */
             }
             
-            .tabs-container {
+            .is-desktop .tabs-container {
                 padding: 12px 8px;
             }
         }
         
-        /* فقط برای دسکتاپ: صفحات کوچک (769-600px) */
+        /* فقط برای دسکتاپ: صفحات کوچک (769-600px) - فقط اگر .is-desktop */
         @media (min-width: 769px) and (max-width: 600px) {
-            .tab-text {
+            .is-desktop .tab-text {
                 display: none !important;
             }
             
-            .tab {
+            .is-desktop .tab {
                 min-width: 50px;
                 justify-content: center;
                 padding: 10px 14px;
                 gap: 0;
             }
             
-            .tab i {
+            .is-desktop .tab i {
                 font-size: 1.4rem;
                 margin: 0;
             }
             
-            .tabs-container {
+            .is-desktop .tabs-container {
                 padding: 10px 8px;
             }
             
-            .tabs {
+            .is-desktop .tabs {
                 gap: 4px; /* حتی کمتر */
             }
         }
         
-        /* فقط برای دسکتاپ: صفحات خیلی کوچک (769-450px) */
+        /* فقط برای دسکتاپ: صفحات خیلی کوچک (769-450px) - فقط اگر .is-desktop */
         @media (min-width: 769px) and (max-width: 450px) {
-            .tab-text {
+            .is-desktop .tab-text {
                 display: none !important;
             }
             
-            .tab {
+            .is-desktop .tab {
                 min-width: 45px;
                 justify-content: center;
                 padding: 8px 12px;
                 gap: 0;
             }
             
-            .tab i {
+            .is-desktop .tab i {
                 font-size: 1.3rem;
                 margin: 0;
             }
             
-            .tabs-container {
+            .is-desktop .tabs-container {
                 padding: 8px 6px;
             }
             
-            .tabs {
+            .is-desktop .tabs {
                 gap: 3px; /* فشرده‌ترین */
             }
         }
@@ -707,6 +707,22 @@
     <button class="pwa-install-btn" id="pwaInstallButton">📥 نصب برنامه</button>
 
     <script>
+        // ==================== DETECT DESKTOP FOR RESPONSIVE TABS ====================
+        // تابع برای تشخیص دسکتاپ (غیر از Android/iOS)
+        function detectDesktop() {
+            const ua = navigator.userAgent || navigator.vendor || window.opera;
+            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(ua);
+            return !isMobile;
+        }
+
+        // اضافه کردن کلاس is-desktop اگر دسکتاپ باشه
+        if (detectDesktop()) {
+            document.body.classList.add('is-desktop');
+            console.log('Desktop detected: Responsive tabs enabled for resize.');
+        } else {
+            console.log('Mobile detected (Android/iOS): Responsive tabs disabled.');
+        }
+
         // ==================== DYNAMIC THEME COLOR ====================
         function setThemeColor(color) {
             let meta = document.querySelector('meta[name=theme-color]');
