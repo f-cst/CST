@@ -23,7 +23,7 @@
         }
 
         .dark-mode {
-            --primary-color: #4a7bd9;
+            --primary-color: #5a8be9;
             --secondary-color: #2d2d2d;
             --text-color: #f0f0f0;
             --border-color: #555;
@@ -31,6 +31,7 @@
             --card-bg: #383838;
             --header-bg: #1e1e1e;
             --bg-dark: #121212;
+            --info-color: #4aa0e6;
         }
         
         * {
@@ -146,12 +147,12 @@
         }
 
         .dark-mode .glass-btn {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.3);
         }
 
         .dark-mode .glass-btn:hover {
-            background: rgba(255, 255, 255, 0.15);
+            background: rgba(255, 255, 255, 0.4);
         }
         
         header {
@@ -285,12 +286,32 @@
             color: white;
         }
         
+        .dark-mode .btn-primary {
+            background: #2a5298;
+            color: white;
+        }
+        
+        .dark-mode .btn-primary:hover {
+            background: #1e3c72;
+            color: white;
+        }
+        
         .btn-success {
             background: var(--success-color);
             color: white;
         }
         
         .btn-success:hover {
+            background: #219653;
+            color: white;
+        }
+        
+        .dark-mode .btn-success {
+            background: #27ae60;
+            color: white;
+        }
+        
+        .dark-mode .btn-success:hover {
             background: #219653;
             color: white;
         }
@@ -305,6 +326,16 @@
             color: white;
         }
         
+        .dark-mode .btn-danger {
+            background: #e74c3c;
+            color: white;
+        }
+        
+        .dark-mode .btn-danger:hover {
+            background: #c0392b;
+            color: white;
+        }
+        
         .btn-warning {
             background: var(--warning-color);
             color: white;
@@ -315,12 +346,32 @@
             color: white;
         }
         
+        .dark-mode .btn-warning {
+            background: #f39c12;
+            color: white;
+        }
+        
+        .dark-mode .btn-warning:hover {
+            background: #e67e22;
+            color: white;
+        }
+        
         .btn-info {
             background: var(--info-color);
             color: white;
         }
         
         .btn-info:hover {
+            background: #2980b9;
+            color: white;
+        }
+        
+        .dark-mode .btn-info {
+            background: #3498db;
+            color: white;
+        }
+        
+        .dark-mode .btn-info:hover {
             background: #2980b9;
             color: white;
         }
@@ -683,6 +734,18 @@
             box-shadow: 0 4px 12px rgba(42, 82, 152, 0.3);
         }
         
+        .dark-mode #restore-data {
+            background: #2a5298;
+            color: white;
+        }
+        
+        .dark-mode #restore-data:hover {
+            background: #1e3c72;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(42, 82, 152, 0.3);
+        }
+        
         .modal {
             display: none;
             position: fixed;
@@ -742,6 +805,32 @@
         
         .form-row .form-group {
             flex: 1;
+        }
+        
+        .quick-lot-btn {
+            padding: 6px 12px;
+            background: var(--info-color);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.3s;
+        }
+
+        .quick-lot-btn:hover {
+            background: var(--primary-color);
+            transform: translateY(-2px);
+        }
+        
+        .dark-mode .quick-lot-btn {
+            background: #4aa0e6;
+            color: white;
+        }
+
+        .dark-mode .quick-lot-btn:hover {
+            background: #5a8be9;
+            transform: translateY(-2px);
         }
         
         @media (max-width: 1200px) {
@@ -1088,22 +1177,6 @@
             gap: 8px;
             margin-top: 8px;
             flex-wrap: wrap;
-        }
-
-        .quick-lot-btn {
-            padding: 6px 12px;
-            background: var(--info-color);
-            color: white;
-            border: none;
-            border-radius: 15px;
-            cursor: pointer;
-            font-size: 0.8rem;
-            transition: all 0.3s;
-        }
-
-        .quick-lot-btn:hover {
-            background: var(--primary-color);
-            transform: translateY(-2px);
         }
 
         .pip-explanation {
