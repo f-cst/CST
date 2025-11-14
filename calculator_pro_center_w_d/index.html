@@ -633,7 +633,7 @@
   border-color: #64748b !important;
 }
 
-/* استایل برای اعلان‌های toast */
+/* استایل برای اعلان‌های toast - یکسان با افکت کپی */
 .toast-notification {
   position: fixed;
   top: 20px;
@@ -648,7 +648,7 @@
   max-width: 90vw;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   opacity: 0;
-  transform: translateX(-50%) translateY(-20px);
+  transform: translateX(-50%) translateY(-20px) scale(0.9);
   transition: all 0.3s ease;
   display: flex;
   align-items: center;
@@ -658,7 +658,7 @@
 
 .toast-notification.show {
   opacity: 1;
-  transform: translateX(-50%) translateY(0);
+  transform: translateX(-50%) translateY(0) scale(1);
 }
 
 .toast-success {
@@ -1080,7 +1080,7 @@
     /* ---------- UI utils ---------- */
     function safeForEach(arr, fn){ if(!Array.isArray(arr)) return; arr.forEach(fn); }
 
-    // ---------- تابع اعلان toast زیبا ----------
+    // ---------- تابع اعلان toast زیبا - با افکت bounce یکسان با کپی ----------
     function showToast(message, type = 'success') {
       const container = $('toast_container');
       if (!container) return;
@@ -1100,13 +1100,17 @@
       
       container.appendChild(toast);
 
-      // نمایش انیمیشن
-      setTimeout(() => toast.classList.add('show'), 100);
+      // نمایش انیمیشن با bounce
+      setTimeout(() => {
+        toast.classList.add('show');
+        toast.classList.add('animate-bounce'); // افکت bounce اضافه شد
+      }, 100);
 
       // حذف بعد از 3 ثانیه
       setTimeout(() => {
         if (toast.classList.contains('show')) {
           toast.classList.remove('show');
+          toast.classList.remove('animate-bounce'); // حذف افکت bounce
           setTimeout(() => toast.remove(), 300);
         }
       }, 3000);
