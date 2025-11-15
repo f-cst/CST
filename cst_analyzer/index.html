@@ -352,7 +352,7 @@
     min-width: auto;
   }
   
-  #alertModal, #statsModal, #editModal, #moveModal {
+  #alertModal, #statsModal, #editModal, #moveModal, #guideModal {
     position: fixed;
     left: 50%;
     top: 50%;
@@ -530,6 +530,31 @@
   
   .card[draggable="true"] .chart-wrapper .chart-container {
     pointer-events: auto; /* چارت مستقل */
+  }
+
+  /* استایل جدید برای آیکون راهنما */
+  .guide-icon {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: var(--accent-color);
+    color: #021;
+    border: none;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 1rem;
+    z-index: 105;
+    transition: all 0.2s;
+  }
+
+  .guide-icon:hover {
+    background: #0d9488;
+    transform: scale(1.1);
   }
   
   @media (max-width: 768px) {
@@ -876,18 +901,25 @@
             <strong>خلاصه بازه انتخابی (از جدیدترین روز):</strong>
             <div id="summaryText"></div>
           </div>
+          <!-- باکس نمایش اطلاعات بصورت اعداد (جدول) -->
           <div class="history-table-container" id="tableContainer">
             <table id="summaryTable"><thead><tr>
               <th>ردیف</th><th>تاریخ</th><th>High</th><th>Low</th><th>Mid</th><th>زاویه</th><th>تحلیل ۵‌روزه</th><th>عملیات</th>
             </tr></thead><tbody></tbody></table>
           </div>
+          <!-- باکس نمودار میله‌ای -->
           <div class="chart-wrapper">
             <div class="small" style="margin-bottom: 8px; text-align: center; color: var(--text-secondary);">💡 برای تنظیم سطح، خط افقی را با موس جابجا کنید (بالا/پایین بکشید) — نمودار میله‌ای: هر روز یک میله بر اساس تفاوت زاویه نسبت به روز قبل (بالا=بیشتر، پایین=کمتر)</div>
+            <div class="flex items-center justify-between mb-2">
+              <span></span> <!-- فضای خالی برای تراز -->
+              <button class="guide-icon" onclick="openGuideModal()" title="راهنمای چارت میله‌ای">❓</button>
+            </div>
             <div class="chart-container bar-chart-isolated">
               <canvas id="angleBarChart"></canvas>
               <div id="horizontalLineContainerBar" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 5;"></div>
             </div>
           </div>
+          <!-- باکس نمودار هندسی (Mid Chart) -->
           <div class="chart-wrapper">
             <div class="small" style="margin-bottom: 8px; text-align: center; color: var(--text-secondary);">💡 خط افقی با همون دقت برای مقایسه Midها</div>
             <div class="chart-container">
@@ -909,8 +941,8 @@
         <div id="daysRangeSection">
           <div class="form-group">
             <label>بازهٔ تحلیل (تعداد روز از جدیدترین)</label>
-            <input id="analysisDays" type="number" min="2" max="1000" value="5">
-            <div class="small">پیش‌فرض = 5 روز. برای مثال 7 یا 17 وارد کن و سپس «نمایش تاریخچه و تحلیل» را بزن.</div>
+            <input id="analysisDays" type="number" min="2" max="3650" value="5"> <!-- افزایش max به 3650 برای پشتیبانی ماهانه/سالانه -->
+            <div class="small">پیش‌فرض = 5 روز. برای مثال 30 (ماهیانه) یا 365 (سالانه) وارد کن و سپس «نمایش تاریخچه و تحلیل» را بزن.</div>
           </div>
           
           <div class="btn-group">
@@ -1033,7 +1065,7 @@
     <ul>
       <li><strong>ذخیره‌سازی نامحدود:</strong> همه داده‌ها به طور دائمی حفظ می‌شوند (حتی تاریخ‌های قدیمی)</li>
       <li><strong>حذف دستی:</strong> فقط از طریق بخش "مدیریت پیشرفته داده‌ها" می‌توانید رکوردهای قدیمی را حذف کنید</li>
-      <li>تحلیل زاویه بر اساس Mid هر روز انجام می‌شود (Mid = (High+Low)/2). پیش‌فرض نمایش تحلیل برای هر جفت ۵ روزه است اما می‌توانی عدد دلخواه 2..1000 وارد کنی.</li>
+      <li>تحلیل زاویه بر اساس Mid هر روز انجام می‌شود (Mid = (High+Low)/2). پیش‌فرض نمایش تحلیل برای هر جفت ۵ روزه است اما می‌توانی عدد دلخواه 2..3650 وارد کنی (حتی سالانه).</li>
     </ul>
   </div>
 
@@ -1044,6 +1076,14 @@
   <div id="statsContent" style="margin-bottom:10px;color:#e6eef8"></div>
   <div class="btn-group">
     <button id="closeStatsBtn">بستن</button>
+  </div>
+</div>
+
+<div id="guideModal">
+  <h3>📖 راهنمای چارت میله‌ای زاویه روند</h3>
+  <div id="guideContent" style="margin-bottom:10px;color:#e6eef8; white-space: pre-line;"></div>
+  <div class="btn-group">
+    <button onclick="closeGuideModal()">بستن</button>
   </div>
 </div>
 
@@ -1103,6 +1143,18 @@ let store = { symbols: {}, symbolOrder: [] };
 let sectionsOrder = [1, 2, 3, 4]; // ترتیب پیش‌فرض
 let lastAlertShownAt = 0;
 const ALERT_THROTTLE_MS = 3000;
+
+// متن راهنما
+const GUIDE_TEXT = `### راهنمای سریع چارت میله‌ای زاویه روند (CST Analyzer)
+
+**چی نشون می‌ده؟** هر میله یک "روز" رو نمایش می‌ده و ارتفاعش **تفاوت زاویه شیب قیمت (Mid)** نسبت به روز قبله. زاویه بر اساس ΔMid (تفاوت میانگین High/Low) محاسبه می‌شه: مثبت=صعودی، منفی=نزولی.
+
+**رنگ و معنی:**
+- **سبز بلند:** زاویه قوی‌تر شده (روند شتاب گرفته، مثل breakout صعودی) → فرصت خرید؟
+- **قرمز بلند:** زاویه ضعیف‌تر یا معکوس (اصلاح/تغییر روند) → هشدار فروش یا صبر.
+- **صفر/کوچک (خاکستری):** روند ثابت یا فشردگی → منتظر شکست باش.
+
+**نکات استفاده:** Hover کن تا "تفاوت" و "زاویه امروز" رو ببینی. خط افقی رو بکش برای مقایسه سطوح. اگر میله‌های قرمز/سبز بزرگ دیدی، چک کن تحلیل ۵‌روزه رو – احتمال تغییر روند زیاده! 🚀`;
 
 // ---------- Drag & Drop برای جفت‌ارزها ----------
 function refreshSymbolsList(){
@@ -1376,7 +1428,7 @@ function renderSummaryForRange(symName, isDaysRange = true, requestedDays = 5, s
   let displayHist, angles, analysis;
 
   if (isDaysRange) {
-    displayHist = hist.slice(-requestedDays);
+    displayHist = hist.slice(-requestedDays); // پشتیبانی از بازه‌های بزرگ (مثل 30+ روز)
     const mids = displayHist.map(h => h.mid);
     analysis = analyzeAnglesFor(mids, requestedDays);
     angles = analysis.angles;
@@ -1407,7 +1459,7 @@ function renderSummaryForRange(symName, isDaysRange = true, requestedDays = 5, s
     (تعداد داده‌ها: ${displayHist.length})</div>
   `;
 
-  // جدول
+  // باکس نمایش اطلاعات بصورت اعداد (جدول)
   tableBody.innerHTML = '';
   for (let i = displayHist.length - 1; i >= 0; i--) {
     const r = displayHist[i];
@@ -1436,7 +1488,7 @@ function renderSummaryForRange(symName, isDaysRange = true, requestedDays = 5, s
     tableBody.appendChild(row);
   }
 
-  // Event listeners
+  // Event listeners for table
   tableBody.querySelectorAll('.edit-btn').forEach(btn => btn.addEventListener('click', () => openEditModal(symName, parseInt(btn.dataset.idx))));
   tableBody.querySelectorAll('.del-btn').forEach(btn => btn.addEventListener('click', () => {
     if (!confirm('آیا می‌خواهی این رکورد حذف شود؟')) return;
@@ -1448,7 +1500,7 @@ function renderSummaryForRange(symName, isDaysRange = true, requestedDays = 5, s
   }));
   tableBody.querySelectorAll('.move-btn').forEach(btn => btn.addEventListener('click', () => openMoveModal(symName, parseInt(btn.dataset.idx))));
 
-  // Bar Chart: هر روز یک میله بر اساس تفاوت زاویه نسبت به روز قبل (خام، بدون scaling - مثبت/منفی)
+  // باکس نمودار میله‌ای: هر روز یک میله بر اساس تفاوت زاویه نسبت به روز قبل (خام، بدون scaling - مثبت/منفی)
   const displayDates = displayHist.map(h => h.date).slice(1); // از دومین تاریخ (تعداد میله‌ها = تعداد زاویه‌ها)
   
   // محاسبه diffAngles: تفاوت هر زاویه با قبلی (برای هر روز جز اولین)
@@ -1524,7 +1576,7 @@ function renderSummaryForRange(symName, isDaysRange = true, requestedDays = 5, s
     }
   });
 
-  // Line Chart برای Mid
+  // باکس نمودار هندسی (Line Chart برای Mid)
   const chartLabels = displayHist.map(h => h.date);
   const chartMids = displayHist.map(h => h.mid);
   const ctx = document.getElementById('midChart').getContext('2d');
@@ -1560,6 +1612,18 @@ function renderSummaryForRange(symName, isDaysRange = true, requestedDays = 5, s
 
   summaryDiv.style.display = 'block';
   setupTableDragScroll(); // تنظیم اسکرول drag
+}
+
+// تابع باز کردن modal راهنما
+function openGuideModal() {
+  document.getElementById('guideContent').innerHTML = GUIDE_TEXT;
+  document.getElementById('modalBg').style.display = 'block';
+  document.getElementById('guideModal').style.display = 'block';
+}
+
+function closeGuideModal() {
+  document.getElementById('guideModal').style.display = 'none';
+  document.getElementById('modalBg').style.display = 'none';
 }
 
 // تابع cleanup handlerهای قبلی
