@@ -882,15 +882,17 @@
             </tr></thead><tbody></tbody></table>
           </div>
           <div class="chart-wrapper">
-            <div class="small" style="margin-bottom: 8px; text-align: center; color: var(--text-secondary);">💡 برای تنظیم سطح، خط افقی را با موس جابجا کنید (بالا/پایین بکشید)</div>
+            <div class="small" style="margin-bottom: 8px; text-align: center; color: var(--text-secondary);">💡 برای تنظیم سطح، خط افقی را با موس جابجا کنید (بالا/پایین بکشید) — نمودار میله‌ای: هر روز یک میله بر اساس تفاوت زاویه نسبت به روز قبل (بالا=بیشتر، پایین=کمتر)</div>
             <div class="chart-container bar-chart-isolated">
               <canvas id="angleBarChart"></canvas>
-              <div id="horizontalLineContainer" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 5;"></div>
+              <div id="horizontalLineContainerBar" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 5;"></div>
             </div>
           </div>
           <div class="chart-wrapper">
+            <div class="small" style="margin-bottom: 8px; text-align: center; color: var(--text-secondary);">💡 خط افقی با همون دقت برای مقایسه Midها</div>
             <div class="chart-container">
               <canvas id="midChart"></canvas>
+              <div id="horizontalLineContainerLine" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 5;"></div>
             </div>
           </div>
         </div>
@@ -1027,10 +1029,10 @@
   </div>
 
   <div class="card small">
-    <strong>یادداشت‌ها:</strong>
+    <strong>‌ ‌یادداشت‌ها:</strong>
     <ul>
-      <li>✅ <strong>ذخیره‌سازی نامحدود:</strong> همه داده‌ها به طور دائمی حفظ می‌شوند (حتی تاریخ‌های قدیمی)</li>
-      <li>✅ <strong>حذف دستی:</strong> فقط از طریق بخش "مدیریت پیشرفته داده‌ها" می‌توانید رکوردهای قدیمی را حذف کنید</li>
+      <li><strong>ذخیره‌سازی نامحدود:</strong> همه داده‌ها به طور دائمی حفظ می‌شوند (حتی تاریخ‌های قدیمی)</li>
+      <li><strong>حذف دستی:</strong> فقط از طریق بخش "مدیریت پیشرفته داده‌ها" می‌توانید رکوردهای قدیمی را حذف کنید</li>
       <li>تحلیل زاویه بر اساس Mid هر روز انجام می‌شود (Mid = (High+Low)/2). پیش‌فرض نمایش تحلیل برای هر جفت ۵ روزه است اما می‌توانی عدد دلخواه 2..1000 وارد کنی.</li>
     </ul>
   </div>
@@ -1101,73 +1103,6 @@ let store = { symbols: {}, symbolOrder: [] };
 let sectionsOrder = [1, 2, 3, 4]; // ترتیب پیش‌فرض
 let lastAlertShownAt = 0;
 const ALERT_THROTTLE_MS = 3000;
-
-// Global state for line drag - برای جلوگیری از duplicate listenerها
-let isDraggingLine = false;
-let startY = 0;
-let startTop = 50;
-let currentLineWrapper = null;
-let chartContainer = null;
-
-// Global handlers برای drag - فقط یکبار اضافه می‌شن
-let globalMouseMoveHandler;
-let globalMouseUpHandler;
-
-function sanitizeAndMigrateStore(data) {
-    if (!data.symbols) data.symbols = {};
-    if (!data.symbolOrder || !Array.isArray(data.symbolOrder)) {
-        data.symbolOrder = Object.keys(data.symbols);
-    } else {
-        const symbolKeys = new Set(Object.keys(data.symbols));
-        data.symbolOrder = data.symbolOrder.filter(s => symbolKeys.has(s));
-        symbolKeys.forEach(s => {
-            if (!data.symbolOrder.includes(s)) {
-                data.symbolOrder.push(s);
-            }
-        });
-    }
-    return data;
-}
-
-function loadStore(){
-  let s;
-  try {
-    s = localStorage.getItem(STORAGE_KEY);
-    if(s) s = JSON.parse(s);
-    else s = { symbols: {}, symbolOrder: [] };
-  } catch(e){
-    console.error(e);
-    s = { symbols: {}, symbolOrder: [] };
-  }
-  store = sanitizeAndMigrateStore(s);
-}
-
-function saveStore(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(store)); }
-
-function loadSectionsOrder() {
-  try {
-    const saved = localStorage.getItem(SECTIONS_ORDER_KEY);
-    if (saved) sectionsOrder = JSON.parse(saved);
-  } catch (e) {
-    console.error(e);
-  }
-}
-
-function saveSectionsOrder() {
-  localStorage.setItem(SECTIONS_ORDER_KEY, JSON.stringify(sectionsOrder));
-}
-
-function saveSectionOpenState(sectionId, isOpen) {
-  localStorage.setItem(SECTION_OPEN_KEY + sectionId, isOpen ? 'open' : 'closed');
-}
-
-function loadSectionOpenState(sectionId) {
-  try {
-    return localStorage.getItem(SECTION_OPEN_KEY + sectionId) === 'open';
-  } catch (e) {
-    return false;
-  }
-}
 
 // ---------- Drag & Drop برای جفت‌ارزها ----------
 function refreshSymbolsList(){
@@ -1513,8 +1448,30 @@ function renderSummaryForRange(symName, isDaysRange = true, requestedDays = 5, s
   }));
   tableBody.querySelectorAll('.move-btn').forEach(btn => btn.addEventListener('click', () => openMoveModal(symName, parseInt(btn.dataset.idx))));
 
-  // Bar Chart برای زاویه‌ها
-  const displayDates = displayHist.map(h => h.date).slice(0, -1); // Dates for intervals
+  // Bar Chart: هر روز یک میله بر اساس تفاوت زاویه نسبت به روز قبل (خام، بدون scaling - مثبت/منفی)
+  const displayDates = displayHist.map(h => h.date).slice(1); // از دومین تاریخ (تعداد میله‌ها = تعداد زاویه‌ها)
+  
+  // محاسبه diffAngles: تفاوت هر زاویه با قبلی (برای هر روز جز اولین)
+  const diffAngles = [];
+  const absoluteAnglesForTooltip = []; // زاویه مطلق برای tooltip
+  if (angles.length > 0) {
+    // اولین میله: زاویه مطلق (base)
+    diffAngles.push(angles[0]);
+    absoluteAnglesForTooltip.push(angles[0]);
+    // بقیه: تفاوت
+    for (let i = 1; i < angles.length; i++) {
+      const diff = angles[i] - angles[i - 1];
+      diffAngles.push(diff);
+      absoluteAnglesForTooltip.push(angles[i]);
+    }
+  } else {
+    diffAngles.push(0);
+    absoluteAnglesForTooltip.push(0);
+  }
+
+  // محاسبه maxAbs برای symmetric scale (از -maxAbs تا +maxAbs)
+  const maxAbsDiff = Math.max(...diffAngles.map(Math.abs), 1); // حداقل 1 برای جلوگیری از صفر
+
   const ctxBar = document.getElementById('angleBarChart').getContext('2d');
   if (window._barChart) window._barChart.destroy();
   window._barChart = new Chart(ctxBar, {
@@ -1522,21 +1479,41 @@ function renderSummaryForRange(symName, isDaysRange = true, requestedDays = 5, s
     data: {
       labels: displayDates,
       datasets: [{
-        label: 'زاویه (درجه)',
-        data: angles,
-        backgroundColor: angles.map(ang => ang > 0 ? 'rgba(16, 185, 129, 0.6)' : 'rgba(239, 68, 68, 0.6)'),
-        borderColor: angles.map(ang => ang > 0 ? '#10b981' : '#ef4444'),
+        label: 'تفاوت زاویه نسبت به روز قبل (درجه)',
+        data: diffAngles,
+        backgroundColor: diffAngles.map(diff => diff > 0 ? 'rgba(16, 185, 129, 0.6)' : (diff < 0 ? 'rgba(239, 68, 68, 0.6)' : 'rgba(156, 163, 175, 0.6)')),
+        borderColor: diffAngles.map(diff => diff > 0 ? '#10b981' : (diff < 0 ? '#ef4444' : '#9ca3af')),
         borderWidth: 1
       }]
     },
     options: {
       responsive: true,
       maintainAspectRatio: false,
-      plugins: { legend: { display: false } },
+      plugins: { 
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: function(context) {
+              const idx = context.dataIndex;
+              const diff = diffAngles[idx];
+              const absAngle = absoluteAnglesForTooltip[idx];
+              return `تفاوت: ${diff.toFixed(2)}° | زاویه امروز: ${absAngle.toFixed(2)}°`;
+            }
+          }
+        }
+      },
       scales: {
         y: {
-          beginAtZero: true,
-          ticks: { color: '#9fb3c8' },
+          beginAtZero: true, // از 0 برای مقایسه آسان
+          min: -maxAbsDiff * 1.1, // symmetric: پایین تا -1.1 * max
+          max: maxAbsDiff * 1.1, // بالا تا +1.1 * max
+          ticks: { 
+            color: '#9fb3c8',
+            stepSize: Math.max(0.5, maxAbsDiff / 10), // گام کوچک برای دیدن تفاوت‌های ریز
+            callback: function(value) {
+              return value.toFixed(1); // 1 رقم اعشار برای دقت
+            }
+          },
           grid: { color: 'rgba(159, 179, 200, 0.1)' }
         },
         x: {
@@ -1573,79 +1550,103 @@ function renderSummaryForRange(symName, isDaysRange = true, requestedDays = 5, s
     }
   });
 
-  // ایجاد و تنظیم خط افقی همیشه visible
-  createDraggableHorizontalLine();
+  // Cleanup و ایجاد خط افقی برای چارت میله‌ای
+  cleanupLineHandlers('horizontalLineContainerBar');
+  createDraggableHorizontalLine('horizontalLineContainerBar', '.bar-chart-isolated canvas', true);
+
+  // Cleanup و ایجاد خط افقی برای چارت خطی (mid)
+  cleanupLineHandlers('horizontalLineContainerLine');
+  createDraggableHorizontalLine('horizontalLineContainerLine', '#midChart', false);
 
   summaryDiv.style.display = 'block';
   setupTableDragScroll(); // تنظیم اسکرول drag
 }
 
-// تابع ایجاد خط افقی draggable (همیشه visible) - با wrapper برای hit area بزرگ‌تر (20px ارتفاع)
-// listenerهای global در init اضافه می‌شن، اینجا فقط wrapper ساخته می‌شه
-function createDraggableHorizontalLine() {
-  const container = document.getElementById('horizontalLineContainer');
-  chartContainer = document.querySelector('.bar-chart-isolated');
+// تابع cleanup handlerهای قبلی
+function cleanupLineHandlers(containerId) {
+  const container = document.getElementById(containerId);
+  if (container && container.children.length > 0 && container.children[0]._localHandlers) {
+    const { localMouseMove, localMouseUp } = container.children[0]._localHandlers;
+    document.removeEventListener('mousemove', localMouseMove);
+    document.removeEventListener('mouseup', localMouseUp);
+  }
+}
+
+// تابع ایجاد خط افقی draggable (مستقل برای هر چارت) - local state برای هر instance
+function createDraggableHorizontalLine(containerId, canvasSelector, isBarChart) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+  const canvas = document.querySelector(canvasSelector);
+  if (!canvas) return;
+  const chartCont = canvas.parentElement; // parent container
   container.innerHTML = ''; // پاک کردن قبلی
 
-  // wrapper برای hit area (20px ارتفاع، نامرئی)
-  currentLineWrapper = document.createElement('div');
-  currentLineWrapper.className = 'horizontal-line-wrapper';
-  currentLineWrapper.style.top = '50%'; // موقعیت اولیه وسط چارت (مرکز wrapper روی 50%)
-  currentLineWrapper.style.transform = 'translateY(-50%)'; // مرکز wrapper دقیقاً وسط باشه
+  // wrapper برای hit area (20px ارتفاع، نامرئی) - unique per chart
+  const wrapper = document.createElement('div');
+  wrapper.className = 'horizontal-line-wrapper';
+  wrapper.style.top = '50%'; // موقعیت اولیه وسط چارت
+  wrapper.style.transform = 'translateY(-50%)';
 
   // خط اصلی داخل wrapper (1px نازک)
   const line = document.createElement('div');
   line.className = 'horizontal-line';
   line.style.position = 'absolute';
-  line.style.top = '50%'; // خط وسط wrapper
+  line.style.top = '50%';
   line.style.transform = 'translateY(-50%)';
   line.style.height = '1px';
 
   const guide = document.createElement('div');
   guide.className = 'line-guide';
-  guide.textContent = 'برای تنظیم سطح، خط افقی را با موس جابجا کنید';
+  guide.textContent = isBarChart ? 'خط میله‌ای: برای تنظیم سطح زاویه' : 'خط Mid: برای مقایسه قیمت';
   line.appendChild(guide);
 
-  currentLineWrapper.appendChild(line);
-  container.appendChild(currentLineWrapper);
+  wrapper.appendChild(line);
+  container.appendChild(wrapper);
 
-  // mousedown فقط روی wrapper - global listenerها در init
-  currentLineWrapper.addEventListener('mousedown', (e) => {
-    if (e.button !== 0) return; // فقط left click
-    e.stopPropagation(); // جلوگیری از bubble
+  // Local drag state
+  let isDragging = false;
+  let startY = 0;
+  let startTop = 50;
+
+  // Local mousedown
+  wrapper.addEventListener('mousedown', (e) => {
+    if (e.button !== 0) return;
+    e.stopPropagation();
     e.preventDefault();
-    isDraggingLine = true;
+    isDragging = true;
     startY = e.clientY;
-    startTop = parseFloat(currentLineWrapper.style.top) || 50; // درصد (از top wrapper)
-    document.body.style.userSelect = 'none'; // جلوگیری از text select
+    startTop = parseFloat(wrapper.style.top) || 50;
+    document.body.style.userSelect = 'none';
   });
-}
 
-// Global handlers برای mousemove و mouseup - فقط یکبار در init اضافه می‌شن
-function initGlobalLineHandlers() {
-  globalMouseMoveHandler = (e) => {
-    if (!isDraggingLine || !currentLineWrapper || !chartContainer) return;
+  // Local mousemove - فقط برای این wrapper
+  const localMouseMove = (e) => {
+    if (!isDragging) return;
     e.stopPropagation();
     e.preventDefault();
-    // دقت بالاتر: deltaY بر اساس ارتفاع چارت (می‌تونی ضریب کوچک‌تر کنی اگر بخوای step ریزتر، مثلاً /2)
-    const deltaY = (e.clientY - startY) / chartContainer.offsetHeight * 100;
+    const deltaY = (e.clientY - startY) / chartCont.offsetHeight * 100;
     const newTop = Math.max(0, Math.min(100, startTop + deltaY)) + '%';
-    currentLineWrapper.style.top = newTop;
+    wrapper.style.top = newTop;
   };
 
-  globalMouseUpHandler = (e) => {
-    if (!isDraggingLine) return;
+  // Local mouseup
+  const localMouseUp = (e) => {
+    if (!isDragging) return;
     e.stopPropagation();
     e.preventDefault();
-    isDraggingLine = false;
-    document.body.style.userSelect = ''; // بازگردانی
+    isDragging = false;
+    document.body.style.userSelect = '';
   };
 
-  document.addEventListener('mousemove', globalMouseMoveHandler, { passive: false });
-  document.addEventListener('mouseup', globalMouseUpHandler, { passive: false });
+  // Add listeners to document
+  document.addEventListener('mousemove', localMouseMove, { passive: false });
+  document.addEventListener('mouseup', localMouseUp, { passive: false });
+
+  // Store for cleanup
+  wrapper._localHandlers = { localMouseMove, localMouseUp };
 }
 
-// ---------- اسکرول drag برای جدول (با پشتیبانی از دابل‌کلیک سلکت) ----------
+// ---------- اسکرول drag برای جدول ----------
 function setupTableDragScroll() {
   const container = document.getElementById('tableContainer');
   let isDragging = false;
@@ -1655,7 +1656,6 @@ function setupTableDragScroll() {
   let clickTimer = null;
 
   container.addEventListener('mousedown', (e) => {
-    // Check for double-click to allow text selection
     clickCount++;
     if (clickTimer) clearTimeout(clickTimer);
     clickTimer = setTimeout(() => {
@@ -1663,7 +1663,6 @@ function setupTableDragScroll() {
     }, 300);
 
     if (clickCount >= 2 && e.detail === 2) {
-      // Double-click detected: allow selection, prevent drag
       isDragging = false;
       container.style.userSelect = 'text';
       container.style.cursor = 'text';
@@ -1680,14 +1679,14 @@ function setupTableDragScroll() {
   container.addEventListener('mouseleave', () => {
     isDragging = false;
     container.classList.remove('dragging');
-    container.style.userSelect = 'none'; // Reset after drag
+    container.style.userSelect = 'none';
     container.style.cursor = 'grab';
   });
 
   container.addEventListener('mouseup', () => {
     isDragging = false;
     container.classList.remove('dragging');
-    container.style.userSelect = 'none'; // Reset after drag
+    container.style.userSelect = 'none';
     container.style.cursor = 'grab';
   });
 
@@ -1695,11 +1694,10 @@ function setupTableDragScroll() {
     if (!isDragging) return;
     e.preventDefault();
     const x = e.pageX - container.offsetLeft;
-    const walk = (x - startX) * 2; // سرعت اسکرول
+    const walk = (x - startX) * 2;
     container.scrollLeft = scrollLeft - walk;
   });
 
-  // Allow selection on double-click
   container.addEventListener('dblclick', (e) => {
     if (window.getSelection) {
       const selection = window.getSelection();
@@ -1884,7 +1882,7 @@ document.getElementById('exportBtn').addEventListener('click', ()=>{
     const blob = new Blob([dataStr], {type:'application/json'});
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a'); a.href = url;
-    a.download = 'cst_analyzer-' + new Date().toISOString().slice(0,10) + '.json'; a.click(); URL.revokeObjectURL(url);
+    a.download = 'cست_analyzer-' + new Date().toISOString().slice(0,10) + '.json'; a.click(); URL.revokeObjectURL(url);
     showToast('✅ فایل پشتیبان با موفقیت دانلود شد!');
   } catch (e) {
     showToast('❌ خطا در دانلود فایل پشتیبان: ' + e.message, 'error');
@@ -2140,15 +2138,17 @@ window.addEventListener('resize', function() {
   if (window._chart) {
     window._chart.resize();
   }
-  // Resize خط افقی اگر لازم
-  const lineContainer = document.getElementById('horizontalLineContainer');
-  if (lineContainer.children.length > 0) {
-    const wrapper = lineContainer.children[0];
-    const chartRect = document.getElementById('angleBarChart').getBoundingClientRect();
-    wrapper.style.width = chartRect.width + 'px';
-    const line = wrapper.querySelector('.horizontal-line');
-    line.style.width = chartRect.width + 'px';
-  }
+  // Resize خط افقی‌ها
+  ['horizontalLineContainerBar', 'horizontalLineContainerLine'].forEach(id => {
+    const lineContainer = document.getElementById(id);
+    if (lineContainer && lineContainer.children.length > 0) {
+      const wrapper = lineContainer.children[0];
+      const chartRect = lineContainer.closest('.chart-container').querySelector('canvas').getBoundingClientRect();
+      wrapper.style.width = chartRect.width + 'px';
+      const line = wrapper.querySelector('.horizontal-line');
+      line.style.width = chartRect.width + 'px';
+    }
+  });
 });
 
 // تابع toggle برای collapsible sections با ذخیره state
@@ -2170,7 +2170,6 @@ function setupSectionsDragAndDrop() {
   container.querySelectorAll('.card').forEach(card => {
     card.draggable = true;
     card.addEventListener('dragstart', function(e) {
-      // فقط اگر مستقیم روی card کلیک شده، drag شروع شود
       if (e.target !== this) {
         e.preventDefault();
         return false;
@@ -2308,10 +2307,64 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   setupSectionsDragAndDrop();
-
-  // اضافه کردن global handlers برای line drag - فقط یکبار
-  initGlobalLineHandlers();
 });
+
+// Functions for store and sections (unchanged)
+function sanitizeAndMigrateStore(data) {
+    if (!data.symbols) data.symbols = {};
+    if (!data.symbolOrder || !Array.isArray(data.symbolOrder)) {
+        data.symbolOrder = Object.keys(data.symbols);
+    } else {
+        const symbolKeys = new Set(Object.keys(data.symbols));
+        data.symbolOrder = data.symbolOrder.filter(s => symbolKeys.has(s));
+        symbolKeys.forEach(s => {
+            if (!data.symbolOrder.includes(s)) {
+                data.symbolOrder.push(s);
+            }
+        });
+    }
+    return data;
+}
+
+function loadStore(){
+  let s;
+  try {
+    s = localStorage.getItem(STORAGE_KEY);
+    if(s) s = JSON.parse(s);
+    else s = { symbols: {}, symbolOrder: [] };
+  } catch(e){
+    console.error(e);
+    s = { symbols: {}, symbolOrder: [] };
+  }
+  store = sanitizeAndMigrateStore(s);
+}
+
+function saveStore(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(store)); }
+
+function loadSectionsOrder() {
+  try {
+    const saved = localStorage.getItem(SECTIONS_ORDER_KEY);
+    if (saved) sectionsOrder = JSON.parse(saved);
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+function saveSectionsOrder() {
+  localStorage.setItem(SECTIONS_ORDER_KEY, JSON.stringify(sectionsOrder));
+}
+
+function saveSectionOpenState(sectionId, isOpen) {
+  localStorage.setItem(SECTION_OPEN_KEY + sectionId, isOpen ? 'open' : 'closed');
+}
+
+function loadSectionOpenState(sectionId) {
+  try {
+    return localStorage.getItem(SECTION_OPEN_KEY + sectionId) === 'open';
+  } catch (e) {
+    return false;
+  }
+}
 </script>
 
 <div class="footer">
