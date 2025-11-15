@@ -1465,7 +1465,7 @@ document.getElementById('importFile').addEventListener('change', (e) => {
         try {
             let importedObj = JSON.parse(reader.result);
             if (!importedObj || !importedObj.symbols) {
-                alert('فایل بک‌آپ معتبر نیست یا ساختار اشتباهی دارد.');
+                alert('فایل بک‌آپ معتبر نیست یا ��اختار اشتباهی دارد.');
                 return;
             }
 
@@ -1702,36 +1702,46 @@ document.addEventListener('DOMContentLoaded', () => {
   sel.addEventListener('change', ()=>{ renderAnalysisFor(sel.value); });
   if('speechSynthesis' in window){ window.speechSynthesis.onvoiceschanged = () => {}; }
 
-  // حفظ و بازیابی موقعیت اسکرول (بهینه‌شده برای iframe)
-  const SCROLL_KEY = 'cst_scroll_position_iframe';
+  // حفظ و بازیابی موقعیت اسکرول (بهینه‌شده برای JS tabs در iframe)
+  const pageId = window.location.pathname + window.location.hash || 'default'; // key منحصربه‌فرد برای هر صفحه/iframe
+  const SCROLL_KEY = `cst_scroll_position_${btoa(pageId)}`; // encode برای key امن
   let currentScrollY = 0;
 
-  // ذخیره موقع scroll
-  window.addEventListener('scroll', () => {
+  // ذخیره موقع scroll (real-time)
+  const handleScroll = () => {
     currentScrollY = window.scrollY;
     sessionStorage.setItem(SCROLL_KEY, currentScrollY);
-  });
+  };
+  window.addEventListener('scroll', handleScroll, { passive: true });
 
-  // ذخیره موقع ترک صفحه (pagehide برای tab switching)
-  window.addEventListener('pagehide', () => {
-    sessionStorage.setItem(SCROLL_KEY, currentScrollY);
-  });
-
-  // بازیابی موقع لود یا برگشت به صفحه (pageshow)
-  function restoreScroll() {
-    const savedScroll = sessionStorage.getItem(SCROLL_KEY);
-    if (savedScroll !== null) {
-      setTimeout(() => {
-        window.scrollTo(0, parseInt(savedScroll));
-      }, 0); // setTimeout برای اطمینان از رندر کامل DOM
+  // ذخیره اضافی موقع hidden شدن (visibilitychange برای detect hide/show در JS tabs)
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'hidden') {
+      sessionStorage.setItem(SCROLL_KEY, currentScrollY);
     }
-  }
+  });
 
-  // restore موقع pageshow (وقتی از تب برمی‌گردی)
-  window.addEventListener('pageshow', restoreScroll);
+  // restore موقع visible شدن یا لود اولیه
+  const restoreScroll = () => {
+    if (document.visibilityState === 'visible') {
+      const savedScroll = sessionStorage.getItem(SCROLL_KEY);
+      if (savedScroll !== null) {
+        // کمی تاخیر برای اطمینان از رندر کامل (مخصوصاً در iframe)
+        requestAnimationFrame(() => {
+          window.scrollTo(0, parseInt(savedScroll));
+        });
+      }
+    }
+  };
 
-  // restore اولیه موقع لود
+  // restore موقع visibilitychange (وقتی tab/iframe visible می‌شه)
+  document.addEventListener('visibilitychange', restoreScroll);
+
+  // restore اولیه
   restoreScroll();
+
+  // اگر iframe reload بشه، restore بعد از لود
+  window.addEventListener('load', restoreScroll);
 });
 </script>
 
