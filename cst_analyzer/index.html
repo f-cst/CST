@@ -50,7 +50,7 @@
     border-radius: 10px;
     margin-bottom: 0;
     overflow: hidden;
-    cursor: grab;
+    cursor: default;
   }
   
   /* استایل collapsible برای هر card */
@@ -532,30 +532,80 @@
     pointer-events: auto; /* چارت مستقل */
   }
 
-  /* استایل جدید برای آیکون راهنما */
+  /* استایل فیکس‌شده برای آیکون راهنما: دایره‌ای کامل، responsive با rem، بدون کشیدگی */
   .guide-icon {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background: var(--accent-color);
-    color: #021;
-    border: none;
-    border-radius: 50%;
-    width: 30px;
-    height: 30px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    font-size: 1rem;
-    z-index: 105;
-    transition: all 0.2s;
+    position: absolute !important;
+    top: 0.625rem !important; /* 10px به rem */
+    right: 0.625rem !important; /* 10px به rem */
+
+    width: 2.125rem !important; /* 34px به rem */
+    height: 2.125rem !important; /* 34px به rem */
+    min-width: 2.125rem !important; /* جلوگیری از کوچک شدن ناخواسته */
+    max-width: 2.125rem !important; /* جلوگیری از کشیدگی در flex عریض */
+    aspect-ratio: 1/1 !important; /* همیشه مربعی/دایره‌ای */
+
+    background: var(--accent-color) !important;
+    color: #021 !important;
+    font-size: 1.1rem !important;
+    font-weight: bold !important;
+
+    border-radius: 50% !important; /* دایره کامل */
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+
+    flex-shrink: 0 !important; /* بدون کوچک شدن در flex */
+    flex-grow: 0 !important; /* بدون بزرگ شدن در flex */
+    flex-basis: auto !important;
+
+    z-index: 9999 !important;
+    cursor: pointer !important;
+    border: none !important; /* بدون border اضافی */
+    padding: 0 !important; /* بدون padding برای کنترل دقیق */
   }
 
   .guide-icon:hover {
+    transform: scale(1.10);
     background: #0d9488;
-    transform: scale(1.1);
   }
+
+  /* Responsive: اندازه‌ها با rem برای مقیاس‌پذیری بهتر، بدون کشیدگی */
+  @media (max-width: 768px) {
+    .guide-icon {
+      width: 1.75rem !important; /* 28px */
+      height: 1.75rem !important;
+      min-width: 1.75rem !important;
+      max-width: 1.75rem !important;
+      font-size: 1rem !important;
+      top: 0.5rem !important;
+      right: 0.5rem !important;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .guide-icon {
+      width: 1.5rem !important; /* 24px */
+      height: 1.5rem !important;
+      min-width: 1.5rem !important;
+      max-width: 1.5rem !important;
+      font-size: 0.9rem !important;
+      top: 0.375rem !important;
+      right: 0.375rem !important;
+    }
+  }
+
+  /* برای صفحات خیلی عریض (دسکتاپ): محدود کردن به اندازه ثابت، بدون کشیدگی */
+  @media (min-width: 1200px) {
+    .guide-icon {
+      width: 2.25rem !important; /* کمی بزرگ‌تر: 36px */
+      height: 2.25rem !important;
+      min-width: 2.25rem !important;
+      max-width: 2.25rem !important;
+      font-size: 1.2rem !important;
+    }
+  }
+
+  /* تمیز کردن media queryهای تکراری قبلی - حالا یکپارچه و بهینه */
   
   @media (max-width: 768px) {
     body {
@@ -1678,7 +1728,7 @@ function createDraggableHorizontalLine(containerId, canvasSelector, isBarChart) 
 
   // wrapper برای hit area (20px ارتفاع، نامرئی) - unique per chart
   const wrapper = document.createElement('div');
-  wrapper.className = 'horizontal-line-wrapper';
+  wrapper.className = 'horizontal-line-wrapper'; wrapper.style.pointerEvents = 'auto';
   wrapper.style.top = '50%'; // موقعیت اولیه وسط چارت
   wrapper.style.transform = 'translateY(-50%)';
 
@@ -1717,34 +1767,49 @@ function createDraggableHorizontalLine(containerId, canvasSelector, isBarChart) 
   };
   setInitialWidth();
 
+  // observe resizes to keep width in sync (use ResizeObserver if available)
+  if (typeof ResizeObserver !== 'undefined') {
+    const ro = new ResizeObserver(() => {
+      setInitialWidth();
+    });
+    ro.observe(canvas);
+  } else {
+    window.addEventListener('resize', setInitialWidth);
+  }
+
   // Local drag state
   let isDragging = false;
   let startY = 0;
   let startTop = 50;
 
-  // Local mousedown
-  wrapper.addEventListener('mousedown', (e) => {
-    if (e.button !== 0) return;
+  const getClientY = (e) => {
+    if (e.touches && e.touches.length) return e.touches[0].clientY;
+    if (e.changedTouches && e.changedTouches.length) return e.changedTouches[0].clientY;
+    return e.clientY;
+  };
+
+  // pointer start (mouse)
+  const onPointerDown = (e) => {
+    if (e.type === 'mousedown' && e.button !== 0) return;
     e.stopPropagation();
     e.preventDefault();
     isDragging = true;
-    startY = e.clientY;
+    startY = getClientY(e);
     startTop = parseFloat(wrapper.style.top) || 50;
     document.body.style.userSelect = 'none';
-  });
+  };
 
-  // Local mousemove - فقط برای این wrapper
-  const localMouseMove = (e) => {
+  const onPointerMove = (e) => {
     if (!isDragging) return;
     e.stopPropagation();
     e.preventDefault();
-    const deltaY = (e.clientY - startY) / chartCont.offsetHeight * 100;
+    const clientY = getClientY(e);
+    const deltaY = (clientY - startY) / chartCont.offsetHeight * 100;
     const newTop = Math.max(0, Math.min(100, startTop + deltaY)) + '%';
     wrapper.style.top = newTop;
   };
 
-  // Local mouseup
-  const localMouseUp = (e) => {
+  const onPointerUp = (e) => {
     if (!isDragging) return;
     e.stopPropagation();
     e.preventDefault();
@@ -1752,12 +1817,18 @@ function createDraggableHorizontalLine(containerId, canvasSelector, isBarChart) 
     document.body.style.userSelect = '';
   };
 
-  // Add listeners to document
-  document.addEventListener('mousemove', localMouseMove, { passive: false });
-  document.addEventListener('mouseup', localMouseUp, { passive: false });
+  // Mouse events
+  wrapper.addEventListener('mousedown', onPointerDown, { passive: false });
+  document.addEventListener('mousemove', onPointerMove, { passive: false });
+  document.addEventListener('mouseup', onPointerUp, { passive: false });
 
-  // Store for cleanup
-  wrapper._localHandlers = { localMouseMove, localMouseUp };
+  // Touch events
+  wrapper.addEventListener('touchstart', onPointerDown, { passive: false });
+  document.addEventListener('touchmove', onPointerMove, { passive: false });
+  document.addEventListener('touchend', onPointerUp, { passive: false });
+
+  // Store handlers for cleanup if needed
+  wrapper._localHandlers = { onPointerMove, onPointerUp, onPointerDown };
 }
 
 // ---------- اسکرول drag برای جدول ----------
@@ -2283,101 +2354,7 @@ function toggleSection(sectionId) {
   }
 }
 
-// ---------- Drag & Drop برای بخش‌ها ----------
-function setupSectionsDragAndDrop() {
-  const container = document.getElementById('sectionsContainer');
-  let draggedItem = null;
-  let placeholder = null;
-
-  container.querySelectorAll('.card').forEach(card => {
-    card.draggable = true;
-    card.addEventListener('dragstart', function(e) {
-      if (e.target !== this) {
-        e.preventDefault();
-        return false;
-      }
-      draggedItem = this;
-      this.classList.add('dragging');
-      
-      placeholder = document.createElement('div');
-      placeholder.className = 'section-placeholder';
-      placeholder.style.height = this.offsetHeight + 'px';
-      placeholder.style.border = '2px dashed var(--accent-color)';
-      placeholder.style.borderRadius = '10px';
-      placeholder.style.background = 'transparent';
-      this.parentNode.insertBefore(placeholder, this.nextSibling);
-      
-      e.dataTransfer.effectAllowed = 'move';
-      e.dataTransfer.setData('text/plain', this.dataset.section);
-    });
-
-    card.addEventListener('dragend', function() {
-      this.classList.remove('dragging');
-      
-      if (placeholder && placeholder.parentNode) {
-        placeholder.parentNode.removeChild(placeholder);
-      }
-      
-      draggedItem = null;
-      placeholder = null;
-      
-      updateSectionsOrderFromDOM();
-    });
-  });
-
-  container.addEventListener('dragover', function(e) {
-    e.preventDefault();
-    if (!draggedItem) return;
-    
-    const afterElement = getDragAfterElement(container, e.clientY);
-    
-    if (afterElement == null) {
-      container.appendChild(placeholder);
-    } else {
-      container.insertBefore(placeholder, afterElement);
-    }
-  });
-
-  container.addEventListener('drop', function(e) {
-    e.preventDefault();
-    if (!draggedItem) return;
-    
-    if (placeholder && placeholder.parentNode) {
-      container.insertBefore(draggedItem, placeholder);
-      placeholder.parentNode.removeChild(placeholder);
-    }
-    
-    draggedItem.classList.remove('dragging');
-    draggedItem = null;
-    placeholder = null;
-    
-    updateSectionsOrderFromDOM();
-  });
-}
-
-function getDragAfterElement(container, y) {
-  const draggableElements = [...container.querySelectorAll('.card:not(.dragging)')];
-  
-  return draggableElements.reduce((closest, child) => {
-    const box = child.getBoundingClientRect();
-    const offset = y - box.top - box.height / 2;
-    
-    if (offset < 0 && offset > closest.offset) {
-      return { offset: offset, element: child };
-    } else {
-      return closest;
-    }
-  }, { offset: Number.NEGATIVE_INFINITY }).element;
-}
-
-function updateSectionsOrderFromDOM() {
-  const container = document.getElementById('sectionsContainer');
-  sectionsOrder = Array.from(container.querySelectorAll('.card'))
-    .map(card => parseInt(card.dataset.section));
-  
-  saveSectionsOrder();
-}
-
+// Drag & Drop برای cardها حذف شد — فقط جفت‌ارزها (chips) دست نخورده‌اند.
 // ---------- init ----------
 document.addEventListener('DOMContentLoaded', () => {
   loadStore();
@@ -2427,8 +2404,6 @@ document.addEventListener('DOMContentLoaded', () => {
       card.querySelector('.collapsible-content').style.display = 'none';
     }
   });
-
-  setupSectionsDragAndDrop();
 });
 
 // Functions for store and sections (unchanged)
