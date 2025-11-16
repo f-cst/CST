@@ -532,11 +532,11 @@
     pointer-events: auto; /* چارت مستقل */
   }
 
-  /* استایل فیکس‌شده برای آیکون راهنما: دایره‌ای کامل، responsive با rem، بدون کشیدگی */
+  /* استایل فیکس‌شده برای آیکون راهنما: دایره‌ای کامل، responsive با rem، بدون کشیدگی، و بدون تداخل با متن */
   .guide-icon {
     position: absolute !important;
-    top: 0.625rem !important; /* 10px به rem */
-    right: 0.625rem !important; /* 10px به rem */
+    top: 1rem !important; /* 16px (padding chart-wrapper) + کمی حاشیه */
+    right: 1rem !important;
 
     width: 2.125rem !important; /* 34px به rem */
     height: 2.125rem !important; /* 34px به rem */
@@ -562,6 +562,9 @@
     cursor: pointer !important;
     border: none !important; /* بدون border اضافی */
     padding: 0 !important; /* بدون padding برای کنترل دقیق */
+
+    /* فیکس تداخل: margin-bottom برای متن زیر دکمه */
+    margin-bottom: 2.5rem !important; /* ارتفاع دکمه + حاشیه */
   }
 
   .guide-icon:hover {
@@ -569,7 +572,7 @@
     background: #0d9488;
   }
 
-  /* Responsive: اندازه‌ها با rem برای مقیاس‌پذیری بهتر، بدون کشیدگی */
+  /* Responsive: اندازه‌ها با rem برای مقیاس‌پذیری بهتر، بدون کشیدگی و تداخل */
   @media (max-width: 768px) {
     .guide-icon {
       width: 1.75rem !important; /* 28px */
@@ -577,8 +580,18 @@
       min-width: 1.75rem !important;
       max-width: 1.75rem !important;
       font-size: 1rem !important;
-      top: 0.5rem !important;
-      right: 0.5rem !important;
+      top: 0.75rem !important;
+      right: 0.75rem !important;
+      margin-bottom: 2rem !important; /* تنظیم برای موبایل */
+    }
+
+    /* فیکس متن: wrap و کوچک‌تر در عرض کم */
+    .chart-wrapper .small {
+      font-size: 0.75rem !important;
+      line-height: 1.3 !important;
+      word-break: break-word !important;
+      overflow-wrap: break-word !important;
+      padding-right: 3rem !important; /* فضای خالی برای دکمه */
     }
   }
 
@@ -589,8 +602,14 @@
       min-width: 1.5rem !important;
       max-width: 1.5rem !important;
       font-size: 0.9rem !important;
-      top: 0.375rem !important;
-      right: 0.375rem !important;
+      top: 0.5rem !important;
+      right: 0.5rem !important;
+      margin-bottom: 1.75rem !important;
+    }
+
+    .chart-wrapper .small {
+      font-size: 0.7rem !important;
+      padding-right: 2.5rem !important;
     }
   }
 
@@ -602,10 +621,17 @@
       min-width: 2.25rem !important;
       max-width: 2.25rem !important;
       font-size: 1.2rem !important;
+      margin-bottom: 3rem !important;
     }
   }
 
-  /* تمیز کردن media queryهای تکراری قبلی - حالا یکپارچه و بهینه */
+  /* فیکس کلی برای متن توضیح: همیشه فضای کافی برای دکمه */
+  .chart-wrapper .small[style*="text-align: center"] {
+    padding-right: 3rem !important;
+    margin-bottom: 1rem !important;
+    word-break: break-word !important;
+    overflow-wrap: break-word !important;
+  }
   
   @media (max-width: 768px) {
     body {
@@ -959,11 +985,9 @@
           </div>
           <!-- باکس نمودار میله‌ای -->
           <div class="chart-wrapper">
-            <div class="small" style="margin-bottom: 8px; text-align: center; color: var(--text-secondary);">💡 برای تنظیم سطح، خط افقی را با موس جابجا کنید (بالا/پایین بکشید) — نمودار میله‌ای: هر روز یک میله بر اساس تفاوت زاویه نسبت به روز قبل (بالا=بیشتر، پایین=کمتر)</div>
-            <div class="flex items-center justify-between mb-2">
-              <span></span> <!-- فضای خالی برای تراز -->
-              <button class="guide-icon" onclick="openGuideModal()" title="راهنمای چارت میله‌ای">❓</button>
-            </div>
+            <div class="small" style="margin-bottom: 8px; text-align: center; color: var(--text-secondary);">💡 برای تنظیم سطح، خط افقی را می‌توانید جابجا کنید (بالا/پایین بکشید) — نمودار میله‌ای: هر روز یک میله بر اساس تفاوت زاویه نسبت به روز قبل (بالا=بیشتر، پایین=کمتر)</div>
+            <!-- حذف div flex - حالا دکمه مستقیم absolute نسبت به chart-wrapper -->
+            <button class="guide-icon" onclick="openGuideModal()" title="راهنمای چارت میله‌ای">❓</button>
             <div class="chart-container bar-chart-isolated">
               <canvas id="angleBarChart"></canvas>
               <div id="horizontalLineContainerBar" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 5;"></div>
