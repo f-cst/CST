@@ -16,28 +16,27 @@
     .display-scroll::-webkit-scrollbar {
       height: 6px;
     }
-    
+
     .display-scroll::-webkit-scrollbar-track {
       background: #1F2937;
       border-radius: 3px;
     }
-    
+
     .display-scroll::-webkit-scrollbar-thumb {
       background: #4B5563;
       border-radius: 3px;
     }
-    
+
     .display-scroll::-webkit-scrollbar-thumb:hover {
       background: #6B7280;
     }
-    
-    /* انیمیشن برای نمایشگر ماشین حساب */
+
     @keyframes pulse-glow {
       0% { box-shadow: 0 0 5px rgba(59, 130, 246, 0.5); }
       50% { box-shadow: 0 0 15px rgba(59, 130, 246, 0.8); }
       100% { box-shadow: 0 0 5px rgba(59, 130, 246, 0.5); }
     }
-    
+
     .active-input {
       animation: pulse-glow 2s infinite;
     }
@@ -79,32 +78,18 @@
     }
 
     @media only screen and (max-width: 768px) {
-      .title-box {
-        font-size: 20px;
-        padding: 15px;
-      }
-      .signature {
-        font-size: 14px;
-        padding: 15px;
-      }
+      .title-box { font-size: 20px; padding: 15px; }
+      .signature { font-size: 14px; padding: 15px; }
     }
 
     @media only screen and (max-width: 480px) {
-      .title-box {
-        font-size: 18px;
-        padding: 13px;
-      }
-      .signature {
-        font-size: 12px;
-        padding: 13px;
-      }
+      .title-box { font-size: 18px; padding: 13px; }
+      .signature { font-size: 12px; padding: 13px; }
     }
   </style>
 </head>
 <body class="bg-gray-900 text-white flex flex-col items-center justify-center min-h-screen p-4">
 
-
-  <!-- بخش ماشین حساب -->
   <div class="bg-gray-800 p-6 rounded-lg border border-gray-700 w-full max-w-md">
     
     <!-- نمایشگر ماشین حساب -->
@@ -112,14 +97,21 @@
       <div id="calcHistory" class="text-right text-sm text-gray-400 h-6 overflow-x-auto display-scroll whitespace-nowrap mb-1"></div>
       <div id="calcDisplay" class="text-right text-2xl font-mono h-8 overflow-x-auto display-scroll whitespace-nowrap">0</div>
     </div>
-    
+
     <!-- دکمه‌های ماشین حساب -->
     <div class="grid grid-cols-4 gap-2 mb-4">
+
+      <!-- ردیف جدید: سه دکمه علمی اضافه شده -->
+      <button class="calc-btn bg-indigo-600 hover:bg-indigo-700 p-2 rounded text-sm font-medium" data-value="sqrt">√x</button>
+      <button class="calc-btn bg-indigo-600 hover:bg-indigo-700 p-2 rounded text-sm font-medium" data-value="square">x²</button>
+      <button class="calc-btn bg-indigo-600 hover:bg-indigo-700 p-2 rounded text-sm font-medium" data-value="reciprocal">1/x</button>
       <button class="calc-btn bg-red-600 hover:bg-red-700 p-2 rounded" data-value="C">C</button>
+
       <button class="calc-btn bg-gray-700 hover:bg-gray-600 p-2 rounded" data-value="CE">CE</button>
       <button class="calc-btn bg-gray-700 hover:bg-gray-600 p-2 rounded" data-value="backspace">
         <i class="fas fa-backspace"></i>
       </button>
+      <button class="calc-btn bg-gray-700 hover:bg-gray-600 p-2 rounded text-sm" data-value="percent">%</button>
       <button class="calc-btn bg-amber-600 hover:bg-amber-700 p-2 rounded" data-value="/">÷</button>
       
       <button class="calc-btn bg-gray-700 hover:bg-gray-600 p-2 rounded" data-value="7">7</button>
@@ -141,21 +133,18 @@
       <button class="calc-btn bg-gray-700 hover:bg-gray-600 p-2 rounded" data-value=".">.</button>
       <button class="calc-btn bg-green-600 hover:bg-green-700 p-2 rounded" data-value="=">=</button>
     </div>
-    
+
     <!-- تاریخچه محاسبات -->
     <div class="bg-gray-700 p-3 rounded">
       <h3 class="font-semibold mb-2 flex justify-between items-center">
         <span>تاریخچه محاسبات</span>
         <button id="clearHistory" class="text-xs bg-red-600 hover:bg-red-700 px-2 py-1 rounded">پاک کردن</button>
       </h3>
-      <div id="historyList" class="max-h-32 overflow-y-auto text-sm space-y-1">
-        <!-- تاریخچه اینجا نمایش داده می‌شود -->
-      </div>
+      <div id="historyList" class="max-h-32 overflow-y-auto text-sm space-y-1"></div>
     </div>
   </div>
 
   <script>
-    // بخش ماشین حساب
     let currentInput = '0';
     let previousInput = '';
     let operation = null;
@@ -165,46 +154,33 @@
     const calcDisplay = document.getElementById('calcDisplay');
     const calcHistory = document.getElementById('calcHistory');
     const historyList = document.getElementById('historyList');
-    const calculatorDisplay = document.querySelector('.calculator-display');
 
-    // به‌روزرسانی نمایشگر
     function updateDisplay() {
       calcDisplay.textContent = currentInput;
       calcHistory.textContent = previousInput + (operation ? ` ${getOperationSymbol(operation)}` : '');
     }
 
-    // دریافت نماد عملگر
     function getOperationSymbol(op) {
-      switch(op) {
-        case '+': return '+';
-        case '-': return '−';
-        case '*': return '×';
-        case '/': return '÷';
-        default: return op;
-      }
+      const symbols = { '+': '+', '-': '−', '*': '×', '/': '÷' };
+      return symbols[op] || op;
     }
 
-    // اضافه کردن به تاریخچه
     function addToHistory(calculation) {
       calculationHistory.unshift(calculation);
-      if (calculationHistory.length > 10) {
-        calculationHistory.pop();
-      }
+      if (calculationHistory.length > 10) calculationHistory.pop();
       updateHistoryDisplay();
     }
 
-    // به‌روزرسانی نمایش تاریخچه
     function updateHistoryDisplay() {
       historyList.innerHTML = '';
       calculationHistory.forEach(item => {
-        const historyItem = document.createElement('div');
-        historyItem.className = 'border-b border-gray-600 pb-1';
-        historyItem.textContent = item;
-        historyList.appendChild(historyItem);
+        const div = document.createElement('div');
+        div.className = 'border-b border-gray-600 pb-1';
+        div.textContent = item;
+        historyList.appendChild(div);
       });
     }
 
-    // انجام محاسبه
     function calculate() {
       let result;
       const prev = parseFloat(previousInput);
@@ -213,124 +189,114 @@
       if (isNaN(prev) || isNaN(current)) return;
 
       switch(operation) {
-        case '+':
-          result = prev + current;
-          break;
-        case '-':
-          result = prev - current;
-          break;
-        case '*':
-          result = prev * current;
-          break;
-        case '/':
-          result = prev / current;
-          break;
-        default:
-          return;
+        case '+': result = prev + current; break;
+        case '-': result = prev - current; break;
+        case '*': result = prev * current; break;
+        case '/': result = current === 0 ? 'خطا' : prev / current; break;
+        default: return;
       }
 
-      // اضافه کردن به تاریخچه
-      const calculation = `${previousInput} ${getOperationSymbol(operation)} ${currentInput} = ${result}`;
-      addToHistory(calculation);
+      const calcText = `${previousInput} ${getOperationSymbol(operation)} ${currentInput} = ${result}`;
+      addToHistory(calcText);
 
       currentInput = result.toString();
       operation = null;
       previousInput = '';
       resetInput = true;
+      updateDisplay();
     }
 
-    // مدیریت کلیک روی دکمه‌های ماشین حساب
+    // ← سه قابلیت جدید اینجا اضافه شدن
+    function applyScientificOperation(op) {
+      const num = parseFloat(currentInput);
+      if (isNaN(num)) return;
+
+      let result, text;
+      if (op === 'sqrt') {
+        if (num < 0) { currentInput = 'خطا'; updateDisplay(); return; }
+        result = Math.sqrt(num);
+        text = `√(${currentInput}) = ${result}`;
+      } else if (op === 'square') {
+        result = num * num;
+        text = `sqr(${currentInput}) = ${result}`;
+      } else if (op === 'reciprocal') {
+        if (num === 0) { currentInput = 'خطا'; updateDisplay(); return; }
+        result = 1 / num;
+        text = `1/(${currentInput}) = ${result}`;
+      }
+
+      addToHistory(text);
+      currentInput = result.toString();
+      resetInput = true;
+      updateDisplay();
+    }
+
     document.querySelectorAll('.calc-btn').forEach(button => {
       button.addEventListener('click', () => {
         const value = button.getAttribute('data-value');
 
+        if (value === 'sqrt' || value === 'square' || value === 'reciprocal') {
+          applyScientificOperation(value);
+          return;
+        }
+
         if (value === 'C') {
-          // پاک کردن همه
           currentInput = '0';
           previousInput = '';
           operation = null;
         } else if (value === 'CE') {
-          // پاک کردن ورودی فعلی
           currentInput = '0';
         } else if (value === 'backspace') {
-          // حذف آخرین رقم
-          if (currentInput.length > 1) {
-            currentInput = currentInput.slice(0, -1);
-          } else {
-            currentInput = '0';
-          }
+          currentInput = currentInput.length > 1 ? currentInput.slice(0, -1) : '0';
         } else if (value === '=') {
-          // انجام محاسبه
-          if (operation && previousInput) {
-            calculate();
-          }
+          if (operation && previousInput) calculate();
         } else if (['+', '-', '*', '/'].includes(value)) {
-          // تنظیم عملگر
           if (previousInput === '') {
             previousInput = currentInput;
-            operation = value;
-            resetInput = true;
           } else if (operation) {
             calculate();
-            operation = value;
-            previousInput = currentInput;
-            resetInput = true;
           }
+          operation = value;
+          resetInput = true;
         } else {
-          // اضافه کردن رقم
-          if (resetInput) {
-            currentInput = value;
-            resetInput = false;
-          } else {
-            currentInput = currentInput === '0' ? value : currentInput + value;
-          }
+          if (resetInput || currentInput === '0') currentInput = value;
+          else currentInput += value;
+          resetInput = false;
         }
 
         updateDisplay();
       });
     });
 
-    // پاک کردن تاریخچه
     document.getElementById('clearHistory').addEventListener('click', () => {
       calculationHistory = [];
       updateHistoryDisplay();
     });
 
-    // پشتیبانی از کیبورد برای ماشین حساب - همیشه فعال
+    // پشتیبانی کامل کیبورد (بدون تغییر)
     document.addEventListener('keydown', (e) => {
       const key = e.key;
-      
-      if (key >= '0' && key <= '9') {
-        // اعداد
-        document.querySelector(`.calc-btn[data-value="${key}"]`).click();
-      } else if (key === '.') {
-        // نقطه اعشار
-        document.querySelector('.calc-btn[data-value="."]').click();
-      } else if (key === '+' || key === '-' || key === '*' || key === '/') {
-        // عملگرها
-        document.querySelector(`.calc-btn[data-value="${key}"]`).click();
+      if (key >= '0' && key <= '9' || key === '.') {
+        document.querySelector(`.calc-btn[data-value="${key === '.' ? '.' : key}"]`)?.click();
+      } else if (['+', '-', '*', '/'].includes(key)) {
+        document.querySelector(`.calc-btn[data-value="${key}"]`)?.click();
       } else if (key === 'Enter' || key === '=') {
-        // مساوی
         e.preventDefault();
-        document.querySelector('.calc-btn[data-value="="]').click();
+        document.querySelector('.calc-btn[data-value="="]')?.click();
       } else if (key === 'Escape') {
-        // پاک کردن
-        document.querySelector('.calc-btn[data-value="C"]').click();
+        document.querySelector('.calc-btn[data-value="C"]')?.click();
       } else if (key === 'Backspace') {
-        // حذف
         e.preventDefault();
-        document.querySelector('.calc-btn[data-value="backspace"]').click();
+        document.querySelector('.calc-btn[data-value="backspace"]')?.click();
       }
     });
 
-    // مقداردهی اولیه
     updateDisplay();
   </script>
 
   <div class="signature">
     طراحی و ساخت توسط ⦙ سعید شیخ احمد صفاری
   </div>
-  <BR>
-  <BR>
+  <br><br>
 </body>
 </html>
