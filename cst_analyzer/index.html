@@ -21,6 +21,17 @@
   
   * {
     box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+  }
+  
+  /* بهبود اسکرول عمودی اصلی در موبایل */
+  html, body {
+    height: 100%;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    overflow-scrolling: touch;
+    scroll-behavior: smooth;
   }
   
   body {
@@ -30,11 +41,15 @@
     padding: 12px;
     margin: 0;
     line-height: 1.5;
+    overflow-y: auto;
+    position: relative;
+    -webkit-overflow-scrolling: touch;
   }
   
   .container {
     max-width: 1150px;
     margin: 0 auto;
+    touch-action: pan-y; /* فقط اسکرول عمودی مجاز */
   }
   
   #sectionsContainer {
@@ -51,6 +66,10 @@
     margin-bottom: 0;
     overflow: hidden;
     cursor: default;
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
   }
   
   /* استایل collapsible برای هر card */
@@ -58,6 +77,7 @@
     max-height: 60px; /* ارتفاع پیش‌فرض برای عنوان */
     overflow: hidden;
     transition: max-height 0.3s ease-out;
+    touch-action: pan-y; /* فقط اسکرول عمودی */
   }
   
   .collapsible-card.open {
@@ -97,6 +117,8 @@
     padding: 0 16px 16px;
     max-height: 800px; /* اضافه کردن max-height برای اسکرول عمودی */
     overflow-y: auto; /* اسکرول عمودی */
+    -webkit-overflow-scrolling: touch;
+    overflow-scrolling: touch;
   }
   
   h1, h2, h3 {
@@ -260,6 +282,8 @@
     min-width: 80px;
     justify-content: center;
     align-items: center;
+    transform: translateZ(0);
+    touch-action: none;
   }
   
   .chip:hover {
@@ -457,6 +481,8 @@
     border-radius: 8px;
     padding: 16px;
     border: 1px solid var(--border-color);
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
   }
   
   .chart-container {
@@ -523,15 +549,6 @@
     opacity: 1;
   }
   
-  /* جلوگیری از تداخل drag با چارت */
-  .collapsible-card {
-    touch-action: none; /* جلوگیری از touch drag تداخل در موبایل */
-  }
-  
-  .card[draggable="true"] .chart-wrapper .chart-container {
-    pointer-events: auto; /* چارت مستقل */
-  }
-
   /* استایل فیکس‌شده برای آیکون راهنما: دایره‌ای کامل، responsive با rem، بدون کشیدگی، و بدون تداخل با متن */
   .guide-icon {
     position: absolute !important;
@@ -574,6 +591,22 @@
 
   /* Responsive: اندازه‌ها با rem برای مقیاس‌پذیری بهتر، بدون کشیدگی و تداخل */
   @media (max-width: 768px) {
+    html, body {
+      overflow-x: hidden;
+      position: relative;
+    }
+    
+    body {
+      padding: 8px;
+      -webkit-overflow-scrolling: touch;
+      overflow-y: auto;
+    }
+    
+    .container {
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    
     .guide-icon {
       width: 1.75rem !important; /* 28px */
       height: 1.75rem !important;
@@ -585,6 +618,20 @@
       margin-bottom: 2rem !important; /* تنظیم برای موبایل */
     }
 
+    /* بهبود performance برای موبایل */
+    .card, .collapsible-content {
+      will-change: transform;
+    }
+    
+    /* کاهش animations در موبایل برای performance بهتر */
+    .collapsible-card {
+      transition: max-height 0.4s ease-out;
+    }
+    
+    .chip, .section-chip {
+      transform: translateZ(0);
+    }
+
     /* فیکس متن: wrap و کوچک‌تر در عرض کم */
     .chart-wrapper .small {
       font-size: 0.75rem !important;
@@ -592,50 +639,6 @@
       word-break: break-word !important;
       overflow-wrap: break-word !important;
       padding-right: 3rem !important; /* فضای خالی برای دکمه */
-    }
-  }
-
-  @media (max-width: 480px) {
-    .guide-icon {
-      width: 1.5rem !important; /* 24px */
-      height: 1.5rem !important;
-      min-width: 1.5rem !important;
-      max-width: 1.5rem !important;
-      font-size: 0.9rem !important;
-      top: 0.5rem !important;
-      right: 0.5rem !important;
-      margin-bottom: 1.75rem !important;
-    }
-
-    .chart-wrapper .small {
-      font-size: 0.7rem !important;
-      padding-right: 2.5rem !important;
-    }
-  }
-
-  /* برای صفحات خیلی عریض (دسکتاپ): محدود کردن به اندازه ثابت، بدون کشیدگی */
-  @media (min-width: 1200px) {
-    .guide-icon {
-      width: 2.25rem !important; /* کمی بزرگ‌تر: 36px */
-      height: 2.25rem !important;
-      min-width: 2.25rem !important;
-      max-width: 2.25rem !important;
-      font-size: 1.2rem !important;
-      margin-bottom: 3rem !important;
-    }
-  }
-
-  /* فیکس کلی برای متن توضیح: همیشه فضای کافی برای دکمه */
-  .chart-wrapper .small[style*="text-align: center"] {
-    padding-right: 3rem !important;
-    margin-bottom: 1rem !important;
-    word-break: break-word !important;
-    overflow-wrap: break-word !important;
-  }
-  
-  @media (max-width: 768px) {
-    body {
-      padding: 8px;
     }
     
     .card {
@@ -761,6 +764,42 @@
     .collapsible-content {
       max-height: 500px; /* تنظیم برای موبایل کوچک */
     }
+    
+    .guide-icon {
+      width: 1.5rem !important; /* 24px */
+      height: 1.5rem !important;
+      min-width: 1.5rem !important;
+      max-width: 1.5rem !important;
+      font-size: 0.9rem !important;
+      top: 0.5rem !important;
+      right: 0.5rem !important;
+      margin-bottom: 1.75rem !important;
+    }
+
+    .chart-wrapper .small {
+      font-size: 0.7rem !important;
+      padding-right: 2.5rem !important;
+    }
+  }
+
+  /* برای صفحات خیلی عریض (دسکتاپ): محدود کردن به اندازه ثابت، بدون کشیدگی */
+  @media (min-width: 1200px) {
+    .guide-icon {
+      width: 2.25rem !important; /* کمی بزرگ‌تر: 36px */
+      height: 2.25rem !important;
+      min-width: 2.25rem !important;
+      max-width: 2.25rem !important;
+      font-size: 1.2rem !important;
+      margin-bottom: 3rem !important;
+    }
+  }
+
+  /* فیکس کلی برای متن توضیح: همیشه فضای کافی برای دکمه */
+  .chart-wrapper .small[style*="text-align: center"] {
+    padding-right: 3rem !important;
+    margin-bottom: 1rem !important;
+    word-break: break-word !important;
+    overflow-wrap: break-word !important;
   }
   
   .history-table-container {
@@ -893,6 +932,8 @@
     min-width: 80px;
     justify-content: center;
     align-items: center;
+    transform: translateZ(0);
+    touch-action: none;
   }
   
   .section-chip:hover {
@@ -1197,6 +1238,26 @@
 </div>
 
 <script>
+// ---------- بهبود اسکرول موبایل ----------
+function improveMobileScroll() {
+    // جلوگیری از zoom ناخواسته با double-tap
+    let lastTouchEnd = 0;
+    document.addEventListener('touchend', function (event) {
+        const now = (new Date()).getTime();
+        if (now - lastTouchEnd <= 300) {
+            event.preventDefault();
+        }
+        lastTouchEnd = now;
+    }, false);
+
+    // غیرفعال کردن pull-to-refresh در بعضی مرورگرها
+    document.addEventListener('touchmove', function (e) {
+        if (e.scale !== 1) {
+            e.preventDefault();
+        }
+    }, { passive: false });
+}
+
 // ---------- helpers ----------
 function parseNum(v){
   if(v===null||v===undefined) return null;
@@ -2381,6 +2442,7 @@ function toggleSection(sectionId) {
 // Drag & Drop برای cardها حذف شد — فقط جفت‌ارزها (chips) دست نخورده‌اند.
 // ---------- init ----------
 document.addEventListener('DOMContentLoaded', () => {
+  improveMobileScroll(); // بهبود اسکرول موبایل
   loadStore();
   loadSectionsOrder();
   refreshSymbolsList();
