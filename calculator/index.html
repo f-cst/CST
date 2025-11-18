@@ -3,71 +3,47 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ماشین حساب</title>
+  <title>ماشین حساب تخت</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" type="text/css" />
+
   <style>
-    /* استایل سفارشی برای اسکرول بار */
-    .display-scroll {
-      scrollbar-width: thin;
-      scrollbar-color: #4B5563 #1F2937;
+    body {
+      font-family: 'Vazirmatn', sans-serif;
+      background-color: #111827; /* bg-gray-900 */
     }
+
+    /* اسکرول بار سفارشی زیبا */
+    .custom-scroll::-webkit-scrollbar { width: 6px; height: 6px; }
+    .custom-scroll::-webkit-scrollbar-track { background: #1f2937; border-radius: 4px; }
+    .custom-scroll::-webkit-scrollbar-thumb { background: #4b5563; border-radius: 4px; }
+    .custom-scroll::-webkit-scrollbar-thumb:hover { background: #6b7280; }
+    .custom-scroll { scrollbar-width: thin; scrollbar-color: #4b5563 #1f2937; }
+
+    /* مخفی کردن اسکرول بار نمایشگر */
+    .display-hide-scroll::-webkit-scrollbar { display: none; }
+    .display-hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
+
+    /* مودال */
+    .modal { display: none; background-color: rgba(0, 0, 0, 0.9); }
+    .modal.show { display: flex; }
+
+    /* جلوگیری از انتخاب متن */
+    .no-select { user-select: none; -webkit-user-select: none; }
     
-    .display-scroll::-webkit-scrollbar {
-      height: 6px;
-    }
+    /* افکت کلیک */
+    .btn-active:active { opacity: 0.7; transform: scale(0.98); }
 
-    .display-scroll::-webkit-scrollbar-track {
-      background: #1F2937;
-      border-radius: 3px;
-    }
-
-    .display-scroll::-webkit-scrollbar-thumb {
-      background: #4B5563;
-      border-radius: 3px;
-    }
-
-    .display-scroll::-webkit-scrollbar-thumb:hover {
-      background: #6B7280;
-    }
-
-    @keyframes pulse-glow {
-      0% { box-shadow: 0 0 5px rgba(59, 130, 246, 0.5); }
-      50% { box-shadow: 0 0 15px rgba(59, 130, 246, 0.8); }
-      100% { box-shadow: 0 0 5px rgba(59, 130, 246, 0.5); }
-    }
-
-    .active-input {
-      animation: pulse-glow 2s infinite;
-    }
-
-    .title-box {
-      color: white;
-      text-align: center;
-      padding: 16px;
-      font-family: Vazirmatn, system-ui;
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 10px;
-      backdrop-filter: blur(5px);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      font-size: 24px;
-      font-weight: bold;
-      display: block;
-      margin: 20px auto;
-      width: fit-content;
-      max-width: 90%;
-      box-sizing: border-box;
-    }
-
+    /* امضا */
     .signature {
       color: white;
       text-align: center;
       padding: 16px;
       font-family: Vazirmatn, system-ui;
-      background: rgba(255, 255, 255, 0.1);
+      background: rgba(255, 255, 255, 0.05);
       border-radius: 10px;
-      backdrop-filter: blur(5px);
-      border: 1px solid rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.1);
       font-size: 14px;
       font-weight: 500;
       display: block;
@@ -78,69 +54,86 @@
     }
 
     @media only screen and (max-width: 768px) {
-      .title-box { font-size: 20px; padding: 15px; }
       .signature { font-size: 14px; padding: 15px; }
     }
-
     @media only screen and (max-width: 480px) {
-      .title-box { font-size: 18px; padding: 13px; }
       .signature { font-size: 12px; padding: 13px; }
     }
   </style>
 </head>
-<body class="bg-gray-900 text-white flex flex-col items-center justify-center min-h-screen p-4">
+<body class="min-h-[100dvh] flex flex-col items-center justify-center py-8 px-0">
 
-  <div class="bg-gray-800 p-6 rounded-lg border border-gray-700 w-full max-w-md">
+  <div class="bg-gray-800 w-[98%] md:max-w-lg shadow-none rounded-2xl overflow-hidden flex flex-col relative h-auto border border-gray-700">
     
-    <!-- نمایشگر ماشین حساب -->
-    <div class="bg-gray-900 p-3 rounded mb-4 border border-gray-600 calculator-display">
-      <div id="calcHistory" class="text-right text-sm text-gray-400 h-6 overflow-x-auto display-scroll whitespace-nowrap mb-1"></div>
-      <div id="calcDisplay" class="text-right text-2xl font-mono h-8 overflow-x-auto display-scroll whitespace-nowrap">0</div>
+    <div class="bg-gray-800 p-4 pb-2 relative z-10 border-b border-gray-700">
+      <div class="flex justify-between items-center mb-2">
+        <button id="openHistoryBtn" class="text-gray-400 hover:text-white p-2 rounded-full transition" title="تاریخچه">
+          <i class="fas fa-history text-lg"></i>
+        </button>
+        <span class="text-gray-500 text-xs font-bold tracking-widest uppercase">Calculator</span>
+        <div class="w-8"></div>
+      </div>
+
+      <div class="bg-gray-900 p-4 rounded-xl border border-gray-700">
+        <div id="calcHistory" class="text-right text-sm text-gray-500 h-6 overflow-x-auto display-hide-scroll whitespace-nowrap px-1 font-mono"></div>
+        <div id="calcDisplay" class="text-right text-4xl sm:text-5xl font-mono h-14 overflow-x-auto display-hide-scroll whitespace-nowrap text-white px-1">0</div>
+      </div>
     </div>
 
-    <!-- دکمه‌های ماشین حساب -->
-    <div class="grid grid-cols-4 gap-2 mb-4">
+    <div class="bg-gray-800 p-2 sm:p-3 grid grid-cols-4 gap-1 sm:gap-2 no-select pb-4">
+      <button class="btn-active bg-indigo-900 text-indigo-200 py-3 sm:py-4 rounded-lg text-sm font-medium" data-value="sqrt">√x</button>
+      <button class="btn-active bg-indigo-900 text-indigo-200 py-3 sm:py-4 rounded-lg text-sm font-medium" data-value="square">x²</button>
+      <button class="btn-active bg-indigo-900 text-indigo-200 py-3 sm:py-4 rounded-lg text-sm font-medium" data-value="reciprocal">1/x</button>
+      <button class="btn-active bg-red-600 text-white py-3 sm:py-4 rounded-lg font-bold" data-value="C">C</button>
 
-      <!-- ردیف جدید: سه دکمه علمی اضافه شده -->
-      <button class="calc-btn bg-indigo-600 hover:bg-indigo-700 p-2 rounded text-sm font-medium" data-value="sqrt">√x</button>
-      <button class="calc-btn bg-indigo-600 hover:bg-indigo-700 p-2 rounded text-sm font-medium" data-value="square">x²</button>
-      <button class="calc-btn bg-indigo-600 hover:bg-indigo-700 p-2 rounded text-sm font-medium" data-value="reciprocal">1/x</button>
-      <button class="calc-btn bg-red-600 hover:bg-red-700 p-2 rounded" data-value="C">C</button>
-
-      <button class="calc-btn bg-gray-700 hover:bg-gray-600 p-2 rounded" data-value="CE">CE</button>
-      <button class="calc-btn bg-gray-700 hover:bg-gray-600 p-2 rounded" data-value="backspace">
-        <i class="fas fa-backspace"></i>
-      </button>
-      <button class="calc-btn bg-gray-700 hover:bg-gray-600 p-2 rounded text-sm" data-value="percent">%</button>
-      <button class="calc-btn bg-amber-600 hover:bg-amber-700 p-2 rounded" data-value="/">÷</button>
+      <button class="btn-active bg-gray-700 text-gray-200 py-3 sm:py-4 rounded-lg text-lg" data-value="CE">CE</button>
+      <button class="btn-active bg-gray-700 text-gray-200 py-3 sm:py-4 rounded-lg text-lg" data-value="backspace"><i class="fas fa-backspace"></i></button>
+      <button class="btn-active bg-gray-700 text-gray-200 py-3 sm:py-4 rounded-lg text-lg" data-value="percent">%</button>
+      <button class="btn-active bg-amber-600 text-white py-3 sm:py-4 rounded-lg text-xl font-bold" data-value="/">÷</button>
       
-      <button class="calc-btn bg-gray-700 hover:bg-gray-600 p-2 rounded" data-value="7">7</button>
-      <button class="calc-btn bg-gray-700 hover:bg-gray-600 p-2 rounded" data-value="8">8</button>
-      <button class="calc-btn bg-gray-700 hover:bg-gray-600 p-2 rounded" data-value="9">9</button>
-      <button class="calc-btn bg-amber-600 hover:bg-amber-700 p-2 rounded" data-value="*">×</button>
+      <button class="btn-active bg-gray-700/50 text-white py-3 sm:py-4 rounded-lg text-2xl font-medium" data-value="7">7</button>
+      <button class="btn-active bg-gray-700/50 text-white py-3 sm:py-4 rounded-lg text-2xl font-medium" data-value="8">8</button>
+      <button class="btn-active bg-gray-700/50 text-white py-3 sm:py-4 rounded-lg text-2xl font-medium" data-value="9">9</button>
+      <button class="btn-active bg-amber-600 text-white py-3 sm:py-4 rounded-lg text-xl font-bold" data-value="*">×</button>
       
-      <button class="calc-btn bg-gray-700 hover:bg-gray-600 p-2 rounded" data-value="4">4</button>
-      <button class="calc-btn bg-gray-700 hover:bg-gray-600 p-2 rounded" data-value="5">5</button>
-      <button class="calc-btn bg-gray-700 hover:bg-gray-600 p-2 rounded" data-value="6">6</button>
-      <button class="calc-btn bg-amber-600 hover:bg-amber-700 p-2 rounded" data-value="-">−</button>
+      <button class="btn-active bg-gray-700/50 text-white py-3 sm:py-4 rounded-lg text-2xl font-medium" data-value="4">4</button>
+      <button class="btn-active bg-gray-700/50 text-white py-3 sm:py-4 rounded-lg text-2xl font-medium" data-value="5">5</button>
+      <button class="btn-active bg-gray-700/50 text-white py-3 sm:py-4 rounded-lg text-2xl font-medium" data-value="6">6</button>
+      <button class="btn-active bg-amber-600 text-white py-3 sm:py-4 rounded-lg text-xl font-bold" data-value="-">−</button>
       
-      <button class="calc-btn bg-gray-700 hover:bg-gray-600 p-2 rounded" data-value="1">1</button>
-      <button class="calc-btn bg-gray-700 hover:bg-gray-600 p-2 rounded" data-value="2">2</button>
-      <button class="calc-btn bg-gray-700 hover:bg-gray-600 p-2 rounded" data-value="3">3</button>
-      <button class="calc-btn bg-amber-600 hover:bg-amber-700 p-2 rounded" data-value="+">+</button>
+      <button class="btn-active bg-gray-700/50 text-white py-3 sm:py-4 rounded-lg text-2xl font-medium" data-value="1">1</button>
+      <button class="btn-active bg-gray-700/50 text-white py-3 sm:py-4 rounded-lg text-2xl font-medium" data-value="2">2</button>
+      <button class="btn-active bg-gray-700/50 text-white py-3 sm:py-4 rounded-lg text-2xl font-medium" data-value="3">3</button>
+      <button class="btn-active bg-amber-600 text-white py-3 sm:py-4 rounded-lg text-xl font-bold" data-value="+">+</button>
       
-      <button class="calc-btn bg-gray-700 hover:bg-gray-600 p-2 rounded col-span-2" data-value="0">0</button>
-      <button class="calc-btn bg-gray-700 hover:bg-gray-600 p-2 rounded" data-value=".">.</button>
-      <button class="calc-btn bg-green-600 hover:bg-green-700 p-2 rounded" data-value="=">=</button>
+      <button class="btn-active bg-gray-700/50 text-white py-3 sm:py-4 rounded-lg text-2xl font-medium col-span-2" data-value="0">0</button>
+      <button class="btn-active bg-gray-700/50 text-white py-3 sm:py-4 rounded-lg text-2xl font-bold" data-value=".">.</button>
+      <button class="btn-active bg-green-600 text-white py-3 sm:py-4 rounded-lg text-2xl font-bold" data-value="=">=</button>
     </div>
+  </div>
 
-    <!-- تاریخچه محاسبات -->
-    <div class="bg-gray-700 p-3 rounded">
-      <h3 class="font-semibold mb-2 flex justify-between items-center">
-        <span>تاریخچه محاسبات</span>
-        <button id="clearHistory" class="text-xs bg-red-600 hover:bg-red-700 px-2 py-1 rounded">پاک کردن</button>
-      </h3>
-      <div id="historyList" class="max-h-32 overflow-y-auto text-sm space-y-1"></div>
+  <div class="signature">
+    طراحی و ساخت توسط ⦙ سعید شیخ احمد صفاری
+  </div>
+
+  <div id="historyModal" class="modal fixed inset-0 z-50 items-center justify-center p-4 backdrop-blur-none">
+    <div class="bg-gray-800 w-full max-w-sm rounded-2xl shadow-none border border-gray-600 flex flex-col max-h-[60vh]">
+      
+      <div class="flex justify-between items-center p-4 border-b border-gray-700 bg-gray-800 rounded-t-2xl">
+        <h3 class="text-lg font-bold text-gray-200">تاریخچه محاسبات</h3>
+        <button id="closeHistoryBtn" class="text-gray-400 hover:text-white p-2">
+          <i class="fas fa-times text-xl"></i>
+        </button>
+      </div>
+
+      <div id="historyList" class="flex-1 overflow-y-auto p-2 custom-scroll">
+        </div>
+
+      <div class="p-3 border-t border-gray-700 bg-gray-800 rounded-b-2xl">
+        <button id="clearHistory" class="w-full bg-red-600 hover:bg-red-500 text-white py-2 rounded-lg text-sm transition">
+          پاک کردن همه
+        </button>
+      </div>
     </div>
   </div>
 
@@ -154,9 +147,11 @@
     const calcDisplay = document.getElementById('calcDisplay');
     const calcHistory = document.getElementById('calcHistory');
     const historyList = document.getElementById('historyList');
+    const historyModal = document.getElementById('historyModal');
 
     function updateDisplay() {
-      calcDisplay.textContent = currentInput;
+      const formattedInput = currentInput === 'خطا' ? 'خطا' : parseFloat(currentInput).toLocaleString('en-US', { maximumFractionDigits: 10 });
+      calcDisplay.textContent = currentInput.includes('.') ? currentInput : formattedInput;
       calcHistory.textContent = previousInput + (operation ? ` ${getOperationSymbol(operation)}` : '');
     }
 
@@ -167,136 +162,116 @@
 
     function addToHistory(calculation) {
       calculationHistory.unshift(calculation);
-      if (calculationHistory.length > 10) calculationHistory.pop();
-      updateHistoryDisplay();
+      if (calculationHistory.length > 50) calculationHistory.pop();
+      renderHistory();
     }
 
-    function updateHistoryDisplay() {
+    function renderHistory() {
+      if (calculationHistory.length === 0) {
+        historyList.innerHTML = '<div class="text-center text-gray-500 text-sm py-8">تاریخچه خالی است</div>';
+        return;
+      }
       historyList.innerHTML = '';
       calculationHistory.forEach(item => {
+        const parts = item.split('=');
         const div = document.createElement('div');
-        div.className = 'border-b border-gray-600 pb-1';
-        div.textContent = item;
+        div.className = 'p-3 border-b border-gray-700 hover:bg-gray-700 cursor-pointer flex justify-between items-center rounded transition-colors mx-1';
+        div.innerHTML = `
+            <span class="text-gray-400 text-xs dir-ltr">${parts[0]}</span>
+            <span class="text-indigo-400 font-bold text-lg dir-ltr">${parts[1]}</span>
+        `;
+        div.onclick = () => {
+            currentInput = parts[1].trim();
+            resetInput = true;
+            updateDisplay();
+            toggleModal(false);
+        };
         historyList.appendChild(div);
       });
     }
 
     function calculate() {
-      let result;
       const prev = parseFloat(previousInput);
       const current = parseFloat(currentInput);
-
       if (isNaN(prev) || isNaN(current)) return;
 
+      let result;
       switch(operation) {
         case '+': result = prev + current; break;
         case '-': result = prev - current; break;
         case '*': result = prev * current; break;
-        case '/': result = current === 0 ? 'خطا' : prev / current; break;
-        default: return;
+        case '/': result = current === 0 ? 'Error' : prev / current; break;
       }
 
-      const calcText = `${previousInput} ${getOperationSymbol(operation)} ${currentInput} = ${result}`;
-      addToHistory(calcText);
-
-      currentInput = result.toString();
-      operation = null;
-      previousInput = '';
-      resetInput = true;
+      if (result === 'Error') {
+          currentInput = 'خطا';
+      } else {
+          result = parseFloat(result.toPrecision(12)); 
+          addToHistory(`${prev} ${getOperationSymbol(operation)} ${current} = ${result}`);
+          currentInput = result.toString();
+      }
+      
+      operation = null; previousInput = ''; resetInput = true;
       updateDisplay();
     }
 
-    // ← سه قابلیت جدید اینجا اضافه شدن
-    function applyScientificOperation(op) {
+    function scientific(op) {
       const num = parseFloat(currentInput);
       if (isNaN(num)) return;
-
-      let result, text;
+      let res, txt;
+      
       if (op === 'sqrt') {
-        if (num < 0) { currentInput = 'خطا'; updateDisplay(); return; }
-        result = Math.sqrt(num);
-        text = `√(${currentInput}) = ${result}`;
+        if (num < 0) return;
+        res = Math.sqrt(num); txt = `√(${num})`;
       } else if (op === 'square') {
-        result = num * num;
-        text = `sqr(${currentInput}) = ${result}`;
+        res = num * num; txt = `sqr(${num})`;
       } else if (op === 'reciprocal') {
-        if (num === 0) { currentInput = 'خطا'; updateDisplay(); return; }
-        result = 1 / num;
-        text = `1/(${currentInput}) = ${result}`;
+        if (num === 0) return;
+        res = 1 / num; txt = `1/(${num})`;
       }
-
-      addToHistory(text);
-      currentInput = result.toString();
-      resetInput = true;
+      
+      res = parseFloat(res.toPrecision(12));
+      addToHistory(`${txt} = ${res}`);
+      currentInput = res.toString(); resetInput = true;
       updateDisplay();
     }
 
-    document.querySelectorAll('.calc-btn').forEach(button => {
-      button.addEventListener('click', () => {
-        const value = button.getAttribute('data-value');
+    function toggleModal(show) {
+      if (show) { renderHistory(); historyModal.classList.add('show'); }
+      else { historyModal.classList.remove('show'); }
+    }
 
-        if (value === 'sqrt' || value === 'square' || value === 'reciprocal') {
-          applyScientificOperation(value);
-          return;
+    document.getElementById('openHistoryBtn').addEventListener('click', () => toggleModal(true));
+    document.getElementById('closeHistoryBtn').addEventListener('click', () => toggleModal(false));
+    document.getElementById('clearHistory').addEventListener('click', () => { calculationHistory = []; renderHistory(); });
+    historyModal.addEventListener('click', (e) => { if(e.target === historyModal) toggleModal(false); });
+
+    document.querySelectorAll('button[data-value]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const val = btn.getAttribute('data-value');
+        if (['sqrt', 'square', 'reciprocal'].includes(val)) scientific(val);
+        else if (val === 'C') { currentInput = '0'; previousInput = ''; operation = null; }
+        else if (val === 'CE') { currentInput = '0'; }
+        else if (val === 'backspace') { currentInput = currentInput.length > 1 ? currentInput.slice(0, -1) : '0'; }
+        else if (val === '=') { if (operation) calculate(); }
+        else if (['+', '-', '*', '/'].includes(val)) {
+          if (operation && previousInput && !resetInput) calculate();
+          previousInput = currentInput; operation = val; resetInput = true;
+        } else if (val === 'percent') { currentInput = (parseFloat(currentInput) / 100).toString(); }
+        else {
+          if (resetInput) { currentInput = val; resetInput = false; }
+          else { currentInput = currentInput === '0' && val !== '.' ? val : currentInput + val; }
         }
-
-        if (value === 'C') {
-          currentInput = '0';
-          previousInput = '';
-          operation = null;
-        } else if (value === 'CE') {
-          currentInput = '0';
-        } else if (value === 'backspace') {
-          currentInput = currentInput.length > 1 ? currentInput.slice(0, -1) : '0';
-        } else if (value === '=') {
-          if (operation && previousInput) calculate();
-        } else if (['+', '-', '*', '/'].includes(value)) {
-          if (previousInput === '') {
-            previousInput = currentInput;
-          } else if (operation) {
-            calculate();
-          }
-          operation = value;
-          resetInput = true;
-        } else {
-          if (resetInput || currentInput === '0') currentInput = value;
-          else currentInput += value;
-          resetInput = false;
-        }
-
         updateDisplay();
       });
     });
 
-    document.getElementById('clearHistory').addEventListener('click', () => {
-      calculationHistory = [];
-      updateHistoryDisplay();
-    });
-
-    // پشتیبانی کامل کیبورد (بدون تغییر)
     document.addEventListener('keydown', (e) => {
-      const key = e.key;
-      if (key >= '0' && key <= '9' || key === '.') {
-        document.querySelector(`.calc-btn[data-value="${key === '.' ? '.' : key}"]`)?.click();
-      } else if (['+', '-', '*', '/'].includes(key)) {
-        document.querySelector(`.calc-btn[data-value="${key}"]`)?.click();
-      } else if (key === 'Enter' || key === '=') {
-        e.preventDefault();
-        document.querySelector('.calc-btn[data-value="="]')?.click();
-      } else if (key === 'Escape') {
-        document.querySelector('.calc-btn[data-value="C"]')?.click();
-      } else if (key === 'Backspace') {
-        e.preventDefault();
-        document.querySelector('.calc-btn[data-value="backspace"]')?.click();
-      }
+        const map = {'Enter': '=', 'Escape': 'C', 'Backspace': 'backspace'};
+        const key = map[e.key] || e.key;
+        const btn = document.querySelector(`button[data-value="${key}"]`);
+        if(btn) { e.preventDefault(); btn.click(); }
     });
-
-    updateDisplay();
   </script>
-
-  <div class="signature">
-    طراحی و ساخت توسط ⦙ سعید شیخ احمد صفاری
-  </div>
-  <br><br>
 </body>
 </html>
