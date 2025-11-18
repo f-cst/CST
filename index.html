@@ -813,6 +813,35 @@
             display: none;
             text-align: right;
         }
+		
+		/* ========== BEAUTIFY SETTINGS MODAL SCROLLBAR ========== */
+.settings-content::-webkit-scrollbar {
+    width: 8px; /* عرض اسکرول‌بار */
+}
+
+.settings-content::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1); /* رنگ پس‌زمینه مسیر اسکرول‌بار */
+    border-radius: 4px;
+}
+
+.settings-content::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.3); /* رنگ خود اسکرول‌بار */
+    border-radius: 4px;
+}
+
+.settings-content::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.5); /* رنگ اسکرول‌بار وقتی موس روش میره */
+}
+
+/* برای مرورگر Firefox */
+.settings-content {
+    scrollbar-width: thin; /* میتونه thin یا auto یا none باشه */
+    scrollbar-color: rgba(255, 255, 255, 0.3) rgba(255, 255, 255, 0.1); /* رنگ اسکرول‌بار و رنگ پس‌زمینه */
+}
+
+.settings-content {
+    border-radius: 5px;
+}
     </style>
 </head>
 
