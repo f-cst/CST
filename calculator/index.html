@@ -11,7 +11,7 @@
     .display-scroll::-webkit-scrollbar { height: 6px; }
     .display-scroll::-webkit-scrollbar-track { background: #1F2937; border-radius: 3px; }
     .display-scroll::-webkit-scrollbar-thumb { background: #4B5563; border-radius: 3px; }
-    .display-scroll::-webkit-scrollbar-thumb:hover { background: #6B7280; }
+    .display-scroll::-webkit-scrollbar-thumb:hover { background: #6B8260; }
 
     .history-drawer {
       position: fixed;
@@ -40,20 +40,50 @@
     .overlay.active { opacity: 1; visibility: visible; }
 
     .signature {
-      color: white; text-align: center; padding: 18px; font-family: Vazirmatn, system-ui;
-      background: rgba(255, 255, 255, 0.1); border-radius: 14px; backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.2); font-size: 16px; font-weight: 600;
-      margin: 40px auto; width: fit-content; max-width: 90%; box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+      color: white;
+      text-align: center;
+      padding: 16px;
+      font-family: Vazirmatn, system-ui;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      backdrop-filter: blur(5px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      font-size: 14px;
+      font-weight: 500;
+      display: block;
+      margin: 30px auto;
+      width: fit-content;
+      max-width: 90%;
+      box-sizing: border-box;
     }
 
-    @media (max-width: 640px) {
-      .history-drawer { max-width: 100%; width: 100%; border-radius: 28px 28px 0 0; }
+    @media only screen and (max-width: 768px) {
+      .title-box {
+        font-size: 20px;
+        padding: 15px;
+      }
+      .signature {
+        font-size: 14px;
+        padding: 15px;
+      }
+    }
+
+    @media only screen and (max-width: 480px) {
+      .title-box {
+        font-size: 18px;
+        padding: 13px;
+      }
+      .signature {
+        font-size: 12px;
+        padding: 13px;
+      }
     }
   </style>
 </head>
 <body class="bg-gray-900 text-white flex flex-col items-center justify-center min-h-screen p-4">
 
-  <div class="bg-gray-800 p-6 rounded-lg border border-gray-700 w-full max-w-md relative z-10">
+  <!-- تمام border و shadow حذف شد تا تو موبایل کاملاً عرض صفحه رو بگیره -->
+  <div class="bg-gray-800 p-6 rounded-lg w-full max-w-md relative z-10">
     
     <div class="bg-gray-900 p-3 rounded mb-4 border border-gray-600 calculator-display">
       <div id="calcHistory" class="text-right text-sm text-gray-400 h-6 overflow-x-auto display-scroll whitespace-nowrap mb-1"></div>
@@ -202,7 +232,6 @@
     document.getElementById('showHistory').onclick = () => { historyDrawer.classList.add('open'); historyOverlay.classList.add('active'); updateFullHistory(); };
     document.getElementById('closeDrawer').onclick = historyOverlay.onclick = () => { historyDrawer.classList.remove('open'); historyOverlay.classList.remove('active'); };
 
-    // کیبورد کاملاً درست و کار می‌کنه
     document.addEventListener('keydown', e => {
       const key = e.key;
       if ('0123456789'.includes(key)) document.querySelector(`[data-value="${key}"]`)?.click();
