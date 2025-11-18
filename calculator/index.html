@@ -82,11 +82,10 @@
 </head>
 <body class="bg-gray-900 text-white flex flex-col items-center justify-center min-h-screen p-4">
 
-  <!-- تغییرات اصلی در این خط اعمال شده -->
-  <div class="bg-gray-800 p-4 w-full max-w-md relative z-10">
+  <!-- تمام border و shadow حذف شد تا تو موبایل کاملاً عرض صفحه رو بگیره -->
+  <div class="bg-gray-800 p-6 rounded-lg w-full max-w-md relative z-10">
     
-    <!-- border از اینجا حذف شده -->
-    <div class="bg-gray-900 p-3 rounded mb-4 calculator-display">
+    <div class="bg-gray-900 p-3 rounded mb-4 border border-gray-600 calculator-display">
       <div id="calcHistory" class="text-right text-sm text-gray-400 h-6 overflow-x-auto display-scroll whitespace-nowrap mb-1"></div>
       <div id="calcDisplay" class="text-right text-2xl font-mono h-8 overflow-x-auto display-scroll whitespace-nowrap">0</div>
     </div>
