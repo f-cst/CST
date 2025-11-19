@@ -101,25 +101,22 @@
         margin: 0 0 15px 0;
     }
 
-    .theme-toggle {
-        background: none;
-        border: none;
-        font-size: 24px;
-        cursor: pointer;
-        color: var(--text-color);
-        transition: transform 0.3s ease;
-        position: absolute;
-        left: 0;
-        top: 50%;
-        transform: translateY(-50%);
-        z-index: 101;
-        padding: 8px 12px;
-    }
-
-    .theme-toggle:hover {
-        transform: translateY(-50%) scale(1.1);
-        background-color: transparent !important;
-    }
+        .theme-toggle {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--text-color);
+            transition: transform 0.3s ease;
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 101; /* بالاتر از منوی همبرگری */
+        }
+        .theme-toggle:hover {
+            transform: translateY(-50%) scale(1.1);
+        }
 
     /* استایل‌های تب‌ها - بهبود یافته برای اسکرول */
     .tabs {
@@ -1090,6 +1087,12 @@
             min-width: 28px;
             font-size: 12px;
         }
+		
+		            .theme-toggle {
+                left: 0px;
+                /* چسباندن به لبه */
+                padding: 8px 10px;
+            }
     }
 
     @media (max-width: 480px) {
@@ -1122,41 +1125,39 @@
             padding: 0 5px;
         }
         
-        /* بهبود بیشتر برای موبایل‌های کوچک */
-        .currency-pair-item {
-            padding: 4px 5px;
-        }
-        
-        .currency-pair-name {
-            font-size: 11px;
-        }
-        
-        .action-btn {
-            padding: 2px 4px;
-            font-size: 9px;
-            min-width: 35px;
-        }
-        
-        .move-btn {
-            padding: 1px 2px;
-            font-size: 8px;
-            min-width: 18px;
+            /* بهبود بیشتر برای موبایل‌های کوچک */
+            .currency-pair-item {
+                padding: 4px 5px;
+            }
+            .currency-pair-name {
+                font-size: 11px;
+            }
+            .action-btn {
+                padding: 2px 4px;
+                font-size: 9px;
+                min-width: 35px;
+            }
+            .move-btn {
+                padding: 1px 2px;
+                font-size: 8px;
+                min-width: 18px;
+            }
+            .mobile-menu-toggle {
+                width: 2rem;
+                height: 2rem;
+            }
+            .mobile-menu-toggle span {
+                width: 2rem;
+            }
+			
+            .theme-toggle {
+                font-size: 20px;
+                /* کاهش سایز آیکون */
+                padding: 6px 8px;
+            }
         }
 
-        .mobile-menu-toggle {
-            width: 2rem;
-            height: 2rem;
-        }
 
-        .mobile-menu-toggle span {
-            width: 2rem;
-        }
-
-        .theme-toggle {
-            font-size: 20px;
-            padding: 6px 10px;
-        }
-    }
 
     /* نمایش هر دو حالت در دسکتاپ */
     @media (min-width: 769px) {
