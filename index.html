@@ -582,11 +582,11 @@
             position: relative;
             transition: all 0.3s ease;
         }
-		.settings-icon,
-.settings-icon:hover,
-.settings-icon:active {
-    box-shadow: none !important;
-}
+        .settings-icon,
+        .settings-icon:hover,
+        .settings-icon:active {
+            box-shadow: none !important;
+        }
         .close-settings {
             position: absolute;
             top: 15px;
@@ -686,56 +686,82 @@
             display: none;
             text-align: right;
         }
-		.settings-content::-webkit-scrollbar {
-    width: 8px;
-}
-.settings-content::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 4px;
-}
-.settings-content::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.3);
-    border-radius: 4px;
-}
-.settings-content::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.5);
-}
-.settings-content {
-    scrollbar-width: thin;
-    scrollbar-color: rgba(255, 255, 255, 0.3) rgba(255, 255, 255, 0.1);
-    border-radius: 5px;
-}
-.simple-mobile-popup {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    left: 20px;
-    margin: auto;
-    max-width: 360px;
-    background: #ffffff;
-    color: #333;
-    padding: 16px 18px;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    font-size: 0.9rem;
-    line-height: 1.7;
-    z-index: 999999;
-    display: none;
-}
-.simple-mobile-popup button {
-    margin-top: 12px;
-    background: #735af2;
-    color: white;
-    border: none;
-    padding: 8px 16px;
-    border-radius: 8px;
-    cursor: pointer;
-    width: 100%;
-    font-size: 0.9rem;
-}
+        .settings-content::-webkit-scrollbar {
+            width: 8px;
+        }
+        .settings-content::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+        }
+        .settings-content::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 4px;
+        }
+        .settings-content::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.5);
+        }
+        .settings-content {
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255, 255, 255, 0.3) rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+        }
+
+        /* ========== NEW POPUP STYLES ========== */
+        #popupOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(3px);
+            -webkit-backdrop-filter: blur(3px);
+            z-index: 999998;
+            display: none;
+        }
+        .simple-mobile-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            max-width: 340px;
+            width: 90%;
+            background: #ffffff;
+            color: #333;
+            padding: 20px;
+            border-radius: 16px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+            font-size: 0.95rem;
+            line-height: 1.7;
+            z-index: 999999;
+            display: none;
+            text-align: center;
+        }
+        .simple-mobile-popup .ds-icon {
+            margin-bottom: 12px;
+        }
+        .simple-mobile-popup .ds-icon i {
+            font-size: 1.8rem;
+            color: #735af2;
+        }
+        .simple-mobile-popup button {
+            margin-top: 16px;
+            background: #735af2;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 10px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 1rem;
+            font-weight: 600;
+        }
     </style>
 </head>
 <body>
+    <!-- Overlay جدید -->
+    <div id="popupOverlay"></div>
+
     <div class="login-container" id="loginPage">
         <div class="header-group">
             <h1>ورود به ربات CST</h1>
@@ -771,6 +797,7 @@
             طراحی و ساخت توسط ⦙ سعید شیخ احمد صفاری
         </div>
     </div>
+
     <div class="main-content" id="mainContent">
         <div class="tabs-container" id="tabsContainer">
             <div class="tabs-scroll-container" id="tabsScrollContainer">
@@ -816,7 +843,9 @@
             <iframe src="calculator/index.html"></iframe>
         </div>
     </div>
+
     <button class="pwa-install-btn" id="pwaInstallButton">📥 نصب برنامه</button>
+
     <div id="settingsModal">
         <div class="settings-content">
             <span class="close-settings" onclick="toggleSettings()">&times;</span>
@@ -854,8 +883,9 @@
             <button class="save-btn" id="saveThemeBtn" onclick="saveTheme()">ذخیره تغییرات</button>
         </div>
     </div>
+
     <script>
-        // ==================== DETECT DEVICE TYPE ====================
+        // ==================== DEVICE & POPUP ====================
         function isMobileDevice() {
             return /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
         }
@@ -868,7 +898,25 @@
                 document.body.classList.remove('mobile');
             }
         }
-        // ==================== RESPONSIVE TABS FOR DESKTOP ONLY ====================
+        function detectSimplePopup() {
+            const ua = navigator.userAgent || navigator.vendor || window.opera;
+            const isMobileOS = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(ua);
+            const isSmallScreen = window.innerWidth <= 767;
+            const isIPad = /iPad/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+            const isTablet = /Tablet|PlayBook|Nexus 7|Nexus 9/i.test(ua);
+            const isRealMobile = isMobileOS && !isIPad && !isTablet && isSmallScreen;
+            const loginVisible = document.getElementById('loginPage').style.display !== 'none';
+            if (isRealMobile && loginVisible) {
+                document.getElementById("simpleMobilePopup").style.display = "block";
+                document.getElementById("popupOverlay").style.display = "block";
+            }
+        }
+        function closeSimplePopup() {
+            document.getElementById("simpleMobilePopup").style.display = "none";
+            document.getElementById("popupOverlay").style.display = "none";
+        }
+
+        // ==================== THEME & UI ====================
         function handleDesktopResponsiveTabs() {
             const tabsContainer = document.getElementById('tabsContainer');
             const windowWidth = window.innerWidth;
@@ -879,7 +927,6 @@
                 }
             }
         }
-        // ==================== DYNAMIC THEME COLOR ====================
         function setThemeColor(color) {
             let meta = document.querySelector('meta[name=theme-color]');
             if (!meta) {
@@ -903,7 +950,6 @@
                 setThemeColor(gradient.match(/#[\da-fA-F]{6}/)?.[0] || '#735af2');
             }
         }
-        // ==================== CONTRAST CHECK FUNCTIONS ====================
         function hexToRgb(hex) {
             const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
             return result ? {
@@ -927,19 +973,15 @@
             const elements = document.querySelectorAll('h1, p, label, button, .tab, .tab-text, .signature, .login-signature, .login-btn, input[type="text"], .settings-section h3');
             const bgLum = getLuminance(bgColor);
             const textLum = getLuminance(textColor);
-            let hasIssue = false;
             for (let el of elements) {
                 if (el.textContent.trim().length > 0) {
                     const isInteractive = el.tagName === 'BUTTON' || el.classList.contains('tab') || el.classList.contains('login-btn');
                     const minRatio = isInteractive ? 3 : 4.5;
                     const ratio = getContrastRatio(bgLum, textLum);
-                    if (ratio < minRatio) {
-                        hasIssue = true;
-                        break;
-                    }
+                    if (ratio < minRatio) return false;
                 }
             }
-            return !hasIssue;
+            return true;
         }
         function validateAndUpdateSaveButton(bgColor, textColor = '#ffffff') {
             const isReadable = analyzeElements(bgColor, textColor);
@@ -954,7 +996,6 @@
                 alert('⚠️ رنگ انتخابی باعث ناخوانایی متن‌ها، دکمه‌ها، تب‌ها و غیره می‌شه! لطفاً رنگ دیگه‌ای انتخاب کن تا کنتراست مناسب بشه.');
             }
         }
-        // ==================== THEME MANAGEMENT ====================
         const presets = {
             light: { gradient: 'linear-gradient(135deg, #735af2 0%, #5a3fd0 100%)', primary: '#735af2' },
             dark: { gradient: 'linear-gradient(135deg, #1e1e1e 0%, #333 100%)', primary: '#333' }
@@ -1071,7 +1112,6 @@
         document.getElementById('settingsModal').addEventListener('click', function(e) {
             if (e.target === this) toggleSettings();
         });
-        // ==================== VISUAL FIXES FOR GLASS EFFECT ====================
         function applyVisualFixes() {
             const elements = document.querySelectorAll('.login-container, .tabs-container, .setup-guide, .signature, .login-signature, .tab');
             elements.forEach(element => {
@@ -1082,7 +1122,8 @@
                 }
             });
         }
-        // ==================== AUTHENTICATION ====================
+
+        // ==================== AUTH & TABS ====================
         const secretKey = 'JBSWY3DPEHPK3PXP';
         const verifyOtpBtn = document.getElementById('verifyOtpBtn');
         const otpInput = document.getElementById('otp');
@@ -1193,7 +1234,6 @@
                 }, 500);
             }
         });
-        // ==================== TAB MANAGEMENT ====================
         function openTab(n) {
             document.querySelectorAll('.tab').forEach((t, i) => {
                 t.classList.toggle('active', i === n);
@@ -1202,7 +1242,6 @@
                 f.classList.toggle('active', i === n);
             });
         }
-        // ==================== ADVANCED SCROLL FOR TABS ====================
         function initMouseWheelScroll() {
             const tabsScrollContainer = document.getElementById('tabsScrollContainer');
             const tabs = document.getElementById('tabs');
@@ -1261,7 +1300,8 @@
                 touchStartX = null;
             });
         }
-        // ==================== PWA INSTALL ====================
+
+        // ==================== PWA ====================
         let deferredPrompt;
         const pwaInstallButton = document.getElementById('pwaInstallButton');
         let installPromptTimeout;
@@ -1310,28 +1350,10 @@
                     });
             });
         }
-        // ==================== MOBILE POPUP LOGIC ====================
-        function detectSimplePopup() {
-            const ua = navigator.userAgent || navigator.vendor || window.opera;
-            const isMobileOS = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(ua);
-            const isSmallScreen = window.innerWidth <= 767;
-            const isIPad = /iPad/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-            const isTablet = /Tablet|PlayBook|Nexus 7|Nexus 9/i.test(ua);
-            const isRealMobile = isMobileOS && !isIPad && !isTablet && isSmallScreen;
-            if (isRealMobile && !localStorage.getItem("simple_popup_closed")) {
-                document.getElementById("simpleMobilePopup").style.display = "block";
-            }
-        }
-        function closeSimplePopup() {
-            const popup = document.getElementById("simpleMobilePopup");
-            if (popup) {
-                popup.style.display = "none";
-                localStorage.setItem("simple_popup_closed", "1");
-            }
-        }
+
         // ==================== INIT ====================
         document.addEventListener('DOMContentLoaded', () => {
-            detectSimplePopup(); // ✅ نسخه اصلاح‌شده
+            detectSimplePopup(); // ✅ هربار نمایش داده می‌شود
             detectDeviceType();
             loadTheme();
             updateThemeColor();
