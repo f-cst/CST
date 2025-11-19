@@ -13,15 +13,18 @@
     <link rel="icon" type="image/x-icon" href="/cst/icons/favicon.ico">
     <link rel="icon" type="image/png" sizes="16x16" href="/cst/icons/favicon-16x16.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/cst/icons/favicon-32x32.png">
+    <!-- برای iOS - فقط از آیکون‌های موجود استفاده کن -->
     <link rel="apple-touch-icon" href="/cst/icons/apple-touch-icon.png">
     <link rel="apple-touch-icon" sizes="192x192" href="/cst/icons/android-chrome-192x192.png">
     <link rel="apple-touch-icon" sizes="512x512" href="/cst/icons/android-chrome-512x512.png">
+    <!-- THEME COLORS -->
     <meta name="theme-color" content="#735af2">
     <meta name="msapplication-TileColor" content="#735af2">
     <meta name="msapplication-navbutton-color" content="#735af2">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="ربات CST">
+    <!-- FONTS & STYLES -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -56,6 +59,7 @@
             position: relative;
             transition: background 0.3s ease;
         }
+        /* پس‌زمینه ساده فقط برای موبایل‌های کوچک */
         @media (max-width: 480px) {
             body {
                 background: var(--primary-color) !important;
@@ -67,6 +71,7 @@
             padding-left: env(safe-area-inset-left);
             padding-right: env(safe-area-inset-right);
         }
+        /* ========== LOGIN STYLES ========== */
         .login-container {
             background-color: var(--glass-bg);
             backdrop-filter: var(--glass-blur);
@@ -84,6 +89,7 @@
             isolation: isolate;
             transition: all 0.3s ease;
         }
+        /* اگر شیشه‌ای غیرفعال باشد */
         :root:not([data-glass="true"]) .login-container,
         :root:not([data-glass="true"]) .tabs-container,
         :root:not([data-glass="true"]) .setup-guide,
@@ -95,6 +101,7 @@
             background: rgba(0, 0, 0, 0.1) !important;
             border: 1px solid rgba(255, 255, 255, 0.1) !important;
         }
+        /* استایل برای موبایل */
         @media (max-width: 480px) {
             .login-container {
                 background-color: var(--glass-bg);
@@ -123,49 +130,17 @@
         }
         .settings-icon {
             position: absolute;
-            top: -25px;
-            right: -16px;
+            top: 0;
+            right: 0;
             color: white;
-            font-size: 1.75rem;
+            font-size: 1.5rem;
             cursor: pointer;
-            transition: transform 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
-            z-index: 99999;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 56px;
-            height: 56px;
-            transform-origin: center center !important;
-            background: rgba(255, 255, 255, 0.15);
-            border-radius: 50%;
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
-            padding: 10px;
-            transform: translateZ(0);
-            -webkit-transform: translateZ(0);
+            transition: all 0.3s ease;
+            z-index: 10;
         }
-        .settings-icon:hover,
-        .settings-icon:active {
-            transform: rotate(0deg) translateZ(0) !important;
-            background: rgba(255, 255, 255, 0.28);
-            box-shadow: 0 8px 28px rgba(0, 0, 0, 0.5);
-        }
-        .header-group,
-        .login-container {
-            overflow: visible !important;
-            position: relative !important;
-        }
-        @media (max-width: 380px) {
-            .settings-icon {
-                top: -18px;
-                right: -10px;
-                width: 40px;
-                height: 40px;
-                font-size: 1.5rem;
-                padding: 8px;
-            }
+        .settings-icon:hover {
+            transform: rotate(90deg);
+            color: var(--primary-color);
         }
         .input-group {
             display: flex;
@@ -270,6 +245,7 @@
             box-sizing: border-box;
             transition: all 0.3s ease;
         }
+        /* ========== TAB STYLES ========== */
         .tabs-container {
             background: var(--glass-bg);
             backdrop-filter: var(--glass-blur);
@@ -346,6 +322,7 @@
             box-shadow: 0 0 0 1px rgba(255, 68, 68, 0.3);
             z-index: 2;
         }
+        /* وقتی شیشه‌ای غیرفعال، border قرمز رو نازک نگه دار */
         :root:not([data-glass="true"]) .tab.active {
             border: 2px solid #ff4444 !important;
             box-shadow: 0 0 0 1px rgba(255, 68, 68, 0.3) !important;
@@ -356,6 +333,8 @@
             font-size: 1.2rem;
             opacity: 0.9;
         }
+        /* ========== RESPONSIVE TABS ONLY FOR DESKTOP ========== */
+        /* فقط برای دسکتاپ - حالت فشرده (فقط آیکون) در سایزهای بسیار کوچک */
         body.desktop .tabs-container.icons-only .tab {
             padding: 12px 14px;
             min-width: 55px;
@@ -368,6 +347,7 @@
             font-size: 1.4rem;
             margin: 0;
         }
+        /* ========== IFRAME CONTAINER ========== */
         .iframe-container {
             flex: 1;
             position: relative;
@@ -379,6 +359,7 @@
             height: 100%;
             transition: all 0.3s ease;
         }
+        /* کاهش ارتفاع iframe فقط در موبایل */
         @media (max-width: 480px) {
             .iframe-container {
                 height: 85vh;
@@ -395,6 +376,7 @@
         iframe.active {
             display: block;
         }
+        /* ========== PWA INSTALL BUTTON ========== */
         .pwa-install-btn {
             position: fixed;
             bottom: 25px;
@@ -420,6 +402,7 @@
             box-shadow: 0 8px 25px rgba(0,0,0,0.4);
             background: var(--bg-gradient);
         }
+        /* ========== RESPONSIVE DESIGN ========== */
         @media (max-width: 1024px) {
             .tab {
                 padding: 8px 14px;
@@ -529,6 +512,8 @@
                 font-size: 1.5rem;
             }
         }
+        /* ========== FIXES FOR BACKDROP-FILTER ISSUES ========== */
+        /* جلوگیری از خطوط شیشه‌ای ناخواسته */
         .login-container::before,
         .tabs-container::before,
         .setup-guide::before,
@@ -544,6 +529,7 @@
             border-radius: inherit;
             z-index: -1;
         }
+        /* بهبود عملکرد backdrop-filter در مرورگرهای مختلف */
         @supports not (backdrop-filter: blur(10px)) {
             .login-container,
             .tabs-container,
@@ -554,6 +540,7 @@
                 background: rgba(255, 255, 255, 0.2) !important;
             }
         }
+        /* ========== SETTINGS MODAL ========== */
         #settingsModal {
             display: none;
             position: fixed;
@@ -582,11 +569,6 @@
             position: relative;
             transition: all 0.3s ease;
         }
-		.settings-icon,
-.settings-icon:hover,
-.settings-icon:active {
-    box-shadow: none !important;
-}
         .close-settings {
             position: absolute;
             top: 15px;
@@ -596,9 +578,9 @@
             cursor: pointer;
             transition: all 0.3s ease;
         }
-        .close-settings:hover,
-        .close-settings:active {
+        .close-settings:hover {
             transform: rotate(90deg);
+            color: var(--primary-color);
         }
         .settings-section {
             margin-bottom: 20px;
@@ -672,10 +654,12 @@
             cursor: not-allowed;
             opacity: 0.6;
         }
+        /* موبایل: مخفی کردن گزینه‌های اضافی */
         .mobile-only { display: none; }
         body.mobile .mobile-only { display: block; }
         body.desktop .desktop-only { display: block; }
         body.mobile .desktop-only { display: none; }
+        /* استایل برای پیام هشدار کنتراست */
         .contrast-warning {
             color: #ff6b6b;
             background: rgba(255, 107, 107, 0.1);
@@ -686,74 +670,55 @@
             display: none;
             text-align: right;
         }
-		.settings-content::-webkit-scrollbar {
-    width: 8px;
-}
-.settings-content::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 4px;
-}
-.settings-content::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.3);
-    border-radius: 4px;
-}
-.settings-content::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.5);
-}
-.settings-content {
-    scrollbar-width: thin;
-    scrollbar-color: rgba(255, 255, 255, 0.3) rgba(255, 255, 255, 0.1);
-    border-radius: 5px;
-}
 
-/* ========== POPUP & OVERLAY STYLES ========== */
-#popupOverlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(3px);
-    -webkit-backdrop-filter: blur(3px);
-    z-index: 999998;
-    display: none;
-}
-.simple-mobile-popup {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    max-width: 340px;
-    width: 90%;
-    background: #ffffff;
-    color: #333;
-    padding: 20px;
-    border-radius: 16px;
-    box-shadow: 0 8px 25px rgba(0,0,0,0.3);
-    font-size: 0.95rem;
-    line-height: 1.7;
-    z-index: 999999;
-    display: none;
-    text-align: center;
-}
-.simple-mobile-popup .ds-icon i {
-    font-size: 1.8rem;
-    color: #735af2;
-    margin-bottom: 12px;
-}
-.simple-mobile-popup button {
-    margin-top: 16px;
-    background: #735af2;
-    color: white;
-    border: none;
-    padding: 10px;
-    border-radius: 10px;
-    cursor: pointer;
-    width: 100%;
-    font-size: 1rem;
-    font-weight: 600;
-}
+        /* ========== POPUP & OVERLAY STYLES ========== */
+        #popupOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(3px);
+            -webkit-backdrop-filter: blur(3px);
+            z-index: 999998;
+            display: none;
+        }
+        .simple-mobile-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            max-width: 340px;
+            width: 90%;
+            background: #ffffff;
+            color: #333;
+            padding: 20px;
+            border-radius: 16px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+            font-size: 0.95rem;
+            line-height: 1.7;
+            z-index: 999999;
+            display: none;
+            text-align: center;
+        }
+        .simple-mobile-popup .ds-icon i {
+            font-size: 1.8rem;
+            color: #735af2;
+            margin-bottom: 12px;
+        }
+        .simple-mobile-popup button {
+            margin-top: 16px;
+            background: #735af2;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 10px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 1rem;
+            font-weight: 600;
+        }
     </style>
 </head>
 <body>
@@ -782,7 +747,6 @@
             طراحی و ساخت توسط ⦙ سعید شیخ احمد صفاری
         </div>
     </div>
-
     <div class="main-content" id="mainContent">
         <div class="tabs-container" id="tabsContainer">
             <div class="tabs-scroll-container" id="tabsScrollContainer">
@@ -828,9 +792,8 @@
             <iframe src="calculator/index.html"></iframe>
         </div>
     </div>
-
     <button class="pwa-install-btn" id="pwaInstallButton">📥 نصب برنامه</button>
-
+    <!-- Settings Modal -->
     <div id="settingsModal">
         <div class="settings-content">
             <span class="close-settings" onclick="toggleSettings()">&times;</span>
@@ -883,11 +846,12 @@
     </div>
 
     <script>
-        // ==================== DEVICE & POPUP ====================
+        // ==================== DETECT DEVICE TYPE ====================
         function isMobileDevice() {
             return /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
         }
         function detectDeviceType() {
+            // اگر موبایل یا تبلت باشد، هیچ تغییری اعمال نمی‌شود
             if (isMobileDevice()) {
                 document.body.classList.add('mobile');
                 document.body.classList.remove('desktop');
@@ -896,6 +860,8 @@
                 document.body.classList.remove('mobile');
             }
         }
+
+        // ==================== POPUP FOR MOBILE ====================
         function detectSimplePopup() {
             const ua = navigator.userAgent || navigator.vendor || window.opera;
             const isMobileOS = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(ua);
@@ -914,17 +880,22 @@
             document.getElementById("popupOverlay").style.display = "none";
         }
 
-        // ==================== THEME & UI ====================
+        // ==================== RESPONSIVE TABS FOR DESKTOP ONLY ====================
         function handleDesktopResponsiveTabs() {
             const tabsContainer = document.getElementById('tabsContainer');
             const windowWidth = window.innerWidth;
+            // فقط برای دسکتاپ
             if (document.body.classList.contains('desktop')) {
+                // حذف کلاس قبلی
                 tabsContainer.classList.remove('icons-only');
+                // فقط در سایزهای بسیار کوچک دسکتاپ (600px و پایین‌تر) حالت آیکون فعال شود
                 if (windowWidth <= 600) {
                     tabsContainer.classList.add('icons-only');
                 }
             }
         }
+
+        // ==================== DYNAMIC THEME COLOR ====================
         function setThemeColor(color) {
             let meta = document.querySelector('meta[name=theme-color]');
             if (!meta) {
@@ -944,10 +915,14 @@
             if (window.innerWidth <= 480) {
                 setThemeColor(getComputedStyle(document.documentElement).getPropertyValue('--primary-color').trim());
             } else {
+                // برای دسکتاپ، از رنگ اول گرادیان استفاده کن
                 const gradient = getComputedStyle(document.documentElement).getPropertyValue('--bg-gradient').trim();
                 setThemeColor(gradient.match(/#[\da-fA-F]{6}/)?.[0] || '#735af2');
             }
         }
+
+        // ==================== CONTRAST CHECK FUNCTIONS ====================
+        // توابع پایه (لومیننس و کنتراست)
         function hexToRgb(hex) {
             const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
             return result ? {
@@ -967,21 +942,28 @@
             const darker = Math.min(lum1, lum2);
             return (brighter + 0.05) / (darker + 0.05);
         }
+        // تابع تحلیل عناصر (اسکن متن‌ها، دکمه‌ها، لینک‌ها، تب‌ها و غیره)
         function analyzeElements(bgColor, textColor) {
+            // عناصر کلیدی برای چک: متن‌ها، عنوان‌ها، دکمه‌ها، تب‌ها، لیبل‌ها
             const elements = document.querySelectorAll('h1, p, label, button, .tab, .tab-text, .signature, .login-signature, .login-btn, input[type="text"], .settings-section h3');
             const bgLum = getLuminance(bgColor);
-            const textLum = getLuminance(textColor);
+            const textLum = getLuminance(textColor); // فرض: متن‌ها سفید (white) هستند
+            let hasIssue = false;
             for (let el of elements) {
-                if (el.textContent.trim().length > 0) {
+                if (el.textContent.trim().length > 0) { // فقط عناصر با متن
                     const isInteractive = el.tagName === 'BUTTON' || el.classList.contains('tab') || el.classList.contains('login-btn');
                     const minRatio = isInteractive ? 3 : 4.5;
                     const ratio = getContrastRatio(bgLum, textLum);
-                    if (ratio < minRatio) return false;
+                    if (ratio < minRatio) {
+                        hasIssue = true;
+                        break; // اگر یکی مشکل داشته باشه، کافیه
+                    }
                 }
             }
-            return true;
+            return !hasIssue; // true اگر همه خوانا باشن
         }
-        function validateAndUpdateSaveButton(bgColor, textColor = '#ffffff') {
+        // تابع چک و آپدیت دکمه ذخیره
+        function validateAndUpdateSaveButton(bgColor, textColor = '#ffffff') { // متن پیش‌فرض سفید
             const isReadable = analyzeElements(bgColor, textColor);
             const saveBtn = document.getElementById('saveThemeBtn');
             const warning = document.getElementById('contrastWarning');
@@ -994,6 +976,8 @@
                 alert('⚠️ رنگ انتخابی باعث ناخوانایی متن‌ها، دکمه‌ها، تب‌ها و غیره می‌شه! لطفاً رنگ دیگه‌ای انتخاب کن تا کنتراست مناسب بشه.');
             }
         }
+
+        // ==================== THEME MANAGEMENT ====================
         const presets = {
             light: { gradient: 'linear-gradient(135deg, #735af2 0%, #5a3fd0 100%)', primary: '#735af2' },
             dark: { gradient: 'linear-gradient(135deg, #1e1e1e 0%, #333 100%)', primary: '#333' }
@@ -1003,6 +987,7 @@
             if (saved) {
                 const settings = JSON.parse(saved);
                 applyTheme(settings);
+                // آپدیت UI
                 document.getElementById('presetSelect').value = settings.preset || 'light';
                 document.getElementById('hexInput').value = settings.primary;
                 document.getElementById('colorInput').value = settings.primary;
@@ -1011,10 +996,12 @@
                 }
                 document.getElementById('glassSwitch').checked = settings.glass;
             } else {
+                // پیش‌فرض روشن
                 document.getElementById('presetSelect').value = 'light';
                 document.getElementById('hexInput').value = '#735af2';
                 document.getElementById('colorInput').value = '#735af2';
             }
+            // چک اولیه کنتراست بعد از لود
             setTimeout(() => validateAndUpdateSaveButton(document.documentElement.style.getPropertyValue('--bg-gradient') || '#735af2'), 100);
         }
         function applyTheme(settings) {
@@ -1050,12 +1037,14 @@
             const primary = hex.startsWith('#') ? hex : '#' + hex;
             let gradient = primary;
             if (isGradient && !isMobileDevice()) {
+                // ساده‌سازی: از primary به عنوان رنگ اول و تیره‌تر برای دوم
                 const darker = shadeColor(primary, -20);
                 gradient = `linear-gradient(135deg, ${primary} 0%, ${darker} 100%)`;
             }
             document.documentElement.style.setProperty('--primary-color', primary);
             document.documentElement.style.setProperty('--bg-gradient', gradient);
             updateThemeColor();
+            // چک کنتراست بعد از پیش‌نمایش
             validateAndUpdateSaveButton(gradient);
         }
         function updateHexFromPreset() {
@@ -1086,10 +1075,11 @@
                 const darker = shadeColor(primary, -20);
                 gradient = `linear-gradient(135deg, ${primary} 0%, ${darker} 100%)`;
             }
-            const isReadable = analyzeElements(gradient, '#ffffff');
+            // چک نهایی کنتراست قبل از ذخیره
+            const isReadable = analyzeElements(gradient, '#ffffff'); // متن سفید
             if (!isReadable) {
                 alert('❌ نمی‌تونم ذخیره کنم – رنگ انتخابی ناخواناست! لطفاً رنگ دیگه‌ای انتخاب کن.');
-                return;
+                return; // ذخیره نکن
             }
             const settings = {
                 preset,
@@ -1107,27 +1097,35 @@
             const modal = document.getElementById('settingsModal');
             modal.style.display = modal.style.display === 'flex' ? 'none' : 'flex';
         }
+        // بستن modal با کلیک خارج
         document.getElementById('settingsModal').addEventListener('click', function(e) {
             if (e.target === this) toggleSettings();
         });
+
+        // ==================== VISUAL FIXES FOR GLASS EFFECT ====================
         function applyVisualFixes() {
+            // این تابع مشکلات بصری backdrop-filter را رفع می‌کند
             const elements = document.querySelectorAll('.login-container, .tabs-container, .setup-guide, .signature, .login-signature, .tab');
             elements.forEach(element => {
+                // اطمینان از اینکه border-radius به درستی اعمال شده
                 const computedStyle = window.getComputedStyle(element);
                 const borderRadius = computedStyle.borderRadius;
+                // اگر border-radius مشکل دارد، آن را تنظیم کن
                 if (borderRadius === '0px' && element.classList.contains('login-container')) {
                     element.style.borderRadius = '20px';
                 }
             });
         }
 
-        // ==================== AUTH & TABS ====================
+        // ==================== AUTHENTICATION ====================
         const secretKey = 'JBSWY3DPEHPK3PXP';
         const verifyOtpBtn = document.getElementById('verifyOtpBtn');
         const otpInput = document.getElementById('otp');
         const verifyError = document.getElementById('verifyError');
         const loginPage = document.getElementById('loginPage');
         const mainContent = document.getElementById('mainContent');
+
+        // تبدیل Base32 به Hex
         function base32ToHex(base32) {
             const base32Chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
             let bits = '';
@@ -1144,6 +1142,8 @@
             }
             return hex;
         }
+
+        // تولید کد TOTP
         function generateTOTP() {
             try {
                 const time = Math.floor(Date.now() / 1000 / 30);
@@ -1162,6 +1162,8 @@
                 return null;
             }
         }
+
+        // بررسی کد وارد شده
         function verifyOTP(enteredOtp) {
             for (let i = -1; i <= 1; i++) {
                 const testTime = Math.floor(Date.now() / 1000 / 30) + i;
@@ -1172,6 +1174,8 @@
             }
             return false;
         }
+
+        // تولید کد با زمان مشخص
         function generateTOTPWithTime(timeValue) {
             try {
                 const timeHex = CryptoJS.enc.Hex.parse(
@@ -1189,6 +1193,8 @@
                 return null;
             }
         }
+
+        // رویداد کلیک برای ورود
         verifyOtpBtn.addEventListener('click', function() {
             const enteredOtp = otpInput.value.trim();
             if (enteredOtp.length !== 6 || isNaN(enteredOtp)) {
@@ -1201,6 +1207,7 @@
                 mainContent.style.display = 'flex';
                 sessionStorage.setItem('cst_authenticated', 'true');
                 sessionStorage.setItem('cst_login_time', new Date().getTime());
+                // فعال کردن اسکرول موس برای تب‌ها بعد از لاگین
                 initMouseWheelScroll();
             } else {
                 verifyError.textContent = 'کد نامعتبر است';
@@ -1212,26 +1219,35 @@
                 }, 5000);
             }
         });
+
+        // اجازه ورود با Enter
         otpInput.addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
                 verifyOtpBtn.click();
             }
         });
+
+        // بررسی اگر کاربر قبلاً در این session وارد شده
         if (sessionStorage.getItem('cst_authenticated') === 'true') {
             loginPage.style.display = 'none';
             mainContent.style.display = 'flex';
+            // فعال کردن اسکرول موس برای تب‌ها
             setTimeout(initMouseWheelScroll, 100);
         } else {
             loginPage.style.display = 'block';
             mainContent.style.display = 'none';
         }
+
+        // تمرکز روی فیلد کد
         window.addEventListener('load', () => {
             if (loginPage.style.display !== 'none') {
-                setTimeout(() => {
+                 setTimeout(() => {
                     otpInput.focus();
                 }, 500);
             }
         });
+
+        // ==================== TAB MANAGEMENT ====================
         function openTab(n) {
             document.querySelectorAll('.tab').forEach((t, i) => {
                 t.classList.toggle('active', i === n);
@@ -1240,17 +1256,22 @@
                 f.classList.toggle('active', i === n);
             });
         }
+
+        // ==================== ADVANCED SCROLL FOR TABS ====================
         function initMouseWheelScroll() {
             const tabsScrollContainer = document.getElementById('tabsScrollContainer');
             const tabs = document.getElementById('tabs');
             if (!tabsScrollContainer || !tabs) return;
+            // اسکرول با چرخ موس
             tabsScrollContainer.addEventListener('wheel', function(e) {
                 e.preventDefault();
                 this.scrollLeft += e.deltaY;
             });
+            // اسکرول با کلیک و درگ روی هر قسمتی از تب‌ها
             let isDragging = false;
             let startX;
             let scrollLeft;
+            // برای کل کانتینر تب‌ها
             tabsScrollContainer.addEventListener('mousedown', function(e) {
                 isDragging = true;
                 startX = e.pageX - this.offsetLeft;
@@ -1258,6 +1279,7 @@
                 this.style.cursor = 'grabbing';
                 this.style.userSelect = 'none';
             });
+            // برای خود تب‌ها (اگر کاربر روی تب کلیک کرد)
             tabs.addEventListener('mousedown', function(e) {
                 isDragging = true;
                 startX = e.pageX - tabsScrollContainer.offsetLeft;
@@ -1277,6 +1299,7 @@
                 const walk = (x - startX) * 2;
                 tabsScrollContainer.scrollLeft = scrollLeft - walk;
             });
+            // برای تاچ دیوایس‌ها
             let touchStartX;
             let touchScrollLeft;
             tabsScrollContainer.addEventListener('touchstart', function(e) {
@@ -1299,7 +1322,7 @@
             });
         }
 
-        // ==================== PWA ====================
+        // ==================== PWA INSTALL ====================
         let deferredPrompt;
         const pwaInstallButton = document.getElementById('pwaInstallButton');
         let installPromptTimeout;
@@ -1337,6 +1360,8 @@
             hideInstallButton();
             deferredPrompt = null;
         });
+
+        // ثبت Service Worker
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', function() {
                 navigator.serviceWorker.register('/cst/sw.js')
@@ -1351,13 +1376,16 @@
 
         // ==================== INIT ====================
         document.addEventListener('DOMContentLoaded', () => {
-            detectSimplePopup(); // ✅ مهم: هر بار نمایش داده شود
             detectDeviceType();
+            detectSimplePopup(); // ✅ اضافه شده: نمایش پاپ‌آپ
             loadTheme();
             updateThemeColor();
             handleDesktopResponsiveTabs();
+            // اعمال فیکس‌های بصری برای جلوگیری از خطوط شیشه‌ای
             setTimeout(applyVisualFixes, 100);
         });
+
+        // اعمال در تغییر سایز صفحه
         window.addEventListener('resize', () => {
             updateThemeColor();
             handleDesktopResponsiveTabs();
