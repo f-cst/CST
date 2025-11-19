@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calculator Pro Formula 4</title>
-<style>
+    <style>
         :root {
             --bg-color: #f5f5f5;
             --container-bg: white;
@@ -19,6 +19,8 @@
             --result-bg: #f8f9fa;
             --error-color: #e74c3c;
             --error-bg: #fadbd8;
+            --success-color: #27ae60;
+            --success-bg: #d5f4e6;
             --header-color: #2c3e50;
             --table-header: #34495e;
             --table-row-even: #f8f9fa;
@@ -27,10 +29,6 @@
             --menu-border: #e0e0e0;
             --category-bg: #e8f4fd;
             --category-border: #3498db;
-            --signature-bg-light: rgba(0, 0, 0, 0.05);
-            --signature-text-light: #666;
-            --signature-bg-dark: rgba(255, 255, 255, 0.1);
-            --signature-text-dark: white;
         }
         * {
             box-sizing: border-box;
@@ -53,6 +51,8 @@
             --result-bg: #3d3d3d;
             --error-color: #ff6b6b;
             --error-bg: #4a2a2a;
+            --success-color: #2ecc71;
+            --success-bg: #1e3a2e;
             --header-color: #70a1ff;
             --table-header: #404040;
             --table-row-even: #3d3d3d;
@@ -62,1185 +62,1055 @@
             --category-bg: #2a4d6e;
             --category-border: #3498db;
         }
-
-    * {
-        box-sizing: border-box;
-    }
-
-    body {
-        font-family: Tahoma, Arial, sans-serif;
-        background-color: var(--bg-color);
-        margin: 0;
-        padding: 20px;
-        color: var(--text-color);
-        transition: all 0.3s ease;
-    }
-
-    .container {
-        max-width: 1200px;
-        margin: 0 auto;
-        background-color: var(--container-bg);
-        padding: 20px;
-        border-radius: 8px;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        transition: all 0.3s ease;
-    }
-
-    .header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 20px;
-        flex-wrap: wrap;
-        position: relative;
-        min-height: 60px;
-    }
-
-    h1, h2, h3 {
-        color: var(--header-color);
-        margin: 0 0 15px 0;
-    }
-
-    .theme-toggle {
-        background: none;
-        border: none;
-        font-size: 24px;
-        cursor: pointer;
-        color: var(--text-color);
-        transition: transform 0.3s ease;
-        position: absolute;
-        left: 0;
-        top: 50%;
-        transform: translateY(-50%);
-        z-index: 101;
-        padding: 8px 12px;
-    }
-
-    .theme-toggle:hover {
-        transform: translateY(-50%) scale(1.1);
-        background-color: transparent !important;
-    }
-
-    /* استایل‌های تب‌ها - بهبود یافته برای اسکرول */
-    .tabs {
-        display: flex;
-        margin-bottom: 20px;
-        border-bottom: 1px solid var(--input-border);
-        overflow-x: auto;
-        scroll-behavior: smooth;
-        -webkit-overflow-scrolling: touch;
-        scrollbar-width: thin;
-        scrollbar-color: var(--button-primary) var(--bg-color);
-        padding-bottom: 5px;
-        cursor: grab;
-    }
-
-    .tabs::-webkit-scrollbar {
-        height: 8px;
-    }
-
-    .tabs::-webkit-scrollbar-track {
-        background: var(--bg-color);
-        border-radius: 4px;
-    }
-
-    .tabs::-webkit-scrollbar-thumb {
-        background: var(--button-primary);
-        border-radius: 4px;
-    }
-
-    .tabs::-webkit-scrollbar-thumb:hover {
-        background: var(--button-primary-hover);
-    }
-
-    .tabs:active {
-        cursor: grabbing;
-    }
-
-    .tab {
-        padding: 12px 20px;
-        cursor: pointer;
-        border: 1px solid transparent;
-        border-bottom: none;
-        border-radius: 5px 5px 0 0;
-        margin-right: 5px;
-        transition: all 0.3s ease;
-        white-space: nowrap;
-        flex-shrink: 0;
-        position: relative;
-    }
-
-    .tab.active {
-        background-color: var(--button-primary);
-        color: white;
-    }
-
-    .tab:hover:not(.active) {
-        background-color: var(--result-bg);
-    }
-
-    .tab-content {
-        display: none;
-    }
-
-    .tab-content.active {
-        display: block;
-    }
-
-    /* منوی همبرگری برای موبایل - کاملاً اصلاح شده */
-    .mobile-menu-toggle {
-        display: none;
-        flex-direction: column;
-        justify-content: space-around;
-        width: 2.5rem;
-        height: 2.5rem;
-        background: transparent;
-        border: none;
-        cursor: pointer;
-        padding: 0;
-        position: absolute;
-        right: 0;
-        top: 50%;
-        transform: translateY(-50%);
-        z-index: 100;
-    }
-
-    .mobile-menu-toggle span {
-        display: block;
-        width: 2.5rem;
-        height: 3px;
-        background-color: var(--text-color);
-        border-radius: 10px;
-        transition: all 0.3s linear;
-        position: relative;
-        transform-origin: 1px;
-    }
-
-    .mobile-menu-toggle.active span:nth-child(1) {
-        transform: rotate(45deg);
-    }
-
-    .mobile-menu-toggle.active span:nth-child(2) {
-        opacity: 0;
-    }
-
-    .mobile-menu-toggle.active span:nth-child(3) {
-        transform: rotate(-45deg);
-    }
-
-    .mobile-menu-toggle:hover {
-        background-color: transparent !important;
-    }
-
-    .mobile-menu-toggle:active,
-    .mobile-menu-toggle:focus {
-        background-color: transparent !important;
-        outline: none;
-        border: none !important;
-        box-shadow: none !important;
-    }
-
-    .mobile-tabs {
-        display: none;
-        flex-direction: column;
-        margin-bottom: 20px;
-        background-color: var(--menu-bg);
-        border-radius: 8px;
-        overflow: hidden;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-        border: 1px solid var(--menu-border);
-    }
-
-    .mobile-tab {
-        padding: 15px 20px;
-        cursor: pointer;
-        border-bottom: 1px solid var(--input-border);
-        transition: all 0.3s ease;
-        font-size: 16px;
-        font-weight: 500;
-    }
-
-    .mobile-tab:last-child {
-        border-bottom: none;
-    }
-
-    .mobile-tab.active {
-        background-color: var(--button-primary);
-        color: white;
-    }
-
-    .mobile-tab:hover:not(.active) {
-        background-color: var(--result-bg);
-    }
-
-    .input-group {
-        margin-bottom: 20px;
-    }
-
-    .input-row {
-        display: flex;
-        margin-bottom: 15px;
-        align-items: flex-start;
-        flex-wrap: wrap;
-    }
-
-    .input-container {
-        flex: 1;
-        padding: 0 10px;
-        min-width: 200px;
-    }
-
-    .results-container {
-        flex: 1;
-        padding: 0 10px;
-        min-width: 200px;
-    }
-
-    label {
-        display: block;
-        margin-bottom: 5px;
-        font-weight: bold;
-    }
-
-    input[type="text"], input[type="date"], input[type="number"], select {
-        width: 100%;
-        padding: 10px;
-        border: 1px solid var(--input-border);
-        border-radius: 4px;
-        box-sizing: border-box;
-        font-size: 16px;
-        background-color: var(--container-bg);
-        color: var(--text-color);
-        transition: border-color 0.3s;
-    }
-
-    input:focus, select:focus {
-        outline: none;
-        border-color: var(--button-primary);
-    }
-
-    .button-group {
-        display: flex;
-        justify-content: center;
-        gap: 10px;
-        margin-top: 20px;
-        flex-wrap: wrap;
-    }
-
-    button {
-        padding: 10px 20px;
-        background-color: var(--button-primary);
-        color: white;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-        font-size: 16px;
-        transition: background-color 0.3s;
-    }
-
-    button:hover {
-        background-color: var(--button-primary-hover);
-    }
-
-    button.success {
-        background-color: var(--button-success);
-    }
-
-    button.success:hover {
-        background-color: var(--button-success-hover);
-    }
-
-    button.danger {
-        background-color: var(--button-secondary);
-    }
-
-    button.danger:hover {
-        background-color: var(--button-secondary-hover);
-    }
-
-    #resetBtn {
-        background-color: var(--button-secondary);
-    }
-
-    #resetBtn:hover {
-        background-color: var(--button-secondary-hover);
-    }
-
-    .result {
-        padding: 10px;
-        margin-bottom: 5px;
-        border-radius: 4px;
-        background-color: var(--result-bg);
-        cursor: pointer;
-        transition: all 0.2s ease;
-        position: relative;
-        overflow: hidden;
-        border: 1px solid var(--input-border);
-    }
-
-    .result:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        border-color: var(--button-primary);
-    }
-
-    .result:active {
-        transform: translateY(0);
-    }
-
-    .result.copied::after {
-        content: "کپی شد!";
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background-color: rgba(46, 204, 113, 0.9);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: white;
-        font-weight: bold;
-        animation: fadeOut 1.5s forwards;
-    }
-
-    @keyframes fadeOut {
-        0% { opacity: 1; }
-        70% { opacity: 1; }
-        100% { opacity: 0; }
-    }
-
-    .error {
-        color: var(--error-color);
-        background-color: var(--error-bg);
-    }
-
-    .instructions {
-        margin-top: 20px;
-        padding: 10px;
-        background-color: var(--result-bg);
-        border-radius: 4px;
-        font-size: 14px;
-    }
-
-    /* استایل‌های جدول برای دسکتاپ - بهبود یافته برای اسکرول */
-    .table-container {
-        overflow-x: auto;
-        overflow-y: auto; /* تغییر از hidden به auto برای فعال کردن اسکرول عمودی */
-        max-height: 60vh; /* محدود کردن ارتفاع برای ایجاد اسکرول عمودی در صورت نیاز */
-        margin: 20px 0;
-        cursor: grab;
-        scroll-behavior: smooth;
-        -webkit-overflow-scrolling: touch;
-        scrollbar-width: thin;
-        scrollbar-color: var(--button-primary) var(--bg-color);
-        padding-bottom: 5px;
-    }
-
-    .table-container::-webkit-scrollbar {
-        width: 8px;
-        height: 8px;
-    }
-
-    .table-container::-webkit-scrollbar-track {
-        background: var(--bg-color);
-        border-radius: 4px;
-    }
-
-    .table-container::-webkit-scrollbar-thumb {
-        background: var(--button-primary);
-        border-radius: 4px;
-    }
-
-    .table-container::-webkit-scrollbar-thumb:hover {
-        background: var(--button-primary-hover);
-    }
-
-    .table-container:active {
-        cursor: grabbing;
-    }
-
-    table {
-        width: 200%; /* افزایش عرض برای ایجاد اسکرول افقی واقعی */
-        border-collapse: collapse;
-        margin: 10px 0;
-        min-width: 1200px; /* حداقل عرض برای ستون‌های زیاد */
-    }
-
-    th, td {
-        padding: 12px 15px;
-        text-align: right;
-        border-bottom: 1px solid var(--input-border);
-        white-space: nowrap;
-        user-select: text; /* فعال کردن انتخاب متن */
-    }
-
-    th {
-        background-color: var(--table-header);
-        color: white;
-        font-weight: bold;
-        position: sticky;
-        top: 0;
-    }
-
-    tr:nth-child(even) {
-        background-color: var(--table-row-even);
-    }
-
-    tr:hover {
-        background-color: var(--table-row-hover);
-    }
-
-    .table-cell {
-        cursor: pointer;
-        transition: all 0.2s ease;
-    }
-
-    .table-cell:hover {
-        background-color: var(--table-row-hover);
-        transform: translateY(-1px);
-    }
-
-    .table-cell.copied {
-        background-color: var(--success-bg) !important;
-        color: var(--success-color) !important;
-    }
-
-    .action-buttons {
-        display: flex;
-        gap: 5px;
-    }
-
-    .action-btn {
-        padding: 5px 10px;
-        font-size: 12px;
-        border-radius: 3px;
-    }
-
-    /* استایل‌های کارت برای موبایل */
-    .mobile-cards-container {
-        display: none;
-        flex-direction: column;
-        gap: 15px;
-        margin: 20px 0;
-    }
-
-    .calculation-card {
-        background-color: var(--result-bg);
-        border-radius: 8px;
-        padding: 15px;
-        border: 1px solid var(--input-border);
-        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    }
-
-    .card-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 10px;
-        padding-bottom: 10px;
-        border-bottom: 1px solid var(--input-border);
-    }
-
-    .card-date {
-        font-weight: bold;
-        color: var(--header-color);
-    }
-
-    .card-currency {
-        background-color: var(--button-primary);
-        color: white;
-        padding: 3px 8px;
-        border-radius: 4px;
-        font-size: 12px;
-    }
-
-    .card-content {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 10px;
-    }
-
-    .card-item {
-        display: flex;
-        flex-direction: column;
-    }
-
-    .card-label {
-        font-size: 12px;
-        color: var(--text-color);
-        opacity: 0.7;
-        margin-bottom: 3px;
-    }
-
-    .card-value {
-        cursor: pointer;
-        transition: all 0.2s ease;
-        font-weight: bold;
-        font-size: 14px;
-        padding: 4px;
-        border-radius: 3px;
-    }
-
-    .card-value:hover {
-        background-color: var(--button-primary);
-        color: white;
-    }
-
-    .card-value.copied {
-        background-color: var(--success-bg) !important;
-        color: var(--success-color) !important;
-    }
-
-    .card-actions {
-        margin-top: 10px;
-        display: flex;
-        justify-content: flex-end;
-        gap: 5px;
-    }
-
-    /* استایل‌های بهبود یافته برای مدیریت جفت ارزها */
-    .category-section {
-        margin: 8px 0;
-        padding: 12px;
-        background-color: var(--category-bg);
-        border-radius: 8px;
-        border: 1px solid var(--category-border);
-        transition: all 0.3s ease;
-    }
-
-    .category-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 10px;
-        padding: 8px 12px;
-        background-color: var(--container-bg);
-        border-radius: 6px;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        border: 1px solid var(--input-border);
-    }
-
-    .category-header:hover {
-        background-color: var(--result-bg);
-    }
-
-    .category-title {
-        font-size: 16px;
-        font-weight: bold;
-        color: var(--header-color);
-        flex: 1;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-    }
-
-    .category-title::before {
-        content: "📁";
-        font-size: 14px;
-    }
-
-    .category-actions {
-        display: flex;
-        gap: 6px;
-        flex-wrap: nowrap;
-    }
-
-    .category-actions button {
-        padding: 6px 8px;
-        min-width: auto;
-        font-size: 14px;
-    }
-
-    .icon-btn {
-        background: none;
-        border: none;
-        cursor: pointer;
-        padding: 6px 8px;
-        border-radius: 4px;
-        transition: all 0.2s ease;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        min-width: 32px;
-    }
-
-    .edit-icon {
-        background-color: var(--button-primary);
-        color: white;
-    }
-
-    .edit-icon:hover {
-        background-color: var(--button-primary-hover);
-    }
-
-    .delete-icon {
-        background-color: var(--button-secondary);
-        color: white;
-    }
-
-    .delete-icon:hover {
-        background-color: var(--button-secondary-hover);
-    }
-
-    .category-pairs {
-        display: flex;
-        flex-direction: column;
-        gap: 2px;
-        margin-top: 8px;
-        transition: all 0.3s ease;
-    }
-
-    .category-pairs.collapsed {
-        display: none;
-    }
-
-    /* استایل‌های بهبود یافته برای آیتم‌های جفت ارز */
-    .currency-pair-item {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 6px 8px;
-        margin: 1px 0;
-        background-color: var(--result-bg);
-        border-radius: 4px;
-        border: 1px solid var(--input-border);
-        transition: all 0.3s ease;
-        min-height: 36px;
-        cursor: grab;
-    }
-
-    .currency-pair-item:hover {
-        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        transform: translateY(-1px);
-    }
-
-    .currency-pair-item:active {
-        cursor: grabbing;
-    }
-
-    .currency-pair-item.dragging {
-        opacity: 0.5;
-        background-color: var(--button-primary);
-        color: white;
-    }
-
-    .currency-pair-item.drag-over {
-        border: 2px dashed var(--button-primary);
-        background-color: rgba(52, 152, 219, 0.1);
-    }
-
-    .currency-pair-name {
-        font-size: 14px;
-        font-weight: 500;
-        flex: 1;
-        text-align: right;
-        padding-left: 8px;
-    }
-
-    .currency-pair-actions {
-        display: flex;
-        gap: 4px;
-        align-items: center;
-        flex-wrap: nowrap;
-    }
-
-    .move-buttons {
-        display: flex;
-        gap: 2px;
-        margin-left: 6px;
-    }
-
-    .move-btn {
-        background: none;
-        border: none;
-        cursor: pointer;
-        padding: 3px 5px;
-        font-size: 11px;
-        color: var(--text-color);
-        opacity: 0.7;
-        transition: all 0.2s ease;
-        min-width: 24px;
-        border-radius: 3px;
-    }
-
-    .move-btn:hover {
-        opacity: 1;
-        background-color: var(--button-primary);
-        color: white;
-    }
-
-    .move-btn:disabled {
-        opacity: 0.3;
-        cursor: not-allowed;
-        background-color: transparent;
-        color: var(--text-color);
-    }
-
-    /* آیکون‌های ویرایش و حذف */
-    .action-btn {
-        padding: 4px 8px;
-        font-size: 11px;
-        border-radius: 4px;
-        min-width: 50px;
-        transition: all 0.2s ease;
-    }
-
-    .edit-currency-pair {
-        background-color: var(--button-primary);
-    }
-
-    .edit-currency-pair:hover {
-        background-color: var(--button-primary-hover);
-    }
-
-    .delete-currency-pair {
-        background-color: var(--button-secondary);
-    }
-
-    .delete-currency-pair:hover {
-        background-color: var(--button-secondary-hover);
-    }
-
-    /* استایل‌های مقایسه - بهبود یافته */
-    .comparison-container {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 20px;
-        margin: 20px 0;
-    }
-
-    .comparison-item {
-        flex: 1;
-        min-width: 300px;
-        padding: 15px;
-        background-color: var(--result-bg);
-        border-radius: 5px;
-        border: 1px solid var(--input-border);
-    }
-
-    .comparison-dates-container {
-        margin: 15px 0;
-    }
-
-    .comparison-date-row {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        margin-bottom: 10px;
-    }
-
-    .comparison-date-input {
-        flex: 1;
-    }
-
-    .remove-date-btn {
-        background-color: var(--button-secondary);
-        color: white;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-        padding: 8px 12px;
-        font-size: 14px;
-    }
-
-    .remove-date-btn:hover {
-        background-color: var(--button-secondary-hover);
-    }
-
-    /* استایل‌های مودال */
-    .modal {
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0,0,0,0.5);
-        z-index: 1100;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .modal-content {
-        background-color: var(--container-bg);
-        padding: 20px;
-        border-radius: 8px;
-        width: 90%;
-        max-width: 500px;
-        max-height: 90vh;
-        overflow-y: auto;
-    }
-
-    .modal-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 15px;
-    }
-
-    .close-modal {
-        background: none;
-        border: none;
-        font-size: 24px;
-        cursor: pointer;
-        color: var(--text-color);
-    }
-
-    .form-group {
-        margin-bottom: 15px;
-    }
-
-    /* استایل‌های اعلان */
-    .notification {
-        position: fixed;
-        top: 20px;
-        left: 50%;
-        transform: translateX(-50%);
-        padding: 15px 20px;
-        background-color: var(--button-success);
-        color: white;
-        border-radius: 5px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-        z-index: 1200;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        max-width: 400px;
-        animation: slideDown 0.3s ease;
-    }
-
-    .notification.error {
-        background-color: var(--error-color);
-    }
-
-    .notification.warning {
-        background-color: #f39c12;
-    }
-
-    @keyframes slideDown {
-        from {
-            top: -100px;
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Tahoma, Arial, sans-serif;
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 20px;
+            color: var(--text-color);
+            transition: all 0.3s ease;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: var(--container-bg);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            position: relative;
+            min-height: 60px; /* ارتفاع ثابت برای هدر */
+        }
+        h1, h2, h3 {
+            color: var(--header-color);
+            margin: 0 0 15px 0;
+        }
+        .theme-toggle {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--text-color);
+            transition: transform 0.3s ease;
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 101; /* بالاتر از منوی همبرگری */
+        }
+        .theme-toggle:hover {
+            transform: translateY(-50%) scale(1.1);
+        }
+        /* استایل‌های تب‌ها - بهبود یافته برای اسکرول */
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--input-border);
+            overflow-x: auto;
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: thin;
+            scrollbar-color: var(--button-primary) var(--bg-color);
+            padding-bottom: 5px;
+            cursor: grab;
+        }
+        .tabs::-webkit-scrollbar {
+            height: 8px;
+        }
+        .tabs::-webkit-scrollbar-track {
+            background: var(--bg-color);
+            border-radius: 4px;
+        }
+        .tabs::-webkit-scrollbar-thumb {
+            background: var(--button-primary);
+            border-radius: 4px;
+        }
+        .tabs::-webkit-scrollbar-thumb:hover {
+            background: var(--button-primary-hover);
+        }
+        .tabs:active {
+            cursor: grabbing;
+        }
+        .tab {
+            padding: 12px 20px;
+            cursor: pointer;
+            border: 1px solid transparent;
+            border-bottom: none;
+            border-radius: 5px 5px 0 0;
+            margin-right: 5px;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            flex-shrink: 0;
+            position: relative;
+        }
+        .tab.active {
+            background-color: var(--button-primary);
+            color: white;
+        }
+        .tab:hover:not(.active) {
+            background-color: var(--result-bg);
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        /* منوی همبرگری برای موبایل - کاملاً اصلاح شده */
+        .mobile-menu-toggle {
+            display: none;
+            flex-direction: column;
+            justify-content: space-around;
+            width: 2.5rem;
+            height: 2.5rem;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 100;
+        }
+        .mobile-menu-toggle span {
+            display: block;
+            width: 2.5rem;
+            height: 3px;
+            background-color: var(--text-color);
+            border-radius: 10px;
+            transition: all 0.3s linear;
+            position: relative;
+            transform-origin: 1px;
+        }
+        .mobile-menu-toggle.active span:nth-child(1) {
+            transform: rotate(45deg);
+        }
+        .mobile-menu-toggle.active span:nth-child(2) {
             opacity: 0;
         }
-        to {
-            top: 20px;
-            opacity: 1;
+        .mobile-menu-toggle.active span:nth-child(3) {
+            transform: rotate(-45deg);
         }
-    }
-
-    .notification-close {
-        background: none;
-        border: none;
-        color: white;
-        font-size: 18px;
-        cursor: pointer;
-        padding: 0;
-        margin-right: auto;
-    }
-
-    /* استایل‌های فیلتر و جستجو */
-    .filter-container {
-        display: flex;
-        gap: 10px;
-        margin: 15px 0;
-        flex-wrap: wrap;
-    }
-
-    .filter-item {
-        flex: 1;
-        min-width: 150px;
-    }
-
-    /* استایل‌های ریسپانسیو */
-    @media (max-width: 768px) {
-        body {
-            padding: 10px;
+        .mobile-menu-toggle:hover {
+            background-color: transparent !important;
         }
-        
-        .container {
-            padding: 15px;
+        .mobile-menu-toggle:active,
+        .mobile-menu-toggle:focus {
+            background-color: transparent !important;
+            outline: none;
+            border: none !important;
+            box-shadow: none !important;
         }
-        
-        .header {
-            flex-direction: row;
-            align-items: center;
-            padding-left: 45px;
-            padding-right: 45px;
-            min-height: 50px;
-        }
-        
-        .input-row {
-            flex-direction: column;
-        }
-        
-        .input-container, .results-container {
-            width: 100%;
-            padding: 0;
-            margin-bottom: 10px;
-        }
-        
-        .button-group {
-            flex-direction: column;
-        }
-        
-        .button-group button {
-            width: 100%;
-        }
-        
-        .filter-container {
-            flex-direction: column;
-        }
-        
-        .filter-item {
-            width: 100%;
-        }
-        
-        /* نمایش کارت‌ها در موبایل و مخفی کردن جدول */
-        .table-container {
-            display: none;
-        }
-        
-        .mobile-cards-container {
-            display: flex;
-        }
-        
-        .comparison-item {
-            min-width: 100%;
-        }
-        
-        h1 {
-            font-size: 18px;
-            text-align: center;
-            flex: 1;
-            margin: 0 5px;
-            padding: 0 10px;
-            line-height: 1.2;
-        }
-
-        .tabs {
-            display: none;
-            cursor: default;
-        }
-        
-        .mobile-menu-toggle {
-            display: flex;
-        }
-        
         .mobile-tabs {
             display: none;
+            flex-direction: column;
+            margin-bottom: 20px;
+            background-color: var(--menu-bg);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            border: 1px solid var(--menu-border);
         }
-        
-        /* بهبود نمایش جفت ارزها در موبایل */
-        .category-section {
+        .mobile-tab {
+            padding: 15px 20px;
+            cursor: pointer;
+            border-bottom: 1px solid var(--input-border);
+            transition: all 0.3s ease;
+            font-size: 16px;
+            font-weight: 500;
+        }
+        .mobile-tab:last-child {
+            border-bottom: none;
+        }
+        .mobile-tab.active {
+            background-color: var(--button-primary);
+            color: white;
+        }
+        .mobile-tab:hover:not(.active) {
+            background-color: var(--result-bg);
+        }
+        .input-group {
+            margin-bottom: 20px;
+        }
+        .input-row {
+            display: flex;
+            margin-bottom: 15px;
+            align-items: flex-start;
+            flex-wrap: wrap;
+        }
+        .input-container {
+            flex: 1;
+            padding: 0 10px;
+            min-width: 200px;
+        }
+        .results-container {
+            flex: 1;
+            padding: 0 10px;
+            min-width: 200px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="text"], input[type="date"], input[type="number"], select {
+            width: 100%;
             padding: 10px;
-            margin: 6px 0;
+            border: 1px solid var(--input-border);
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 16px;
+            background-color: var(--container-bg);
+            color: var(--text-color);
+            transition: border-color 0.3s;
         }
-        
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--button-primary);
+        }
+        .button-group {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: var(--button-primary);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: var(--button-primary-hover);
+        }
+        button.success {
+            background-color: var(--button-success);
+        }
+        button.success:hover {
+            background-color: var(--button-success-hover);
+        }
+        button.danger {
+            background-color: var(--button-secondary);
+        }
+        button.danger:hover {
+            background-color: var(--button-secondary-hover);
+        }
+        #resetBtn {
+            background-color: var(--button-secondary);
+        }
+        #resetBtn:hover {
+            background-color: var(--button-secondary-hover);
+        }
+        .result {
+            padding: 10px;
+            margin-bottom: 5px;
+            border-radius: 4px;
+            background-color: var(--result-bg);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid var(--input-border);
+        }
+        .result:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            border-color: var(--button-primary);
+        }
+        .result:active {
+            transform: translateY(0);
+        }
+        .result.copied::after {
+            content: "کپی شد!";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(46, 204, 113, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            animation: fadeOut 1.5s forwards;
+        }
+        .table-cell {
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .table-cell:hover {
+            background-color: var(--table-row-hover);
+            transform: translateY(-1px);
+        }
+        .table-cell.copied {
+            background-color: var(--success-bg) !important;
+            color: var(--success-color) !important;
+        }
+        .card-value {
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .card-value:hover {
+            background-color: var(--button-primary);
+            color: white;
+        }
+        .card-value.copied {
+            background-color: var(--success-bg) !important;
+            color: var(--success-color) !important;
+        }
+        @keyframes fadeOut {
+            0% { opacity: 1; }
+            70% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+        .below-low {
+            color: var(--error-color);
+            background-color: var(--error-bg);
+        }
+        .above-high {
+            color: var(--success-color);
+            background-color: var(--success-bg);
+        }
+        .error {
+            color: var(--error-color);
+            background-color: var(--error-bg);
+        }
+        .instructions {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: var(--result-bg);
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        /* استایل‌های جدول برای دسکتاپ - بهبود یافته برای اسکرول */
+        .table-container {
+            overflow-x: auto;
+            overflow-y: auto; /* تغییر از hidden به auto برای فعال کردن اسکرول عمودی */
+            max-height: 60vh; /* محدود کردن ارتفاع برای ایجاد اسکرول عمودی در صورت نیاز */
+            margin: 20px 0;
+            cursor: grab;
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: thin;
+            scrollbar-color: var(--button-primary) var(--bg-color);
+            padding-bottom: 5px;
+        }
+        .table-container::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        .table-container::-webkit-scrollbar-track {
+            background: var(--bg-color);
+            border-radius: 4px;
+        }
+        .table-container::-webkit-scrollbar-thumb {
+            background: var(--button-primary);
+            border-radius: 4px;
+        }
+        .table-container::-webkit-scrollbar-thumb:hover {
+            background: var(--button-primary-hover);
+        }
+        .table-container:active {
+            cursor: grabbing;
+        }
+        table {
+            width: 200%; /* افزایش عرض برای ایجاد اسکرول افقی واقعی */
+            border-collapse: collapse;
+            margin: 10px 0;
+            min-width: 1200px; /* حداقل عرض برای ستون‌های زیاد */
+        }
+        th, td {
+            padding: 12px 15px;
+            text-align: right;
+            border-bottom: 1px solid var(--input-border);
+            white-space: nowrap;
+            user-select: text; /* فعال کردن انتخاب متن */
+        }
+        th {
+            background-color: var(--table-header);
+            color: white;
+            font-weight: bold;
+            position: sticky;
+            top: 0;
+        }
+        tr:nth-child(even) {
+            background-color: var(--table-row-even);
+        }
+        tr:hover {
+            background-color: var(--table-row-hover);
+        }
+        .action-buttons {
+            display: flex;
+            gap: 5px;
+        }
+        .action-btn {
+            padding: 5px 10px;
+            font-size: 12px;
+            border-radius: 3px;
+        }
+        /* استایل‌های کارت برای موبایل */
+        .mobile-cards-container {
+            display: none;
+            flex-direction: column;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .calculation-card {
+            background-color: var(--result-bg);
+            border-radius: 8px;
+            padding: 15px;
+            border: 1px solid var(--input-border);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--input-border);
+        }
+        .card-date {
+            font-weight: bold;
+            color: var(--header-color);
+        }
+        .card-currency {
+            background-color: var(--button-primary);
+            color: white;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+        .card-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        .card-item {
+            display: flex;
+            flex-direction: column;
+        }
+        .card-label {
+            font-size: 12px;
+            color: var(--text-color);
+            opacity: 0.7;
+            margin-bottom: 3px;
+        }
+        .card-value {
+            font-weight: bold;
+            font-size: 14px;
+            transition: all 0.2s ease;
+            padding: 4px;
+            border-radius: 3px;
+        }
+        .card-actions {
+            margin-top: 10px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 5px;
+        }
+        /* استایل‌های مدیریت جفت ارز - بهبود یافته */
+        .category-section {
+            margin: 8px 0;
+            padding: 12px;
+            background-color: var(--category-bg);
+            border-radius: 8px;
+            border: 1px solid var(--category-border);
+            transition: all 0.3s ease;
+        }
         .category-header {
-            padding: 6px 10px;
-            flex-direction: row;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            padding: 8px 12px;
+            background-color: var(--container-bg);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid var(--input-border);
+        }
+        .category-header:hover {
+            background-color: var(--result-bg);
+        }
+        .category-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: var(--header-color);
+            flex: 1;
+            display: flex;
             align-items: center;
             gap: 8px;
         }
-        
+        .category-title::before {
+            content: "📁";
+            font-size: 14px;
+        }
         .category-actions {
-            justify-content: flex-end;
+            display: flex;
+            gap: 6px;
+            flex-wrap: nowrap;
         }
-        
-        .currency-pair-item {
-            padding: 5px 6px;
-            flex-direction: row;
-            align-items: center;
-            gap: 4px;
-            min-height: 32px;
-            cursor: default;
+        .category-actions button {
+            padding: 6px 8px;
+            min-width: auto;
+            font-size: 14px;
         }
-        
-        .currency-pair-name {
-            font-size: 12px;
-            padding-left: 4px;
-        }
-        
-        .currency-pair-actions {
-            flex-direction: row;
-            gap: 2px;
-        }
-        
-        .action-btn {
-            padding: 3px 6px;
-            font-size: 10px;
-            min-width: 40px;
-        }
-        
-        .move-buttons {
-            margin-left: 4px;
-            gap: 1px;
-        }
-        
-        .move-btn {
-            padding: 2px 3px;
-            font-size: 9px;
-            min-width: 20px;
-        }
-
         .icon-btn {
-            padding: 5px 6px;
-            min-width: 28px;
-            font-size: 12px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 6px 8px;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 32px;
         }
-    }
-
-    @media (max-width: 480px) {
-        .container {
-            padding: 10px;
+        .edit-icon {
+            background-color: var(--button-primary);
+            color: white;
         }
-        
-        .modal-content {
-            padding: 15px;
-            width: 95%;
+        .edit-icon:hover {
+            background-color: var(--button-primary-hover);
         }
-        
-        .card-content {
-            grid-template-columns: 1fr;
+        .delete-icon {
+            background-color: var(--button-secondary);
+            color: white;
         }
-        
-        .action-buttons {
+        .delete-icon:hover {
+            background-color: var(--button-secondary-hover);
+        }
+        .category-pairs {
+            display: flex;
             flex-direction: column;
+            gap: 2px;
+            margin-top: 8px;
+            transition: all 0.3s ease;
         }
-        
-        .header {
-            padding-left: 40px;
-            padding-right: 40px;
-            min-height: 45px;
+        .category-pairs.collapsed {
+            display: none;
         }
-        
-        h1 {
-            font-size: 16px;
-            margin: 0 2px;
-            padding: 0 5px;
-        }
-        
-        /* بهبود بیشتر برای موبایل‌های کوچک */
         .currency-pair-item {
-            padding: 4px 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 6px 8px;
+            margin: 1px 0;
+            background-color: var(--result-bg);
+            border-radius: 4px;
+            border: 1px solid var(--input-border);
+            transition: all 0.3s ease;
+            min-height: 36px;
+            cursor: grab;
         }
-        
+        .currency-pair-item:hover {
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            transform: translateY(-1px);
+        }
+        .currency-pair-item:active {
+            cursor: grabbing;
+        }
+        .currency-pair-item.dragging {
+            opacity: 0.5;
+            background-color: var(--button-primary);
+            color: white;
+        }
+        .currency-pair-item.drag-over {
+            border: 2px dashed var(--button-primary);
+            background-color: rgba(52, 152, 219, 0.1);
+        }
         .currency-pair-name {
-            font-size: 11px;
+            font-size: 14px;
+            font-weight: 500;
+            flex: 1;
+            text-align: right;
+            padding-left: 8px;
         }
-        
-        .action-btn {
-            padding: 2px 4px;
-            font-size: 9px;
-            min-width: 35px;
+        .currency-pair-actions {
+            display: flex;
+            gap: 4px;
+            align-items: center;
+            flex-wrap: nowrap;
         }
-        
+        .move-buttons {
+            display: flex;
+            gap: 2px;
+            margin-left: 6px;
+        }
         .move-btn {
-            padding: 1px 2px;
-            font-size: 8px;
-            min-width: 18px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 3px 5px;
+            font-size: 11px;
+            color: var(--text-color);
+            opacity: 0.7;
+            transition: all 0.2s ease;
+            min-width: 24px;
+            border-radius: 3px;
         }
-
-        .mobile-menu-toggle {
-            width: 2rem;
-            height: 2rem;
+        .move-btn:hover {
+            opacity: 1;
+            background-color: var(--button-primary);
+            color: white;
         }
-
-        .mobile-menu-toggle span {
-            width: 2rem;
+        .move-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+            background-color: transparent;
+            color: var(--text-color);
         }
-
-        .theme-toggle {
-            font-size: 20px;
-            padding: 6px 10px;
+        .edit-currency-pair {
+            background-color: var(--button-primary);
         }
+        .edit-currency-pair:hover {
+            background-color: var(--button-primary-hover);
+        }
+        .delete-currency-pair {
+            background-color: var(--button-secondary);
+        }
+        .delete-currency-pair:hover {
+            background-color: var(--button-secondary-hover);
+        }
+        /* استایل‌های مقایسه - بهبود یافته */
+        .comparison-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin: 20px 0;
+        }
+        .comparison-item {
+            flex: 1;
+            min-width: 300px;
+            padding: 15px;
+            background-color: var(--result-bg);
+            border-radius: 5px;
+            border: 1px solid var(--input-border);
+        }
+        .comparison-dates-container {
+            margin: 15px 0;
+        }
+        .comparison-date-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .comparison-date-input {
+            flex: 1;
+        }
+        .remove-date-btn {
+            background-color: var(--button-secondary);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            padding: 8px 12px;
+            font-size: 14px;
+        }
+        .remove-date-btn:hover {
+            background-color: var(--button-secondary-hover);
+        }
+        /* استایل‌های مودال */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 1100;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-content {
+            background-color: var(--container-bg);
+            padding: 20px;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--text-color);
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        /* استایل‌های اعلان */
+        .notification {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 15px 20px;
+            background-color: var(--button-success);
+            color: white;
+            border-radius: 5px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 1200;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            max-width: 400px;
+            animation: slideDown 0.3s ease;
+        }
+        .notification.error {
+            background-color: var(--error-color);
+        }
+        .notification.warning {
+            background-color: #f39c12;
+        }
+        @keyframes slideDown {
+            from {
+                top: -100px;
+                opacity: 0;
+            }
+            to {
+                top: 20px;
+                opacity: 1;
+            }
+        }
+        .notification-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            padding: 0;
+            margin-right: auto;
+        }
+        /* استایل‌های فیلتر و جستجو */
+        .filter-container {
+            display: flex;
+            gap: 10px;
+            margin: 15px 0;
+            flex-wrap: wrap;
+        }
+        .filter-item {
+            flex: 1;
+            min-width: 150px;
+        }
+        /* استایل‌های ریسپانسیو */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            .container {
+                padding: 15px;
+            }
+            .header {
+                flex-direction: row;
+                align-items: center;
+                padding-left: 45px; /* کاهش فاصله برای دکمه تاریک/روشن */
+                padding-right: 45px; /* کاهش فاصله برای منوی همبرگری */
+                min-height: 50px; /* ارتفاع کمتر در موبایل */
+            }
+            .input-row {
+                flex-direction: column;
+            }
+            .input-container, .results-container {
+                width: 100%;
+                padding: 0;
+                margin-bottom: 10px;
+            }
+            .button-group {
+                flex-direction: column;
+            }
+            .button-group button {
+                width: 100%;
+            }
+            .filter-container {
+                flex-direction: column;
+            }
+            .filter-item {
+                width: 100%;
+            }
+            /* نمایش کارت‌ها در موبایل و مخفی کردن جدول */
+            .table-container {
+                display: none;
+            }
+            .mobile-cards-container {
+                display: flex;
+            }
+            .comparison-item {
+                min-width: 100%;
+            }
+            h1 {
+                font-size: 18px; /* کاهش سایز فونت برای موبایل */
+                text-align: center;
+                flex: 1;
+                margin: 0 5px;
+                padding: 0 10px;
+                line-height: 1.2;
+            }
+            .tabs {
+                display: none;
+                cursor: default;
+            }
+            .mobile-menu-toggle {
+                display: flex;
+            }
+            .mobile-tabs {
+                display: none;
+            }
+            /* بهبود نمایش جفت ارزها در موبایل */
+            .category-section {
+                padding: 10px;
+                margin: 6px 0;
+            }
+            .category-header {
+                padding: 6px 10px;
+                flex-direction: row;
+                align-items: center;
+                gap: 8px;
+            }
+            .category-actions {
+                justify-content: flex-end;
+            }
+            .currency-pair-item {
+                padding: 5px 6px;
+                flex-direction: row;
+                align-items: center;
+                gap: 4px;
+                min-height: 32px;
+                cursor: default;
+            }
+            .currency-pair-name {
+                font-size: 12px;
+                padding-left: 4px;
+            }
+            .currency-pair-actions {
+                flex-direction: row;
+                gap: 2px;
+            }
+            .action-btn {
+                padding: 3px 6px;
+                font-size: 10px;
+                min-width: 40px;
+            }
+            .move-buttons {
+                margin-left: 4px;
+                gap: 1px;
+            }
+            .move-btn {
+                padding: 2px 3px;
+                font-size: 9px;
+                min-width: 20px;
+            }
+            .icon-btn {
+                padding: 5px 6px;
+                min-width: 28px;
+                font-size: 12px;
+            }
+            /* چیدمان جدید برای موبایل در تب ماشین حساب */
+            .mobile-input-order {
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+            }
+            .desktop-input-order {
+                display: none;
+            }
+            /* تنظیم موقعیت دکمه تاریک/روشن در موبایل */
+            .theme-toggle {
+                left: 0; /* چسباندن به لبه */
+                padding: 8px 10px;
+            }
+        }
+        @media (max-width: 480px) {
+            .container {
+                padding: 10px;
+            }
+            .modal-content {
+                padding: 15px;
+                width: 95%;
+            }
+            .card-content {
+                grid-template-columns: 1fr;
+            }
+            .action-buttons {
+                flex-direction: column;
+            }
+            .header {
+                padding-left: 40px;
+                padding-right: 40px;
+                min-height: 45px;
+            }
+            h1 {
+                font-size: 16px; /* کاهش بیشتر سایز فونت */
+                margin: 0 2px;
+                padding: 0 5px;
+            }
+            /* بهبود بیشتر برای موبایل‌های کوچک */
+            .currency-pair-item {
+                padding: 4px 5px;
+            }
+            .currency-pair-name {
+                font-size: 11px;
+            }
+            .action-btn {
+                padding: 2px 4px;
+                font-size: 9px;
+                min-width: 35px;
+            }
+            .move-btn {
+                padding: 1px 2px;
+                font-size: 8px;
+                min-width: 18px;
+            }
+            .mobile-menu-toggle {
+                width: 2rem;
+                height: 2rem;
+            }
+            .mobile-menu-toggle span {
+                width: 2rem;
+            }
+            .theme-toggle {
+                font-size: 20px; /* کاهش سایز آیکون */
+                padding: 6px 8px;
+            }
+        }
+        /* نمایش هر دو حالت در دسکتاپ */
+        @media (min-width: 769px) {
+            .mobile-cards-container {
+                display: none !important;
+            }
+            .table-container {
+                display: block !important;
+                cursor: grab;
+            }
+            .mobile-menu-toggle,
+            .mobile-tabs {
+                display: none !important;
+            }
+            .tabs {
+                display: flex !important;
+                cursor: grab;
+            }
+            .currency-pair-name {
+                font-size: 16px;
+            }
+            .mobile-input-order {
+                display: none !important;
+            }
+            .desktop-input-order {
+                display: grid !important;
+                grid-template-columns: 1fr 1fr;
+                gap: 15px;
+            }
+            .desktop-input-order .input-container:nth-child(1) {
+                grid-column: 1;
+                grid-row: 1;
+            }
+            .desktop-input-order .input-container:nth-child(2) {
+                grid-column: 2;
+                grid-row: 1;
+            }
+            .desktop-input-order .input-container:nth-child(3) {
+                grid-column: 1;
+                grid-row: 2;
+            }
+            .desktop-input-order .input-container:nth-child(4) {
+                grid-column: 2;
+                grid-row: 2;
+            }
+        }
+        /* استایل‌های جدید برای حذف دسته‌بندی */
+        .delete-options {
+            margin: 15px 0;
+            padding: 15px;
+            background-color: var(--result-bg);
+            border-radius: 5px;
+            border: 1px solid var(--input-border);
+        }
+        .delete-option {
+            margin: 10px 0;
+        }
+        .delete-option label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            font-weight: normal;
+        }
+        .delete-option input[type="radio"] {
+            width: auto;
+            margin: 0;
+        }
+        /* استایل‌های جدید برای نمایش نتایج */
+        .results-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        @media (max-width: 768px) {
+            .results-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    .signature {
+        text-align: center;
+        padding: 16px;
+        font-family: Vazirmatn, system-ui;
+        border-radius: 10px;
+        backdrop-filter: blur(5px);
+        font-size: 14px;
+        font-weight: 500;
+        display: block;
+        margin: 30px auto;
+        width: fit-content;
+        max-width: 90%;
+        box-sizing: border-box;
+        transition: all 0.3s ease;
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        background: rgba(0, 0, 0, 0.05);
+        color: #666;
     }
-
-    /* نمایش هر دو حالت در دسکتاپ */
-    @media (min-width: 769px) {
-        .mobile-cards-container {
-            display: none !important;
-        }
-        
-        .table-container {
-            display: block !important;
-            cursor: grab;
-        }
-        
-        .mobile-menu-toggle,
-        .mobile-tabs {
-            display: none !important;
-        }
-        
-        .tabs {
-            display: flex !important;
-            cursor: grab;
-        }
-        
-        .currency-pair-name {
-            font-size: 16px;
-        }
+    .dark-mode .signature {
+        background: rgba(255, 255, 255, 0.1);
+        color: white;
+        border: 1px solid rgba(255, 255, 255, 0.2);
     }
-
-    /* استایل‌های جدید برای حذف دسته‌بندی */
-    .delete-options {
-        margin: 15px 0;
-        padding: 15px;
-        background-color: var(--result-bg);
-        border-radius: 5px;
-        border: 1px solid var(--input-border);
-    }
-
-    .delete-option {
-        margin: 10px 0;
-    }
-
-    .delete-option label {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        cursor: pointer;
-        font-weight: normal;
-    }
-
-    .delete-option input[type="radio"] {
-        width: auto;
-        margin: 0;
-    }
-    
-.signature {
-    color: var(--signature-text-light);
-    text-align: center;
-    padding: 16px;
-    font-family: Vazirmatn, system-ui;
-    background: var(--signature-bg-light);
-    border-radius: 10px;
-    backdrop-filter: blur(5px);
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    font-size: 14px;
-    font-weight: 500;
-    display: block;
-    margin: 30px auto;
-    width: fit-content;
-    max-width: 90%;
-    box-sizing: border-box;
-    transition: all 0.3s ease;
-}
-
-.dark-mode .signature {
-    color: var(--signature-text-dark);
-    background: var(--signature-bg-dark);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-}@media
- only screen and (max-width: 768px) {
+@media only screen and (max-width: 768px) {
     .signature {
         font-size: 14px;
         padding: 15px;
     }
-}@media
- only screen and (max-width: 480px) {
+}
+@media only screen and (max-width: 480px) {
     .signature {
         font-size: 12px;
         padding: 13px;
@@ -1248,16 +1118,15 @@
 }
     </style>
 </head>
-
 <body>
     <div class="container">
         <div class="header">
-            <!-- تغییر در این بخش: محتوای دکمه به سه span تغییر یافت -->
-<button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="منو">
-    <span></span>
-    <span></span>
-    <span></span>
-</button>
+            <!-- دکمه همبرگر با سه span -->
+            <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="منو">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
             <h1>Calculator Pro Formula 4</h1>
             <button class="theme-toggle" id="themeToggle">🌙</button>
         </div>
@@ -1272,7 +1141,6 @@
             <div class="mobile-tab" data-tab="backup">پشتیبان‌گیری</div>
             <div class="mobile-tab" data-tab="delete-records">حذف رکورد</div>
         </div>
-
         <!-- تب‌های اصلی -->
         <div class="tabs" id="tabs">
             <div class="tab active" data-tab="calculator">ماشین حساب</div>
@@ -1282,23 +1150,19 @@
             <div class="tab" data-tab="backup">پشتیبان‌گیری</div>
             <div class="tab" data-tab="delete-records">حذف رکورد</div>
         </div>
- 
         <!-- تب ماشین حساب -->
         <div class="tab-content active" id="calculator-tab">
             <h2>محاسبه فرمول‌ها</h2>
-            
             <div class="form-group">
                 <label for="currencyPairSelect">جفت ارز:</label>
                 <select id="currencyPairSelect">
                     <option value="">-- انتخاب جفت ارز --</option>
                 </select>
             </div>
-            
             <div class="form-group">
                 <label for="calculationDate">تاریخ محاسبه:</label>
                 <input type="date" id="calculationDate">
             </div>
-            
             <div class="input-group">
                 <!-- چیدمان دسکتاپ (جدید) -->
                 <div class="input-row desktop-input-order">
@@ -1319,7 +1183,6 @@
                         <input type="text" id="input_current_low" placeholder="عدد فعلی کف را وارد کنید">
                     </div>
                 </div>
-                
                 <!-- چیدمان موبایل -->
                 <div class="input-row mobile-input-order">
                     <div class="input-container">
@@ -1340,18 +1203,14 @@
                     </div>
                 </div>
             </div>
-            
             <div class="button-group">
                 <button id="calculateBtn">محاسبه و ذخیره</button>
                 <button id="resetBtn">ریست</button>
             </div>
-
             <div class="results-grid" id="results_list">
                 <!-- نتایج اینجا نمایش داده می‌شوند -->
             </div>
-
             <div id="error_message" class="error" style="display: none; margin-top: 10px; padding: 10px; border-radius: 4px;"></div>
-
             <div class="instructions">
                 <p><strong>راهنما:</strong></p>
                 <ul>
@@ -1363,11 +1222,9 @@
                 </ul>
             </div>
         </div>
-        
         <!-- تب تاریخچه محاسبات -->
         <div class="tab-content" id="history-tab">
             <h2>تاریخچه محاسبات</h2>
-            
             <div class="filter-container">
                 <div class="filter-item">
                     <label for="filterCurrencyPair">جفت ارز:</label>
@@ -1375,13 +1232,11 @@
                         <option value="">همه جفت ارزها</option>
                     </select>
                 </div>
-                
                 <div class="filter-item">
                     <label for="filterDate">تاریخ:</label>
                     <input type="date" id="filterDate">
                 </div>
             </div>
-            
             <!-- جدول برای دسکتاپ -->
             <div class="table-container">
                 <table id="calculationsTable">
@@ -1405,28 +1260,23 @@
                     </tbody>
                 </table>
             </div>
-            
             <!-- کارت‌ها برای موبایل -->
             <div class="mobile-cards-container" id="mobileCardsContainer">
                 <!-- کارت‌ها اینجا نمایش داده می‌شوند -->
             </div>
-            
             <div id="noDataMessage" style="text-align: center; padding: 20px; display: none;">
                 هیچ داده‌ای یافت نشد.
             </div>
         </div>
-        
         <!-- تب مقایسه داده‌ها -->
         <div class="tab-content" id="comparison-tab">
             <h2>مقایسه داده‌ها</h2>
-            
             <div class="form-group">
                 <label for="comparisonCurrencyPair">جفت ارز برای مقایسه:</label>
                 <select id="comparisonCurrencyPair">
                     <option value="">-- انتخاب جفت ارز --</option>
                 </select>
             </div>
-            
             <div class="form-group">
                 <label>انتخاب تاریخ برای مقایسه:</label>
                 <div id="comparisonDatesContainer" class="comparison-dates-container">
@@ -1439,17 +1289,14 @@
                 </div>
                 <button type="button" id="addDateBtn" class="success">+ افزودن تاریخ</button>
             </div>
-            
             <div class="button-group">
                 <button id="compareDataBtn">مقایسه داده‌ها</button>
                 <button id="clearComparisonBtn" class="danger">پاک کردن</button>
             </div>
-            
             <div id="comparisonResults" class="comparison-container">
                 <!-- نتایج مقایسه اینجا نمایش داده می‌شوند -->
             </div>
         </div>
-        
         <!-- تب مدیریت جفت ارزها -->
         <div class="tab-content" id="currency-pairs-tab">
             <h2>مدیریت جفت ارزها و دسته‌بندی‌ها</h2>
@@ -1461,21 +1308,18 @@
                 <input type="text" id="newCategoryName" placeholder="مثلاً: فارکس، ارز دیجیتال">
                 <button id="addCategoryBtn" class="success" style="margin-top: 5px;">افزودن دسته‌بندی</button>
             </div>
-            
             <!-- بخش افزودن جفت ارز جدید -->
             <div class="form-group">
                 <h3><li>افزودن جفت ارز جدید</li></h3>
                 <label for="newCurrencyPair">جفت ارز جدید:</label>
                 <input type="text" id="newCurrencyPair" placeholder="مثلاً: EUR/USD">
             </div>
-
             <div class="form-group">
                 <label for="currencyPairCategory">دسته‌بندی:</label>
                 <select id="currencyPairCategory">
                     <option value="">-- انتخاب دسته‌بندی --</option>
                 </select>
             </div>
-            
             <div class="button-group">
                 <button id="addCurrencyPairBtn" class="success">افزودن جفت ارز</button>
             </div>
@@ -1486,31 +1330,24 @@
                 <!-- لیست دسته‌بندی‌ها و جفت ارزها اینجا نمایش داده می‌شوند -->
             </div>
         </div>
-        
         <!-- تب پشتیبان‌گیری -->
         <div class="tab-content" id="backup-tab">
             <h2>پشتیبان‌گیری و بازیابی</h2>
-            
             <div class="instructions">
                 <p>از این بخش می‌توانید از تمام داده‌های خود پشتیبان بگیرید یا داده‌های قبلی را بازیابی کنید.</p>
             </div>
-            
             <div class="button-group">
                 <button id="backupDataBtn" class="success">دانلود پشتیبان</button>
                 <button id="restoreDataBtn">بازیابی داده‌ها</button>
             </div>
-            
             <input type="file" id="restoreFileInput" accept=".json" style="display: none;">
-            
             <div class="instructions" style="margin-top: 20px;">
                 <p><strong>توجه:</strong> فایل پشتیبان شامل تمام جفت ارزها، تاریخچه محاسبات و تنظیمات شما خواهد بود.</p>
             </div>
         </div>
-        
         <!-- تب حذف رکورد -->
         <div class="tab-content" id="delete-records-tab">
             <h2>حذف رکوردها</h2>
-            
             <div class="instructions">
                 <p>از این بخش می‌توانید رکوردهای قدیمی را به دو روش حذف کنید:</p>
             </div>
@@ -1521,24 +1358,20 @@
                 <input type="date" id="deleteBeforeDate">
                 <button id="deleteByDateBtn" class="danger" style="margin-top: 10px;">حذف داده‌های قبل از این تاریخ</button>
             </div>
-            
             <div class="form-group">
                 <h3><li>حذف بر اساس تعداد روز</li></h3>
                 <label for="deleteDays">حذف داده‌های قدیمی‌تر از (روز):</label>
                 <input type="number" id="deleteDays" min="1" max="365" value="30" placeholder="تعداد روز">
                 <button id="deleteByDaysBtn" class="danger" style="margin-top: 10px;">حذف داده‌های قدیمی</button>
             </div>
-            
             <div class="instructions" style="margin-top: 20px;">
                 <p><strong>هشدار:</strong> عملیات حذف قابل بازگشت نیست. قبل از حذف از داده‌های خود پشتیبان بگیرید.</p>
             </div>
         </div>
-        
         <div class="signature">
             طراحی و ساخت توسط ⦙ سعید شیخ احمد صفاری
         </div>
     </div>
-
     <!-- مودال برای ویرایش جفت ارز -->
     <div class="modal" id="editCurrencyPairModal">
         <div class="modal-content">
@@ -1562,7 +1395,6 @@
             </div>
         </div>
     </div>
-
     <!-- مودال برای ویرایش دسته‌بندی -->
     <div class="modal" id="editCategoryModal">
         <div class="modal-content">
@@ -1580,7 +1412,6 @@
             </div>
         </div>
     </div>
-
     <!-- مودال برای ویرایش محاسبه -->
     <div class="modal" id="editCalculationModal">
         <div class="modal-content">
@@ -1618,7 +1449,6 @@
             </div>
         </div>
     </div>
-
     <!-- مودال برای تأیید حذف -->
     <div class="modal" id="confirmDeleteModal">
         <div class="modal-content">
@@ -1633,7 +1463,6 @@
             </div>
         </div>
     </div>
-
     <!-- مودال برای حذف دسته‌بندی -->
     <div class="modal" id="deleteCategoryModal">
         <div class="modal-content">
@@ -1642,7 +1471,6 @@
                 <button class="close-modal">&times;</button>
             </div>
             <p id="deleteCategoryMessage">لطفاً گزینه حذف را انتخاب کنید:</p>
-            
             <div class="delete-options">
                 <div class="delete-option">
                     <label>
@@ -1657,56 +1485,46 @@
                     </label>
                 </div>
             </div>
-            
             <div class="button-group">
                 <button id="confirmCategoryDeleteBtn" class="danger">حذف</button>
                 <button class="close-modal">انصراف</button>
             </div>
         </div>
     </div>
-
-
- <script>
+    <script>
         // پایگاه داده
         let db;
         const DB_NAME = 'CurrencyCalculatorDB_V2';
         const DB_VERSION = 2;
-        
         // نام جداول پایگاه داده
         const STORE_CALCULATIONS = 'calculations';
         const STORE_CURRENCY_PAIRS = 'currency_pairs';
         const STORE_CATEGORIES = 'categories';
         const STORE_SETTINGS = 'settings';
-        
         // متغیرهای عمومی
         let currentEditId = null;
         let deleteCallback = null;
         let currentEditType = null;
         let currentDeleteCategoryId = null;
-
         // متغیرهای اسکرول پیشرفته
         let isDragging = false;
         let startX = 0;
         let scrollLeft = 0;
         let isDesktopOrTablet = window.matchMedia('(min-width: 769px)').matches;
         const tabs = document.getElementById('tabs');
-
         document.addEventListener('DOMContentLoaded', function() {
             initializeApp();
             setupAdvancedScroll();
             setupTableScroll();
         });
-
         // تابع تنظیم اسکرول پیشرفته برای تب‌ها
         function setupAdvancedScroll() {
             // Wheel event برای اسکرول افقی با چرخ موس
             tabs.addEventListener('wheel', handleWheel, { passive: false });
-
             // Drag events
             tabs.addEventListener('mousedown', startDrag);
             document.addEventListener('mousemove', doDrag);
             document.addEventListener('mouseup', endDrag);
-
             // Hover روی تب‌ها برای تغییر cursor
             document.querySelectorAll('.tab').forEach(tab => {
                 tab.addEventListener('mouseenter', () => {
@@ -1720,7 +1538,6 @@
                     }
                 });
             });
-
             // به‌روزرسانی تشخیص اندازه صفحه
             window.addEventListener('resize', () => {
                 isDesktopOrTablet = window.matchMedia('(min-width: 769px)').matches;
@@ -1732,7 +1549,6 @@
                 }
             });
         }
-
         // تابع wheel برای تب‌ها
         function handleWheel(e) {
             if (!isDesktopOrTablet) return;
@@ -1740,7 +1556,6 @@
             const delta = e.deltaY > 0 ? 50 : -50; // سرعت اسکرول
             tabs.scrollLeft += delta;
         }
-
         // Drag functions برای تب‌ها
         function startDrag(e) {
             if (!isDesktopOrTablet) return;
@@ -1750,7 +1565,6 @@
             tabs.style.cursor = 'grabbing';
             e.preventDefault();
         }
-
         function doDrag(e) {
             if (!isDragging) return;
             e.preventDefault();
@@ -1758,23 +1572,19 @@
             const walk = (x - startX) * 2; // سرعت drag
             tabs.scrollLeft = scrollLeft - walk;
         }
-
         function endDrag() {
             isDragging = false;
             if (isDesktopOrTablet) {
                 tabs.style.cursor = 'grab';
             }
         }
-
         // تابع تنظیم اسکرول پیشرفته برای جدول تاریخچه
         function setupTableScroll() {
             const tableContainer = document.querySelector('.table-container');
             if (!tableContainer) return;
-
             let isDraggingTable = false;
             let startXTable = 0;
             let scrollLeftTable = 0;
-
             // Wheel event: هندل کردن هر دو جهت اسکرول (عمودی و افقی) بدون تداخل
             tableContainer.addEventListener('wheel', (e) => {
                 e.preventDefault(); // جلوگیری از اسکرول پیش‌فرض صفحه
@@ -1787,7 +1597,6 @@
                     tableContainer.scrollLeft += e.deltaX;
                 }
             }, { passive: false });
-
             // شروع drag برای اسکرول افقی
             tableContainer.addEventListener('mousedown', (e) => {
                 if (!isDesktopOrTablet) return;
@@ -1797,7 +1606,6 @@
                 tableContainer.style.cursor = 'grabbing';
                 e.preventDefault();
             });
-
             // در حین drag
             document.addEventListener('mousemove', (e) => {
                 if (!isDraggingTable) return;
@@ -1806,7 +1614,6 @@
                 const walk = (x - startXTable) * 2; // سرعت drag (قابل تنظیم)
                 tableContainer.scrollLeft = scrollLeftTable - walk;
             });
-
             // پایان drag
             document.addEventListener('mouseup', () => {
                 isDraggingTable = false;
@@ -1814,27 +1621,23 @@
                     tableContainer.style.cursor = 'grab';
                 }
             });
-
             tableContainer.addEventListener('mouseleave', () => {
                 isDraggingTable = false;
                 if (isDesktopOrTablet) {
                     tableContainer.style.cursor = 'grab';
                 }
             });
-
             // برای تبلت/لمس: swipe افقی طبیعی
             tableContainer.addEventListener('touchstart', (e) => {
                 startXTable = e.touches[0].pageX - tableContainer.offsetLeft;
                 scrollLeftTable = tableContainer.scrollLeft;
             });
-
             tableContainer.addEventListener('touchmove', (e) => {
                 const x = e.touches[0].pageX - tableContainer.offsetLeft;
                 const walk = (x - startXTable) * 2;
                 tableContainer.scrollLeft = scrollLeftTable - walk;
                 e.preventDefault(); // جلوگیری از اسکرول صفحه
             }, { passive: false });
-
             // به‌روزرسانی cursor بر اساس اندازه صفحه
             window.addEventListener('resize', () => {
                 isDesktopOrTablet = window.matchMedia('(min-width: 769px)').matches;
@@ -1844,14 +1647,11 @@
                 }
             });
         }
-
         // تابع کپی کردن متن (بهبود یافته برای جدول و کارت‌ها)
         function copyToClipboard(element, text = null) {
             // تغییر اولویت: اگر dataset.value موجود باشد، از آن استفاده کن (فقط عدد برای خروجی‌ها)
             const textToCopy = text || (element.dataset.value || element.textContent.trim());
-            
             if (!textToCopy) return;
-            
             navigator.clipboard.writeText(textToCopy).then(() => {
                 element.classList.add('copied');
                 showNotification('کپی شد! (' + textToCopy + ')', 'success', 2000);
@@ -1865,7 +1665,6 @@
                 textArea.select();
                 document.execCommand('copy');
                 document.body.removeChild(textArea);
-                
                 element.classList.add('copied');
                 showNotification('کپی شد! (' + textToCopy + ')', 'success', 2000);
                 setTimeout(() => {
@@ -1873,27 +1672,22 @@
                 }, 1500);
             });
         }
-
         // تابع نمایش اعلان
         function showNotification(message, type = 'success', duration = 3000) {
             const existingNotification = document.querySelector('.notification');
             if (existingNotification) {
                 existingNotification.remove();
             }
-            
             const notification = document.createElement('div');
             notification.className = `notification ${type}`;
             notification.innerHTML = `
                 <span>${message}</span>
                 <button class="notification-close">&times;</button>
             `;
-            
             document.body.appendChild(notification);
-            
             notification.querySelector('.notification-close').addEventListener('click', function() {
                 notification.remove();
             });
-            
             if (duration > 0) {
                 setTimeout(() => {
                     if (notification.parentNode) {
@@ -1902,7 +1696,6 @@
                 }, duration);
             }
         }
-
         // تابع مقداردهی اولیه برنامه
         async function initializeApp() {
             await initializeDatabase();
@@ -1911,14 +1704,11 @@
             setupEventListeners();
             setDefaultDate();
             loadCalculationsTable();
-            
             document.getElementById('filterCurrencyPair').addEventListener('change', loadCalculationsTable);
             document.getElementById('filterDate').addEventListener('change', loadCalculationsTable);
-            
             // همگام‌سازی فیلدهای ورودی دسکتاپ و موبایل
             syncInputFields();
         }
-
         // تابع همگام‌سازی فیلدهای ورودی دسکتاپ و موبایل
         function syncInputFields() {
             // فیلدهای دسکتاپ
@@ -1928,7 +1718,6 @@
                 currentHigh: document.getElementById('input_current_high'),
                 currentLow: document.getElementById('input_current_low')
             };
-            
             // فیلدهای موبایل
             const mobileFields = {
                 y1: document.getElementById('input_y1_mobile'),
@@ -1936,14 +1725,12 @@
                 currentHigh: document.getElementById('input_current_high_mobile'),
                 currentLow: document.getElementById('input_current_low_mobile')
             };
-            
             // همگام‌سازی از دسکتاپ به موبایل
             Object.keys(desktopFields).forEach(key => {
                 desktopFields[key].addEventListener('input', function() {
                     mobileFields[key].value = this.value;
                 });
             });
-            
             // همگام‌سازی از موبایل به دسکتاپ
             Object.keys(mobileFields).forEach(key => {
                 mobileFields[key].addEventListener('input', function() {
@@ -1951,25 +1738,20 @@
                 });
             });
         }
-
         // تابع راه‌اندازی پایگاه داده
         function initializeDatabase() {
             return new Promise((resolve, reject) => {
                 const request = indexedDB.open(DB_NAME, DB_VERSION);
-                
                 request.onerror = () => {
                     console.error('خطا در باز کردن پایگاه داده');
                     reject('خطا در باز کردن پایگاه داده');
                 };
-                
                 request.onsuccess = (event) => {
                     db = event.target.result;
                     resolve(db);
                 };
-                
                 request.onupgradeneeded = (event) => {
                     db = event.target.result;
-                    
                     if (!db.objectStoreNames.contains(STORE_CALCULATIONS)) {
                         const calculationsStore = db.createObjectStore(STORE_CALCULATIONS, { 
                             keyPath: 'id', 
@@ -1978,7 +1760,6 @@
                         calculationsStore.createIndex('date', 'date', { unique: false });
                         calculationsStore.createIndex('currencyPair', 'currencyPair', { unique: false });
                     }
-                    
                     if (!db.objectStoreNames.contains(STORE_CURRENCY_PAIRS)) {
                         const currencyPairsStore = db.createObjectStore(STORE_CURRENCY_PAIRS, { 
                             keyPath: 'id', 
@@ -1988,7 +1769,6 @@
                         currencyPairsStore.createIndex('order', 'order', { unique: false });
                         currencyPairsStore.createIndex('categoryId', 'categoryId', { unique: false });
                     }
-                    
                     if (!db.objectStoreNames.contains(STORE_CATEGORIES)) {
                         const categoriesStore = db.createObjectStore(STORE_CATEGORIES, { 
                             keyPath: 'id', 
@@ -1997,7 +1777,6 @@
                         categoriesStore.createIndex('name', 'name', { unique: true });
                         categoriesStore.createIndex('order', 'order', { unique: false });
                     }
-                    
                     if (!db.objectStoreNames.contains(STORE_SETTINGS)) {
                         const settingsStore = db.createObjectStore(STORE_SETTINGS, { 
                             keyPath: 'id'
@@ -2006,71 +1785,59 @@
                 };
             });
         }
-
         // تابع ذخیره داده در پایگاه داده
         function saveToDatabase(storeName, data) {
             return new Promise((resolve, reject) => {
                 const transaction = db.transaction([storeName], 'readwrite');
                 const store = transaction.objectStore(storeName);
                 const request = store.put(data);
-                
                 request.onsuccess = () => resolve(request.result);
                 request.onerror = () => reject(request.error);
             });
         }
-
         // تابع خواندن همه داده‌ها از پایگاه داده
         function getAllFromDatabase(storeName, indexName = null, query = null) {
             return new Promise((resolve, reject) => {
                 const transaction = db.transaction([storeName], 'readonly');
                 const store = transaction.objectStore(storeName);
                 const request = indexName ? store.index(indexName).getAll(query) : store.getAll();
-                
                 request.onsuccess = () => resolve(request.result);
                 request.onerror = () => reject(request.error);
             });
         }
-
         // تابع حذف داده از پایگاه داده
         function deleteFromDatabase(storeName, id) {
             return new Promise((resolve, reject) => {
                 const transaction = db.transaction([storeName], 'readwrite');
                 const store = transaction.objectStore(storeName);
                 const request = store.delete(id);
-                
                 request.onsuccess = () => resolve();
                 request.onerror = () => reject(request.error);
             });
         }
-
         // تابع تنظیم تاریخ پیش‌فرض به امروز (میلادی)
         function setDefaultDate() {
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('calculationDate').value = today;
         }
-
         // تابع بارگذاری دسته‌بندی‌ها
         async function loadCategories() {
             try {
                 let categories = await getAllFromDatabase(STORE_CATEGORIES);
                 categories.sort((a, b) => (a.order || 0) - (b.order || 0));
-                
                 const categorySelect = document.getElementById('currencyPairCategory');
                 const editCategorySelect = document.getElementById('editCurrencyPairCategory');
-                
                 while (categorySelect.children.length > 1) {
                     categorySelect.removeChild(categorySelect.lastChild);
                 }
                 while (editCategorySelect.children.length > 1) {
                     editCategorySelect.removeChild(editCategorySelect.lastChild);
                 }
-                
                 categories.forEach(category => {
                     const option1 = document.createElement('option');
                     option1.value = category.id;
                     option1.textContent = category.name;
                     categorySelect.appendChild(option1);
-                    
                     const option2 = document.createElement('option');
                     option2.value = category.id;
                     option2.textContent = category.name;
@@ -2080,27 +1847,22 @@
                 console.error('خطا در بارگذاری دسته‌بندی‌ها:', error);
             }
         }
-
         // تابع اضافه کردن دسته‌بندی جدید
         async function addCategory() {
             const newCategoryInput = document.getElementById('newCategoryName');
             const categoryName = newCategoryInput.value.trim();
-            
             if (!categoryName) {
                 showNotification('لطفاً نام دسته‌بندی را وارد کنید.', 'warning');
                 return;
             }
-            
             try {
                 const categories = await getAllFromDatabase(STORE_CATEGORIES);
                 const maxOrder = categories.length > 0 ? Math.max(...categories.map(c => c.order || 0)) : -1;
-                
                 await saveToDatabase(STORE_CATEGORIES, {
                     name: categoryName,
                     order: maxOrder + 1,
                     createdAt: new Date().toISOString()
                 });
-                
                 newCategoryInput.value = '';
                 await loadCategories();
                 await loadCurrencyPairs();
@@ -2114,7 +1876,6 @@
                 }
             }
         }
-
         // تابع باز کردن مودال ویرایش دسته‌بندی
         function openEditCategoryModal(id, name) {
             currentEditId = id;
@@ -2122,26 +1883,21 @@
             document.getElementById('editCategoryInput').value = name;
             document.getElementById('editCategoryModal').style.display = 'flex';
         }
-
         // تابع ذخیره ویرایش دسته‌بندی
         async function saveCategoryEdit() {
             const newName = document.getElementById('editCategoryInput').value.trim();
-            
             if (!newName) {
                 showNotification('لطفاً نام دسته‌بندی را وارد کنید.', 'warning');
                 return;
             }
-            
             try {
                 const categories = await getAllFromDatabase(STORE_CATEGORIES);
                 const existingCategory = categories.find(c => c.id === parseInt(currentEditId));
-                
                 if (existingCategory) {
                     await saveToDatabase(STORE_CATEGORIES, {
                         ...existingCategory,
                         name: newName
                     });
-                    
                     closeModals();
                     await loadCategories();
                     await loadCurrencyPairs();
@@ -2156,7 +1912,6 @@
                 }
             }
         }
-
         // تابع باز کردن مودال حذف دسته‌بندی
         function openDeleteCategoryModal(id, name) {
             currentDeleteCategoryId = id;
@@ -2164,63 +1919,50 @@
                 `لطفاً گزینه حذف را برای دسته‌بندی "${name}" انتخاب کنید:`;
             document.getElementById('deleteCategoryModal').style.display = 'flex';
         }
-
         // تابع حذف دسته‌بندی
         async function deleteCategory() {
             const deleteOption = document.querySelector('input[name="deleteOption"]:checked').value;
-            
             try {
                 if (deleteOption === 'categoryOnly') {
                     // فقط دسته‌بندی حذف شود، جفت ارزها بدون دسته‌بندی می‌مانند
                     const currencyPairs = await getAllFromDatabase(STORE_CURRENCY_PAIRS);
                     const pairsInCategory = currencyPairs.filter(p => p.categoryId === parseInt(currentDeleteCategoryId));
-                    
                     for (const pair of pairsInCategory) {
                         await saveToDatabase(STORE_CURRENCY_PAIRS, {
                             ...pair,
                             categoryId: null
                         });
                     }
-                    
                     await deleteFromDatabase(STORE_CATEGORIES, parseInt(currentDeleteCategoryId));
                     showNotification('دسته‌بندی حذف شد. جفت ارزها بدون دسته‌بندی باقی ماندند.');
-                    
                 } else if (deleteOption === 'categoryWithPairs') {
                     // دسته‌بندی و تمام جفت ارزهای داخل آن حذف شوند
                     const currencyPairs = await getAllFromDatabase(STORE_CURRENCY_PAIRS);
                     const pairsInCategory = currencyPairs.filter(p => p.categoryId === parseInt(currentDeleteCategoryId));
-                    
                     for (const pair of pairsInCategory) {
                         await deleteFromDatabase(STORE_CURRENCY_PAIRS, pair.id);
                     }
-                    
                     await deleteFromDatabase(STORE_CATEGORIES, parseInt(currentDeleteCategoryId));
                     showNotification('دسته‌بندی و تمام جفت ارزهای آن با موفقیت حذف شد.');
                 }
-                
                 closeModals();
                 await loadCategories();
                 await loadCurrencyPairs();
-                
             } catch (error) {
                 console.error('خطا در حذف دسته‌بندی:', error);
                 showNotification('خطا در حذف دسته‌بندی.', 'error');
             }
         }
-
         // تابع بارگذاری جفت ارزها با مرتب‌سازی
         async function loadCurrencyPairs() {
             try {
                 let currencyPairs = await getAllFromDatabase(STORE_CURRENCY_PAIRS);
                 let categories = await getAllFromDatabase(STORE_CATEGORIES);
-                
                 currencyPairs.sort((a, b) => (a.order || 0) - (b.order || 0));
                 categories.sort((a, b) => (a.order || 0) - (b.order || 0));
-                
                 const currencyPairSelect = document.getElementById('currencyPairSelect');
                 const filterCurrencyPair = document.getElementById('filterCurrencyPair');
                 const comparisonCurrencyPair = document.getElementById('comparisonCurrencyPair');
-                
                 while (currencyPairSelect.children.length > 1) {
                     currencyPairSelect.removeChild(currencyPairSelect.lastChild);
                 }
@@ -2230,45 +1972,37 @@
                 while (comparisonCurrencyPair.children.length > 1) {
                     comparisonCurrencyPair.removeChild(comparisonCurrencyPair.lastChild);
                 }
-                
                 // فقط نام جفت ارز بدون دسته‌بندی نمایش داده می‌شود
                 currencyPairs.forEach(pair => {
                     const option1 = document.createElement('option');
                     option1.value = pair.name;
                     option1.textContent = pair.name;
                     currencyPairSelect.appendChild(option1);
-                    
                     const option2 = document.createElement('option');
                     option2.value = pair.name;
                     option2.textContent = pair.name;
                     filterCurrencyPair.appendChild(option2);
-                    
                     const option3 = document.createElement('option');
                     option3.value = pair.name;
                     option3.textContent = pair.name;
                     comparisonCurrencyPair.appendChild(option3);
                 });
-                
                 updateCurrencyPairsList(currencyPairs, categories);
             } catch (error) {
                 console.error('خطا در بارگذاری جفت ارزها:', error);
             }
         }
-
         // تابع به‌روزرسانی لیست جفت ارزها با قابلیت‌های جدید
         function updateCurrencyPairsList(currencyPairs, categories) {
             const currencyPairsList = document.getElementById('currencyPairsList');
             currencyPairsList.innerHTML = '';
-            
             if (currencyPairs.length === 0 && categories.length === 0) {
                 currencyPairsList.innerHTML = '<p>هیچ دسته‌بندی یا جفت ارزی وجود ندارد.</p>';
                 return;
             }
-            
             // نمایش دسته‌بندی‌ها
             categories.forEach(category => {
                 const categoryPairs = currencyPairs.filter(p => p.categoryId === category.id);
-                
                 const categorySection = document.createElement('div');
                 categorySection.className = 'category-section';
                 categorySection.setAttribute('data-category-id', category.id);
@@ -2290,9 +2024,7 @@
                     </div>
                 `;
                 currencyPairsList.appendChild(categorySection);
-                
                 const categoryPairsContainer = document.getElementById(`category-${category.id}`);
-                
                 categoryPairs.forEach((pair, index) => {
                     const pairElement = document.createElement('div');
                     pairElement.className = 'currency-pair-item';
@@ -2311,12 +2043,10 @@
                         </div>
                     `;
                     categoryPairsContainer.appendChild(pairElement);
-                    
                     // اضافه کردن event listeners برای درگ اند دراپ
                     setupDragAndDrop(pairElement);
                 });
             });
-            
             // نمایش جفت ارزهای بدون دسته‌بندی
             const uncategorizedPairs = currencyPairs.filter(p => !p.categoryId);
             if (uncategorizedPairs.length > 0) {
@@ -2334,9 +2064,7 @@
                     </div>
                 `;
                 currencyPairsList.appendChild(uncategorizedSection);
-                
                 const uncategorizedContainer = document.getElementById('uncategorized-pairs');
-                
                 uncategorizedPairs.forEach((pair, index) => {
                     const pairElement = document.createElement('div');
                     pairElement.className = 'currency-pair-item';
@@ -2355,25 +2083,20 @@
                         </div>
                     `;
                     uncategorizedContainer.appendChild(pairElement);
-                    
                     setupDragAndDrop(pairElement);
                 });
             }
-            
             setupAllEventListeners();
         }
-
         // تابع تنظیم درگ اند دراپ برای یک آیتم
         function setupDragAndDrop(element) {
             let dragItem = null;
-            
             element.addEventListener('dragstart', function(e) {
                 dragItem = this;
                 this.classList.add('dragging');
                 e.dataTransfer.setData('text/plain', this.getAttribute('data-pair-id'));
                 e.dataTransfer.effectAllowed = 'move';
             });
-            
             element.addEventListener('dragend', function() {
                 this.classList.remove('dragging');
                 document.querySelectorAll('.currency-pair-item').forEach(item => {
@@ -2381,57 +2104,44 @@
                 });
                 dragItem = null;
             });
-            
             element.addEventListener('dragover', function(e) {
                 e.preventDefault();
                 if (dragItem && dragItem !== this) {
                     this.classList.add('drag-over');
                 }
             });
-            
             element.addEventListener('dragleave', function() {
                 this.classList.remove('drag-over');
             });
-            
             element.addEventListener('drop', async function(e) {
                 e.preventDefault();
                 this.classList.remove('drag-over');
-                
                 if (!dragItem || dragItem === this) return;
-                
                 const draggedId = parseInt(dragItem.getAttribute('data-pair-id'));
                 const targetId = parseInt(this.getAttribute('data-pair-id'));
                 const categoryId = this.getAttribute('data-category-id');
-                
                 await reorderPairs(draggedId, targetId, categoryId);
             });
         }
-
         // تابع مرتب‌سازی مجدد جفت ارزها
         async function reorderPairs(draggedId, targetId, categoryId) {
             try {
                 let currencyPairs = await getAllFromDatabase(STORE_CURRENCY_PAIRS);
-                
                 // پیدا کردن موقعیت‌ها
                 const draggedIndex = currencyPairs.findIndex(p => p.id === draggedId);
                 const targetIndex = currencyPairs.findIndex(p => p.id === targetId);
-                
                 if (draggedIndex === -1 || targetIndex === -1) return;
-                
                 // حذف آیتم کشیده شده و قرار دادن آن در موقعیت جدید
                 const [draggedItem] = currencyPairs.splice(draggedIndex, 1);
                 currencyPairs.splice(targetIndex, 0, draggedItem);
-                
                 // به‌روزرسانی order برای همه آیتم‌ها
                 currencyPairs.forEach((pair, index) => {
                     pair.order = index;
                 });
-                
                 // ذخیره تغییرات
                 for (const pair of currencyPairs) {
                     await saveToDatabase(STORE_CURRENCY_PAIRS, pair);
                 }
-                
                 await loadCurrencyPairs();
                 showNotification('ترتیب جفت ارزها به‌روزرسانی شد.');
             } catch (error) {
@@ -2439,12 +2149,10 @@
                 showNotification('خطا در مرتب‌سازی جفت ارزها.', 'error');
             }
         }
-
         // تابع نمایش/مخفی کردن دسته‌بندی
         function toggleCategory(categoryId) {
             const pairsContainer = document.getElementById(`category-${categoryId}`);
             const collapseIcon = pairsContainer.parentElement.querySelector('.collapse-icon');
-            
             if (pairsContainer.classList.contains('collapsed')) {
                 pairsContainer.classList.remove('collapsed');
                 collapseIcon.textContent = '▼';
@@ -2453,16 +2161,13 @@
                 collapseIcon.textContent = '▶';
             }
         }
-
         // تابع جابجایی جفت ارز با دکمه‌ها
         async function moveCurrencyPair(id, direction) {
             try {
                 let currencyPairs = await getAllFromDatabase(STORE_CURRENCY_PAIRS);
                 currencyPairs.sort((a, b) => (a.order || 0) - (b.order || 0));
-                
                 const currentIndex = currencyPairs.findIndex(p => p.id === id);
                 if (currentIndex === -1) return;
-                
                 if (direction === 'up' && currentIndex > 0) {
                     const tempOrder = currencyPairs[currentIndex].order || currentIndex;
                     currencyPairs[currentIndex].order = currencyPairs[currentIndex - 1].order || currentIndex - 1;
@@ -2474,11 +2179,9 @@
                 } else {
                     return;
                 }
-                
                 for (const pair of currencyPairs) {
                     await saveToDatabase(STORE_CURRENCY_PAIRS, pair);
                 }
-                
                 await loadCurrencyPairs();
                 showNotification('ترتیب جفت ارزها به‌روزرسانی شد.');
             } catch (error) {
@@ -2486,30 +2189,25 @@
                 showNotification('خطا در جابجایی جفت ارز.', 'error');
             }
         }
-
         // تابع اضافه کردن جفت ارز جدید
         async function addCurrencyPair() {
             const newCurrencyPairInput = document.getElementById('newCurrencyPair');
             const categorySelect = document.getElementById('currencyPairCategory');
             const pairName = newCurrencyPairInput.value.trim();
             const categoryId = categorySelect.value ? parseInt(categorySelect.value) : null;
-            
             if (!pairName) {
                 showNotification('لطفاً نام جفت ارز را وارد کنید.', 'warning');
                 return;
             }
-            
             try {
                 const currencyPairs = await getAllFromDatabase(STORE_CURRENCY_PAIRS);
                 const maxOrder = currencyPairs.length > 0 ? Math.max(...currencyPairs.map(p => p.order || 0)) : -1;
-                
                 await saveToDatabase(STORE_CURRENCY_PAIRS, {
                     name: pairName,
                     categoryId: categoryId,
                     order: maxOrder + 1,
                     createdAt: new Date().toISOString()
                 });
-                
                 newCurrencyPairInput.value = '';
                 categorySelect.value = '';
                 await loadCurrencyPairs();
@@ -2523,7 +2221,6 @@
                 }
             }
         }
-
         // تابع باز کردن مودال ویرایش جفت ارز
         function openEditCurrencyPairModal(id, name, categoryId) {
             currentEditId = id;
@@ -2532,28 +2229,23 @@
             document.getElementById('editCurrencyPairCategory').value = categoryId || '';
             document.getElementById('editCurrencyPairModal').style.display = 'flex';
         }
-
         // تابع ذخیره ویرایش جفت ارز
         async function saveCurrencyPairEdit() {
             const newName = document.getElementById('editCurrencyPairInput').value.trim();
             const categoryId = document.getElementById('editCurrencyPairCategory').value ? parseInt(document.getElementById('editCurrencyPairCategory').value) : null;
-            
             if (!newName) {
                 showNotification('لطفاً نام جفت ارز را وارد کنید.', 'warning');
                 return;
             }
-            
             try {
                 const currencyPairs = await getAllFromDatabase(STORE_CURRENCY_PAIRS);
                 const existingPair = currencyPairs.find(p => p.id === parseInt(currentEditId));
-                
                 if (existingPair) {
                     await saveToDatabase(STORE_CURRENCY_PAIRS, {
                         ...existingPair,
                         name: newName,
                         categoryId: categoryId
                     });
-                    
                     closeModals();
                     await loadCurrencyPairs();
                     showNotification('جفت ارز با موفقیت ویرایش شد.');
@@ -2567,7 +2259,6 @@
                 }
             }
         }
-
         // تابع حذف جفت ارز
         async function deleteCurrencyPair(id) {
             try {
@@ -2579,7 +2270,6 @@
                 showNotification('خطا در حذف جفت ارز.', 'error');
             }
         }
-
         // تابع تنظیم event listenerها برای بخش مدیریت جفت ارزها
         function setupAllEventListeners() {
             document.querySelectorAll('.edit-category').forEach(btn => {
@@ -2589,7 +2279,6 @@
                     openEditCategoryModal(id, name);
                 });
             });
-            
             document.querySelectorAll('.delete-category').forEach(btn => {
                 btn.addEventListener('click', function() {
                     const id = this.getAttribute('data-id');
@@ -2597,7 +2286,6 @@
                     openDeleteCategoryModal(id, name);
                 });
             });
-            
             document.querySelectorAll('.edit-currency-pair').forEach(btn => {
                 btn.addEventListener('click', function() {
                     const id = this.getAttribute('data-id');
@@ -2606,7 +2294,6 @@
                     openEditCurrencyPairModal(id, name, categoryId);
                 });
             });
-            
             document.querySelectorAll('.delete-currency-pair').forEach(btn => {
                 btn.addEventListener('click', function() {
                     const id = this.getAttribute('data-id');
@@ -2617,14 +2304,12 @@
                     );
                 });
             });
-            
             document.querySelectorAll('.move-up:not([data-type])').forEach(btn => {
                 btn.addEventListener('click', function() {
                     const id = parseInt(this.getAttribute('data-id'));
                     moveCurrencyPair(id, 'up');
                 });
             });
-            
             document.querySelectorAll('.move-down:not([data-type])').forEach(btn => {
                 btn.addEventListener('click', function() {
                     const id = parseInt(this.getAttribute('data-id'));
@@ -2632,7 +2317,6 @@
                 });
             });
         }
-
         // تابع تشخیص فرمت عدد ورودی
         function detectNumberFormat(input) {
             if (input.includes('.')) {
@@ -2642,7 +2326,6 @@
                     parts: input.split('.')
                 };
             }
-            
             if (input.includes(',')) {
                 return {
                     hasSeparator: true,
@@ -2650,43 +2333,34 @@
                     parts: input.split(',')
                 };
             }
-            
             return {
                 hasSeparator: false,
                 separator: '',
                 parts: [input]
             };
         }
-        
         // تابع تبدیل عدد ورودی به عدد صحیح
         function parseNumber(input) {
             const cleanedInput = input.replace(/[.,\s]/g, '');
             return parseInt(cleanedInput, 10);
         }
-        
         // تابع فرمت کردن عدد خروجی مطابق با فرمت ورودی
         function formatNumber(num, format) {
             if (!format.hasSeparator) {
                 return num.toString();
             }
-            
             const numStr = num.toString();
-            
             if (numStr.length <= format.parts[0].length) {
                 return numStr;
             }
-            
             const beforeSeparator = numStr.slice(0, format.parts[0].length);
             const afterSeparator = numStr.slice(format.parts[0].length);
-            
             return beforeSeparator + format.separator + afterSeparator;
         }
-
         // تابع ایجاد خروجی قابل کلیک
         function createClickableOutput(label, value, currentLow, currentHigh, format) {
             let colorClass = '';
             let suffix = '';
-
             if (value < currentLow) {
                 colorClass = 'below-low';
                 suffix = ' ↓ زیر کف فعلی';
@@ -2694,24 +2368,19 @@
                 colorClass = 'above-high';
                 suffix = ' ↑ بالای سقف فعلی';
             }
-            
             const displayValue = formatNumber(value, format);
             const fullDisplayText = `${label}: ${displayValue}${suffix}`;
             const textToCopy = displayValue;
-
             const div = document.createElement('div');
             div.className = `result ${colorClass}`;
             div.textContent = fullDisplayText;
             div.title = `برای کپی کردن عدد (${textToCopy}) کلیک کنید`;
             div.dataset.value = textToCopy;
-            
             div.addEventListener('click', function() {
                 copyToClipboard(this);
             });
-            
             return div;
         }
-
         // تابع محاسبه و ذخیره - منطق جدید
         async function calculateAndSave() {
             try {
@@ -2722,48 +2391,38 @@
                 const currentLowValue = document.getElementById('input_current_low').value.trim();
                 const currencyPair = document.getElementById('currencyPairSelect').value;
                 const calculationDate = document.getElementById('calculationDate').value;
-                
                 if (!y1Value || !y2Value || !currentHighValue || !currentLowValue) {
                     throw new Error("لطفاً تمام فیلدها را پر کنید!");
                 }
-                
                 if (!currencyPair) {
                     throw new Error("لطفاً جفت ارز را انتخاب کنید!");
                 }
-                
                 if (!calculationDate) {
                     throw new Error("لطفاً تاریخ را انتخاب کنید!");
                 }
-                
                 const y1 = parseNumber(y1Value);
                 const y2 = parseNumber(y2Value);
                 const currentHigh = parseNumber(currentHighValue);
                 const currentLow = parseNumber(currentLowValue);
-                
                 // تشخیص فرمت اعداد ورودی
                 const formatY1 = detectNumberFormat(y1Value);
                 const formatY2 = detectNumberFormat(y2Value);
-                
                 // پاک کردن نتایج قبلی
                 const resultsList = document.getElementById('results_list');
                 const errorMessage = document.getElementById('error_message');
                 resultsList.innerHTML = '';
                 errorMessage.style.display = 'none';
-                
                 if (isNaN(y1) || isNaN(y2) || isNaN(currentHigh) || isNaN(currentLow)) {
                     throw new Error("لطفاً اعداد معتبر وارد کنید!");
                 }
-                
                 if (y1 < 0 || y2 < 0 || currentHigh < 0 || currentLow < 0) {
                     throw new Error("لطفاً فقط اعداد مثبت وارد کنید.");
                 }
-                
                 // محاسبه فرمول‌ها - منطق جدید
                 const result1 = Math.floor((Math.sqrt(y1) - 1) ** 2);
                 const result2 = Math.floor((Math.sqrt(y1) - 0.5) ** 2);
                 const result3 = Math.floor((Math.sqrt(y2) + 1) ** 2);
                 const result4 = Math.floor((Math.sqrt(y2) + 0.5) ** 2);
-                
                 // ایجاد آرایه نتایج و مرتب‌سازی
                 const results = [
                     { label: "فرمول ۱", value: result1 },
@@ -2771,10 +2430,8 @@
                     { label: "فرمول ۳", value: result3 },
                     { label: "فرمول ۴", value: result4 }
                 ];
-                
                 // مرتب‌سازی از کوچک به بزرگ
                 results.sort((a, b) => a.value - b.value);
-                
                 // نمایش نتایج مرتب‌شده
                 results.forEach((result, index) => {
                     const newLabel = `${index + 1}. (از ${result.label})`;
@@ -2787,13 +2444,11 @@
                     );
                     resultsList.appendChild(resultElement);
                 });
-                
                 // اگر در حال ویرایش هستیم، رکورد قدیم را حذف می‌کنیم
                 if (currentEditId) {
                     await deleteFromDatabase(STORE_CALCULATIONS, currentEditId);
                     currentEditId = null;
                 }
-                
                 // ذخیره در پایگاه داده
                 await saveToDatabase(STORE_CALCULATIONS, {
                     date: calculationDate,
@@ -2810,9 +2465,7 @@
                     result4: result4,
                     createdAt: new Date().toISOString()
                 });
-                
                 showNotification('محاسبات با موفقیت ذخیره شد.');
-                
             } catch (error) {
                 const errorMessage = document.getElementById('error_message');
                 errorMessage.textContent = `خطا: ${error.message}`;
@@ -2820,7 +2473,6 @@
                 showNotification(error.message, 'error');
             }
         }
-        
         // تابع ریست کردن فیلدها
         function resetFields() {
             // ریست فیلدهای دسکتاپ
@@ -2828,19 +2480,16 @@
             document.getElementById('input_current_high').value = '';
             document.getElementById('input_y2').value = '';
             document.getElementById('input_current_low').value = '';
-            
             // ریست فیلدهای موبایل
             document.getElementById('input_y1_mobile').value = '';
             document.getElementById('input_y2_mobile').value = '';
             document.getElementById('input_current_high_mobile').value = '';
             document.getElementById('input_current_low_mobile').value = '';
-            
             const resultsList = document.getElementById('results_list');
             const errorMessage = document.getElementById('error_message');
             resultsList.innerHTML = '';
             errorMessage.style.display = 'none';
         }
-
         // تابع باز کردن مودال ویرایش محاسبه
         function openEditCalculationModal(calculation) {
             document.getElementById('currencyPairSelect').value = calculation.currencyPair;
@@ -2849,55 +2498,41 @@
             document.getElementById('input_y2').value = formatNumberDisplay(calculation.inputY2, calculation.inputFormatY2);
             document.getElementById('input_current_high').value = formatNumberDisplay(calculation.inputCurrentHigh, calculation.inputFormatY1);
             document.getElementById('input_current_low').value = formatNumberDisplay(calculation.inputCurrentLow, calculation.inputFormatY2);
-            
             // همگام‌سازی با فیلدهای موبایل
             document.getElementById('input_y1_mobile').value = formatNumberDisplay(calculation.inputY1, calculation.inputFormatY1);
             document.getElementById('input_y2_mobile').value = formatNumberDisplay(calculation.inputY2, calculation.inputFormatY2);
             document.getElementById('input_current_high_mobile').value = formatNumberDisplay(calculation.inputCurrentHigh, calculation.inputFormatY1);
             document.getElementById('input_current_low_mobile').value = formatNumberDisplay(calculation.inputCurrentLow, calculation.inputFormatY2);
-            
             switchTab('calculator');
-            
             showNotification('داده‌ها به ماشین حساب منتقل شدند. پس از ویرایش، دکمه "محاسبه و ذخیره" را بزنید.', 'success', 5000);
-            
             currentEditId = calculation.id;
         }
-
         // تابع بارگذاری جدول محاسبات
         async function loadCalculationsTable() {
             try {
                 const currencyPair = document.getElementById('filterCurrencyPair').value;
                 const date = document.getElementById('filterDate').value;
-                
                 let calculations = await getAllFromDatabase(STORE_CALCULATIONS);
-                
                 if (currencyPair) {
                     calculations = calculations.filter(c => c.currencyPair === currencyPair);
                 }
-                
                 // رفع مشکل: فقط زمانی که تاریخ مشخص شده باشد، داده‌ها نمایش داده می‌شوند
                 if (date) {
                     calculations = calculations.filter(c => c.date === date);
                 } else {
                     calculations = [];
                 }
-                
                 calculations.sort((a, b) => new Date(b.date) - new Date(a.date));
-                
                 const tableBody = document.getElementById('calculationsTableBody');
                 const mobileCardsContainer = document.getElementById('mobileCardsContainer');
                 const noDataMessage = document.getElementById('noDataMessage');
-                
                 tableBody.innerHTML = '';
                 mobileCardsContainer.innerHTML = '';
-                
                 if (calculations.length === 0) {
                     noDataMessage.style.display = 'block';
                     return;
                 }
-                
                 noDataMessage.style.display = 'none';
-                
                 calculations.forEach(calc => {
                     const row = document.createElement('tr');
                     row.innerHTML = `
@@ -2918,7 +2553,6 @@
                     `;
                     tableBody.appendChild(row);
                 });
-                
                 // اضافه کردن event listener برای کپی در جدول
                 document.querySelectorAll('#calculationsTableBody .table-cell').forEach(cell => {
                     cell.addEventListener('click', function(e) {
@@ -2926,7 +2560,6 @@
                         copyToClipboard(this, this.dataset.copy);
                     });
                 });
-                
                 calculations.forEach(calc => {
                     const card = document.createElement('div');
                     card.className = 'calculation-card';
@@ -2971,12 +2604,11 @@
                         </div>
                         <div class="card-actions">
                             <button class="action-btn edit-calculation" data-id="${calc.id}">ویرایش</button>
-							                            <button class="action-btn danger delete-calculation" data-id="${calc.id}">حذف</button>
+                            <button class="action-btn danger delete-calculation" data-id="${calc.id}">حذف</button>
                         </div>
                     `;
                     mobileCardsContainer.appendChild(card);
                 });
-                
                 // اضافه کردن event listener برای کپی در کارت‌ها
                 document.querySelectorAll('#mobileCardsContainer .card-value').forEach(value => {
                     value.addEventListener('click', function(e) {
@@ -2984,7 +2616,6 @@
                         copyToClipboard(this);
                     });
                 });
-                
                 document.querySelectorAll('.edit-calculation').forEach(btn => {
                     btn.addEventListener('click', async function() {
                         const id = this.getAttribute('data-id');
@@ -3000,7 +2631,6 @@
                         }
                     });
                 });
-                
                 document.querySelectorAll('.delete-calculation').forEach(btn => {
                     btn.addEventListener('click', function() {
                         const id = this.getAttribute('data-id');
@@ -3014,8 +2644,6 @@
                 console.error('خطا در بارگذاری جدول محاسبات:', error);
             }
         }
-
-
         // تابع حذف محاسبه
         async function deleteCalculation(id) {
             try {
@@ -3027,30 +2655,24 @@
                 showNotification('خطا در حذف محاسبه.', 'error');
             }
         }
-
         // تابع حذف داده‌های بر اساس تاریخ
         async function deleteDataByDate() {
             const deleteBeforeDate = document.getElementById('deleteBeforeDate').value;
-            
             if (!deleteBeforeDate) {
                 showNotification('لطفاً تاریخ را انتخاب کنید.', 'warning');
                 return;
             }
-            
             try {
                 const calculations = await getAllFromDatabase(STORE_CALCULATIONS);
                 const oldCalculations = calculations.filter(c => c.date < deleteBeforeDate);
-                
                 if (oldCalculations.length === 0) {
                     showNotification('هیچ داده‌ای قبل از این تاریخ وجود ندارد.', 'warning');
                     return;
                 }
-                
                 if (confirm(`آیا از حذف ${oldCalculations.length} محاسبه قبل از تاریخ ${deleteBeforeDate} مطمئن هستید؟`)) {
                     for (const calc of oldCalculations) {
                         await deleteFromDatabase(STORE_CALCULATIONS, calc.id);
                     }
-                    
                     await loadCalculationsTable();
                     showNotification(`${oldCalculations.length} محاسبه با موفقیت حذف شد.`);
                 }
@@ -3059,34 +2681,27 @@
                 showNotification('خطا در حذف داده‌ها.', 'error');
             }
         }
-
         // تابع حذف داده‌های بر اساس تعداد روز
         async function deleteDataByDays() {
             const deleteDays = document.getElementById('deleteDays').value;
-            
             if (!deleteDays || deleteDays < 1 || deleteDays > 365) {
                 showNotification('لطفاً عددی بین 1 تا 365 وارد کنید.', 'warning');
                 return;
             }
-            
             try {
                 const cutoffDate = new Date();
                 cutoffDate.setDate(cutoffDate.getDate() - deleteDays);
                 const cutoffDateString = cutoffDate.toISOString().split('T')[0];
-                
                 const calculations = await getAllFromDatabase(STORE_CALCULATIONS);
                 const oldCalculations = calculations.filter(c => c.date < cutoffDateString);
-                
                 if (oldCalculations.length === 0) {
                     showNotification(`هیچ داده قدیمی‌تر از ${deleteDays} روز وجود ندارد.`, 'warning');
                     return;
                 }
-                
                 if (confirm(`آیا از حذف ${oldCalculations.length} محاسبه قدیمی‌تر از ${deleteDays} روز مطمئن هستید؟`)) {
                     for (const calc of oldCalculations) {
                         await deleteFromDatabase(STORE_CALCULATIONS, calc.id);
                     }
-                    
                     await loadCalculationsTable();
                     showNotification(`${oldCalculations.length} محاسبه قدیمی با موفقیت حذف شد.`);
                 }
@@ -3095,30 +2710,23 @@
                 showNotification('خطا در حذف داده‌های قدیمی.', 'error');
             }
         }
-
         // تابع فرمت تاریخ برای نمایش (میلادی)
         function formatDate(dateString) {
             return dateString;
         }
-
         // تابع فرمت اعداد برای نمایش
         function formatNumberDisplay(number, inputFormat) {
             if (!inputFormat || !inputFormat.hasSeparator) {
                 return number.toString();
             }
-            
             const numStr = number.toString();
-            
             if (numStr.length <= inputFormat.parts[0].length) {
                 return numStr;
             }
-            
             const beforeSeparator = numStr.slice(0, inputFormat.parts[0].length);
             const afterSeparator = numStr.slice(inputFormat.parts[0].length);
-            
             return beforeSeparator + inputFormat.separator + afterSeparator;
         }
-
         // تابع پشتیبان‌گیری از داده‌ها
         async function backupData() {
             try {
@@ -3126,7 +2734,6 @@
                 const currencyPairs = await getAllFromDatabase(STORE_CURRENCY_PAIRS);
                 const categories = await getAllFromDatabase(STORE_CATEGORIES);
                 const settings = await getAllFromDatabase(STORE_SETTINGS);
-                
                 const backupData = {
                     calculations,
                     currencyPairs,
@@ -3135,10 +2742,8 @@
                     backupDate: new Date().toISOString(),
                     version: DB_VERSION
                 };
-                
                 const dataStr = JSON.stringify(backupData, null, 2);
                 const dataBlob = new Blob([dataStr], {type: 'application/json'});
-                
                 const url = URL.createObjectURL(dataBlob);
                 const a = document.createElement('a');
                 a.href = url;
@@ -3147,72 +2752,57 @@
                 a.click();
                 document.body.removeChild(a);
                 URL.revokeObjectURL(url);
-                
                 showNotification('فایل پشتیبان با موفقیت دانلود شد');
             } catch (error) {
                 console.error('خطا در پشتیبان‌گیری:', error);
                 showNotification('خطا در پشتیبان‌گیری.', 'error');
             }
         }
-
         // تابع بازیابی داده‌ها
         async function restoreData() {
             const fileInput = document.getElementById('restoreFileInput');
             fileInput.click();
-            
             fileInput.onchange = async function() {
                 const file = this.files[0];
                 if (!file) return;
-                
                 if (!confirm('آیا از بازیابی داده‌ها مطمئن هستید؟ این عمل تمام داده‌های فعلی را جایگزین می‌کند.')) {
                     return;
                 }
-                
                 try {
                     const fileText = await readFileAsText(file);
                     const backupData = JSON.parse(fileText);
-                    
                     // بررسی ساختار فایل پشتیبان
                     if (!backupData.calculations || !backupData.currencyPairs || !backupData.categories) {
                         throw new Error('فایل پشتیبان معتبر نیست. ساختار داده‌ها ناقص است.');
                     }
-                    
                     await clearAllData();
-                    
                     // بازیابی دسته‌بندی‌ها
                     for (const category of backupData.categories || []) {
                         await saveToDatabase(STORE_CATEGORIES, category);
                     }
-                    
                     // بازیابی جفت ارزها
                     for (const pair of backupData.currencyPairs) {
                         await saveToDatabase(STORE_CURRENCY_PAIRS, pair);
                     }
-                    
                     // بازیابی محاسبات
                     for (const calc of backupData.calculations) {
                         await saveToDatabase(STORE_CALCULATIONS, calc);
                     }
-                    
                     // بازیابی تنظیمات
                     for (const setting of backupData.settings || []) {
                         await saveToDatabase(STORE_SETTINGS, setting);
                     }
-                    
                     await loadCategories();
                     await loadCurrencyPairs();
                     await loadCalculationsTable();
-                    
                     showNotification('داده‌ها با موفقیت بازیابی شدند.');
                 } catch (error) {
                     console.error('خطا در بازیابی داده‌ها:', error);
                     showNotification('خطا در بازیابی داده‌ها: ' + error.message, 'error');
                 }
-                
                 fileInput.value = '';
             };
         }
-
         // تابع خواندن فایل به صورت متن
         function readFileAsText(file) {
             return new Promise((resolve, reject) => {
@@ -3222,26 +2812,21 @@
                 reader.readAsText(file);
             });
         }
-
         // تابع حذف تمام داده‌ها
         async function clearAllData() {
             try {
                 const calculations = await getAllFromDatabase(STORE_CALCULATIONS);
                 const currencyPairs = await getAllFromDatabase(STORE_CURRENCY_PAIRS);
                 const categories = await getAllFromDatabase(STORE_CATEGORIES);
-                
                 for (const calc of calculations) {
                     await deleteFromDatabase(STORE_CALCULATIONS, calc.id);
                 }
-                
                 for (const pair of currencyPairs) {
                     await deleteFromDatabase(STORE_CURRENCY_PAIRS, pair.id);
                 }
-                
                 for (const category of categories) {
                     await deleteFromDatabase(STORE_CATEGORIES, category.id);
                 }
-                
                 await loadCategories();
                 await loadCurrencyPairs();
                 await loadCalculationsTable();
@@ -3250,38 +2835,30 @@
                 throw error;
             }
         }
-
         // تابع مقایسه داده‌ها
         async function compareData() {
             const currencyPair = document.getElementById('comparisonCurrencyPair').value;
             const dateInputs = document.querySelectorAll('.comparison-date');
             const dates = Array.from(dateInputs).map(input => input.value).filter(date => date);
-            
             if (!currencyPair) {
                 showNotification('لطفاً جفت ارز را انتخاب کنید.', 'warning');
                 return;
             }
-            
             if (dates.length === 0) {
                 showNotification('لطفاً حداقل یک تاریخ را انتخاب کنید.', 'warning');
                 return;
             }
-            
             try {
                 const calculations = await getAllFromDatabase(STORE_CALCULATIONS);
                 const comparisonResults = document.getElementById('comparisonResults');
                 comparisonResults.innerHTML = '';
-                
                 let foundAnyData = false;
-                
                 for (const date of dates) {
                     const calc = calculations.find(c => 
                         c.currencyPair === currencyPair && c.date === date
                     );
-                    
                     const comparisonItem = document.createElement('div');
                     comparisonItem.className = 'comparison-item';
-                    
                     if (calc) {
                         foundAnyData = true;
                         comparisonItem.innerHTML = `
@@ -3304,7 +2881,6 @@
                     }
                     comparisonResults.appendChild(comparisonItem);
                 }
-                
                 if (!foundAnyData) {
                     showNotification('هیچ داده‌ای برای تاریخ‌های انتخاب شده یافت نشد.', 'warning');
                 }
@@ -3313,7 +2889,6 @@
                 showNotification('خطا در مقایسه داده‌ها.', 'error');
             }
         }
-
         // تابع افزودن فیلد تاریخ جدید برای مقایسه
         function addComparisonDate() {
             const datesContainer = document.getElementById('comparisonDatesContainer');
@@ -3326,27 +2901,22 @@
                 <button type="button" class="remove-date-btn">×</button>
             `;
             datesContainer.appendChild(dateRow);
-            
             updateRemoveButtonsVisibility();
         }
-
         // تابع به‌روزرسانی نمایش دکمه‌های حذف
         function updateRemoveButtonsVisibility() {
             const dateRows = document.querySelectorAll('.comparison-date-row');
             dateRows.forEach((row, index) => {
                 const removeBtn = row.querySelector('.remove-date-btn');
                 removeBtn.style.display = index === 0 ? 'none' : 'inline-block';
-                
                 const newRemoveBtn = removeBtn.cloneNode(true);
                 removeBtn.parentNode.replaceChild(newRemoveBtn, removeBtn);
-                
                 newRemoveBtn.addEventListener('click', function() {
                     row.remove();
                     updateRemoveButtonsVisibility();
                 });
             });
         }
-        
         // تابع تغییر حالت تاریک/روشن
         function toggleTheme() {
             document.body.classList.toggle('dark-mode');
@@ -3359,52 +2929,43 @@
                 localStorage.setItem('theme', 'light');
             }
         }
-        
         // تابع تغییر تب
-function switchTab(tabName) {
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    document.querySelectorAll('.mobile-tab').forEach(t => t.classList.remove('active'));
-    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-    
-    document.querySelector(`.tab[data-tab="${tabName}"]`).classList.add('active');
-    document.querySelector(`.mobile-tab[data-tab="${tabName}"]`).classList.add('active');
-    document.getElementById(`${tabName}-tab`).classList.add('active');
-    
-    // بستن منوی موبایل پس از انتخاب تب
-    if (window.innerWidth <= 768) {
-        document.getElementById('mobileTabs').style.display = 'none';
-        document.getElementById('mobileMenuToggle').classList.remove('active');
-    }
-    
-    if (tabName === 'history') {
-        loadCalculationsTable();
-    }
-}
-
-// تابع نمایش/مخفی کردن منوی موبایل
-function toggleMobileMenu() {
-    const mobileTabs = document.getElementById('mobileTabs');
-    const menuToggle = document.getElementById('mobileMenuToggle');
-
-    // بررسی وضعیت فعلی منو با استفاده از computedStyle
-    const isVisible = window.getComputedStyle(mobileTabs).display === 'flex';
-    
-    if (isVisible) {
-        mobileTabs.style.display = 'none';
-        menuToggle.classList.remove('active');
-    } else {
-        mobileTabs.style.display = 'flex';
-        menuToggle.classList.add('active');
-    }
-}
-
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.mobile-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            document.querySelector(`.tab[data-tab="${tabName}"]`).classList.add('active');
+            document.querySelector(`.mobile-tab[data-tab="${tabName}"]`).classList.add('active');
+            document.getElementById(`${tabName}-tab`).classList.add('active');
+            // بستن منوی موبایل پس از انتخاب تب
+            if (window.innerWidth <= 768) {
+                document.getElementById('mobileTabs').style.display = 'none';
+                document.getElementById('mobileMenuToggle').classList.remove('active');
+            }
+            if (tabName === 'history') {
+                loadCalculationsTable();
+            }
+        }
+        // تابع نمایش/مخفی کردن منوی موبایل
+        function toggleMobileMenu() {
+            const mobileTabs = document.getElementById('mobileTabs');
+            const menuToggle = document.getElementById('mobileMenuToggle');
+            // بررسی وضعیت فعلی منو با استفاده از computedStyle
+            const isVisible = window.getComputedStyle(mobileTabs).display === 'flex';
+            if (isVisible) {
+                mobileTabs.style.display = 'none';
+                menuToggle.classList.remove('active');
+            } else {
+                mobileTabs.style.display = 'flex';
+                menuToggle.classList.add('active');
+            }
+        }
         // تابع نمایش مودال تأیید حذف
         function showConfirmDeleteModal(message, callback) {
             document.getElementById('confirmDeleteMessage').textContent = message;
             deleteCallback = callback;
             document.getElementById('confirmDeleteModal').style.display = 'flex';
         }
-
         // تابع بستن همه مودال‌ها
         function closeModals() {
             document.querySelectorAll('.modal').forEach(modal => {
@@ -3415,7 +2976,6 @@ function toggleMobileMenu() {
             deleteCallback = null;
             currentDeleteCategoryId = null;
         }
-
         // تابع تنظیم event listenerها
         function setupEventListeners() {
             // تب‌های اصلی
@@ -3425,7 +2985,6 @@ function toggleMobileMenu() {
                     switchTab(tabName);
                 });
             });
-            
             // تب‌های موبایل
             document.querySelectorAll('.mobile-tab').forEach(tab => {
                 tab.addEventListener('click', function() {
@@ -3433,20 +2992,15 @@ function toggleMobileMenu() {
                     switchTab(tabName);
                 });
             });
-            
             // منوی همبرگری موبایل
             document.getElementById('mobileMenuToggle').addEventListener('click', toggleMobileMenu);
-            
             // دکمه‌های ماشین حساب
             document.getElementById('calculateBtn').addEventListener('click', calculateAndSave);
             document.getElementById('resetBtn').addEventListener('click', resetFields);
-            
             // دکمه‌های مدیریت جفت ارزها
             document.getElementById('addCurrencyPairBtn').addEventListener('click', addCurrencyPair);
-            
             // دکمه‌های مدیریت دسته‌بندی‌ها
             document.getElementById('addCategoryBtn').addEventListener('click', addCategory);
-            
             // دکمه‌های مقایسه
             document.getElementById('compareDataBtn').addEventListener('click', compareData);
             document.getElementById('addDateBtn').addEventListener('click', addComparisonDate);
@@ -3462,15 +3016,12 @@ function toggleMobileMenu() {
                 `;
                 updateRemoveButtonsVisibility();
             });
-            
             // دکمه‌های پشتیبان‌گیری
             document.getElementById('backupDataBtn').addEventListener('click', backupData);
             document.getElementById('restoreDataBtn').addEventListener('click', restoreData);
-            
             // دکمه‌های حذف رکورد
             document.getElementById('deleteByDateBtn').addEventListener('click', deleteDataByDate);
             document.getElementById('deleteByDaysBtn').addEventListener('click', deleteDataByDays);
-            
             // دکمه‌های مودال
             document.getElementById('saveCurrencyPairEditBtn').addEventListener('click', saveCurrencyPairEdit);
             document.getElementById('saveCategoryEditBtn').addEventListener('click', saveCategoryEdit);
@@ -3480,20 +3031,16 @@ function toggleMobileMenu() {
                 }
                 closeModals();
             });
-            
             document.getElementById('confirmCategoryDeleteBtn').addEventListener('click', deleteCategory);
-            
             document.querySelectorAll('.close-modal').forEach(btn => {
                 btn.addEventListener('click', closeModals);
             });
-            
             // کلیک خارج از مودال برای بستن آن
             window.addEventListener('click', function(event) {
                 if (event.target.classList.contains('modal')) {
                     closeModals();
                 }
             });
-            
             // امکان استفاده از کلید Enter در فیلدهای ورودی
             ['input_y1', 'input_current_high', 'input_y2', 'input_current_low', 
              'input_y1_mobile', 'input_y2_mobile', 'input_current_high_mobile', 'input_current_low_mobile'].forEach(id => {
@@ -3506,11 +3053,9 @@ function toggleMobileMenu() {
                     });
                 }
             });
-            
             // تغییر حالت تاریک/روشن
             document.getElementById('themeToggle').addEventListener('click', toggleTheme);
         }
-
         // بارگذاری حالت ذخیره شده
         if (localStorage.getItem('theme') === 'dark') {
             document.body.classList.add('dark-mode');
@@ -3519,7 +3064,5 @@ function toggleMobileMenu() {
     </script>
   <BR>
     <BR>
-    
 </body>
 </html>
-							
