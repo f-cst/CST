@@ -913,6 +913,71 @@
         .settings-content::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.3); border-radius: 4px; }
         .settings-content::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.5); }
         .settings-content { scrollbar-width: thin; scrollbar-color: rgba(255, 255, 255, 0.3) rgba(255, 255, 255, 0.1); border-radius: 5px; }
+
+
+
+/* ======== MOBILE DEVICE POPUP ======== */
+.device-popup {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.65);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 999999;
+    animation: fadeIn 0.35s ease;
+}
+
+.device-popup-box {
+    background: rgba(255,255,255,0.12);
+    backdrop-filter: blur(15px) saturate(180%);
+    -webkit-backdrop-filter: blur(15px) saturate(180%);
+    padding: 28px;
+    width: 90%;
+    max-width: 380px;
+    border-radius: 18px;
+    border: 1px solid rgba(255,255,255,0.25);
+    text-align: center;
+    color: white;
+    animation: popupScale 0.35s ease;
+}
+
+.device-popup-box h3 {
+    font-size: 1.3rem;
+    margin-bottom: 12px;
+}
+
+.device-popup-box p {
+    font-size: 0.95rem;
+    line-height: 1.8;
+    margin-bottom: 20px;
+}
+
+.popup-btn {
+    padding: 11px 22px;
+    background: #735af2;
+    border: none;
+    border-radius: 10px;
+    color: white;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    width: 100%;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0 }
+    to   { opacity: 1 }
+}
+@keyframes popupScale {
+    from { transform: scale(.75); opacity: 0 }
+    to   { transform: scale(1); opacity: 1 }
+}
+
+
+        
     </style>
 </head>
 
@@ -925,16 +990,16 @@
             </div>
         </div>
         
-        <div class="device-suggestion" id="deviceSuggestion">
+       <div class="device-popup" id="mobilePopup">
             <div class="ds-icon">
                 <i class="fas fa-laptop-code"></i>
             </div>
-            <div class="ds-content">
+            <div class="device-popup-box">
                 <h4>💡 پیشنهاد برای تحلیل حرفه‌ای</h4>
                 <p>این ابزار بسیار پیشرفته است. اگرچه در موبایل قابل اجراست، اما برای تسلط کامل بر چارت‌ها پیشنهاد می‌کنیم از <strong>لپ‌تاپ، تبلت یا کامپیوتر</strong> استفاده کنید.</p>
-            </div>
-            <span class="ds-close" onclick="this.parentElement.style.display='none'">&times;</span>
-        </div>
+        <button class="popup-btn" onclick="closeMobilePopup()">باشه متوجه شدم</button>
+    </div>
+</div>
         
         <div class="setup-guide">
             <h3>📱 راهنمای ورود</h3>
@@ -1610,6 +1675,32 @@
             handleDesktopResponsiveTabs();
             applyVisualFixes();
         });
+
+
+/* ======== MOBILE DEVICE POPUP SCRIPT ======== */
+function detectSmallMobilePopup() {
+    const ua = navigator.userAgent || navigator.vendor || window.opera;
+
+    const isAndroid = /android/i.test(ua);
+    const isIOS = /iPhone|iPod|iPad/i.test(ua);
+
+    const smallScreen = window.innerWidth < 768;
+
+    // نمایش فقط اگر: موبایل باشد + صفحه کوچک + پاپ‌آپ قبلاً بسته نشده باشد
+    if ((isAndroid || isIOS) && smallScreen) {
+
+        if (!localStorage.getItem("cst_popup_closed")) {
+            document.getElementById("mobilePopup").style.display = "flex";
+        }
+    }
+}
+
+function closeMobilePopup() {
+    document.getElementById("mobilePopup").style.display = "none";
+    localStorage.setItem("cst_popup_closed", "1");
+}
+
+        
     </script>
 </body>
 </html>
