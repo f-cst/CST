@@ -849,67 +849,42 @@
 }
 
 
-/* ======== MOBILE DEVICE POPUP ======== */
-.device-popup {
+
+
+
+/* -------- SIMPLE MOBILE NOTICE -------- */
+.simple-mobile-popup {
     position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.65);
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
-    display: none;
-    justify-content: center;
-    align-items: center;
+    top: 20px;
+    right: 20px;
+    left: 20px;
+    margin: auto;
+    max-width: 360px;
+    background: #ffffff;
+    color: #333;
+    padding: 16px 18px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    font-size: 0.9rem;
+    line-height: 1.7;
     z-index: 999999;
-    animation: fadeIn 0.35s ease;
+    display: none;
 }
 
-.device-popup-box {
-    background: rgba(255,255,255,0.12);
-    backdrop-filter: blur(15px) saturate(180%);
-    -webkit-backdrop-filter: blur(15px) saturate(180%);
-    padding: 28px;
-    width: 90%;
-    max-width: 380px;
-    border-radius: 18px;
-    border: 1px solid rgba(255,255,255,0.25);
-    text-align: center;
-    color: white;
-    animation: popupScale 0.35s ease;
-}
-
-.device-popup-box h3 {
-    font-size: 1.3rem;
-    margin-bottom: 12px;
-}
-
-.device-popup-box p {
-    font-size: 0.95rem;
-    line-height: 1.8;
-    margin-bottom: 20px;
-}
-
-.popup-btn {
-    padding: 11px 22px;
+.simple-mobile-popup button {
+    margin-top: 12px;
     background: #735af2;
-    border: none;
-    border-radius: 10px;
     color: white;
-    font-size: 1rem;
-    font-weight: 600;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 8px;
     cursor: pointer;
     width: 100%;
-}
-
-@keyframes fadeIn {
-    from { opacity: 0 }
-    to   { opacity: 1 }
-}
-@keyframes popupScale {
-    from { transform: scale(.75); opacity: 0 }
-    to   { transform: scale(1); opacity: 1 }
+    font-size: 0.9rem;
 }
 
 
+		
     </style>
 </head>
 
