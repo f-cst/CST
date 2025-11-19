@@ -582,11 +582,11 @@
             position: relative;
             transition: all 0.3s ease;
         }
-        .settings-icon,
-        .settings-icon:hover,
-        .settings-icon:active {
-            box-shadow: none !important;
-        }
+		.settings-icon,
+.settings-icon:hover,
+.settings-icon:active {
+    box-shadow: none !important;
+}
         .close-settings {
             position: absolute;
             top: 15px;
@@ -686,97 +686,82 @@
             display: none;
             text-align: right;
         }
-        .settings-content::-webkit-scrollbar {
-            width: 8px;
-        }
-        .settings-content::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 4px;
-        }
-        .settings-content::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.3);
-            border-radius: 4px;
-        }
-        .settings-content::-webkit-scrollbar-thumb:hover {
-            background: rgba(255, 255, 255, 0.5);
-        }
-        .settings-content {
-            scrollbar-width: thin;
-            scrollbar-color: rgba(255, 255, 255, 0.3) rgba(255, 255, 255, 0.1);
-            border-radius: 5px;
-        }
+		.settings-content::-webkit-scrollbar {
+    width: 8px;
+}
+.settings-content::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+}
+.settings-content::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 4px;
+}
+.settings-content::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.5);
+}
+.settings-content {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.3) rgba(255, 255, 255, 0.1);
+    border-radius: 5px;
+}
 
-        /* ========== NEW POPUP STYLES ========== */
-        #popupOverlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(3px);
-            -webkit-backdrop-filter: blur(3px);
-            z-index: 999998;
-            display: none;
-        }
-        .simple-mobile-popup {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            max-width: 340px;
-            width: 90%;
-            background: #ffffff;
-            color: #333;
-            padding: 20px;
-            border-radius: 16px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
-            font-size: 0.95rem;
-            line-height: 1.7;
-            z-index: 999999;
-            display: none;
-            text-align: center;
-        }
-        .simple-mobile-popup .ds-icon {
-            margin-bottom: 12px;
-        }
-        .simple-mobile-popup .ds-icon i {
-            font-size: 1.8rem;
-            color: #735af2;
-        }
-        .simple-mobile-popup button {
-            margin-top: 16px;
-            background: #735af2;
-            color: white;
-            border: none;
-            padding: 10px;
-            border-radius: 10px;
-            cursor: pointer;
-            width: 100%;
-            font-size: 1rem;
-            font-weight: 600;
-        }
+/* ========== POPUP & OVERLAY STYLES ========== */
+#popupOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
+    z-index: 999998;
+    display: none;
+}
+.simple-mobile-popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    max-width: 340px;
+    width: 90%;
+    background: #ffffff;
+    color: #333;
+    padding: 20px;
+    border-radius: 16px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+    font-size: 0.95rem;
+    line-height: 1.7;
+    z-index: 999999;
+    display: none;
+    text-align: center;
+}
+.simple-mobile-popup .ds-icon i {
+    font-size: 1.8rem;
+    color: #735af2;
+    margin-bottom: 12px;
+}
+.simple-mobile-popup button {
+    margin-top: 16px;
+    background: #735af2;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 10px;
+    cursor: pointer;
+    width: 100%;
+    font-size: 1rem;
+    font-weight: 600;
+}
     </style>
 </head>
 <body>
-    <!-- Overlay جدید -->
-    <div id="popupOverlay"></div>
-
     <div class="login-container" id="loginPage">
         <div class="header-group">
             <h1>ورود به ربات CST</h1>
             <div class="settings-icon" onclick="toggleSettings()">
                 <i class="fas fa-cog"></i>
-            </div>
-        </div>
-        <div class="simple-mobile-popup" id="simpleMobilePopup">
-            <div class="ds-icon">
-                <i class="fas fa-laptop-code"></i>
-            </div>
-            <div class="device-popup-box">
-                <h4>💡 پیشنهاد برای تحلیل حرفه‌ای</h4>
-                <p>این ابزار بسیار پیشرفته است. اگرچه در موبایل قابل اجراست، اما برای تسلط کامل بر چارت‌ها پیشنهاد می‌کنیم از <strong>لپ‌تاپ، تبلت یا کامپیوتر</strong> استفاده کنید.</p>
-                <button class="popup-btn" onclick="closeSimplePopup()">باشه متوجه شدم</button>
             </div>
         </div>
         <div class="setup-guide">
@@ -881,6 +866,19 @@
             </div>
             <div class="contrast-warning" id="contrastWarning">⚠️ رنگ انتخابی باعث ناخوانایی متن‌ها، دکمه‌ها، تب‌ها می‌شه! لطفاً رنگ دیگه‌ای انتخاب کن تا کنتراست مناسب بشه.</div>
             <button class="save-btn" id="saveThemeBtn" onclick="saveTheme()">ذخیره تغییرات</button>
+        </div>
+    </div>
+
+    <!-- ========== POPUP ELEMENTS (OUTSIDE LOGIN CONTAINER!) ========== -->
+    <div id="popupOverlay"></div>
+    <div class="simple-mobile-popup" id="simpleMobilePopup">
+        <div class="ds-icon">
+            <i class="fas fa-laptop-code"></i>
+        </div>
+        <div class="device-popup-box">
+            <h4>💡 پیشنهاد برای تحلیل حرفه‌ای</h4>
+            <p>این ابزار بسیار پیشرفته است. اگرچه در موبایل قابل اجراست، اما برای تسلط کامل بر چارت‌ها پیشنهاد می‌کنیم از <strong>لپ‌تاپ، تبلت یا کامپیوتر</strong> استفاده کنید.</p>
+            <button class="popup-btn" onclick="closeSimplePopup()">باشه متوجه شدم</button>
         </div>
     </div>
 
@@ -1353,7 +1351,7 @@
 
         // ==================== INIT ====================
         document.addEventListener('DOMContentLoaded', () => {
-            detectSimplePopup(); // ✅ هربار نمایش داده می‌شود
+            detectSimplePopup(); // ✅ مهم: هر بار نمایش داده شود
             detectDeviceType();
             loadTheme();
             updateThemeColor();
