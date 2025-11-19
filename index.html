@@ -6,7 +6,7 @@
     <meta http-equiv="Content-Language" content="fa">
     <meta name="language" content="fa">
     <meta name="locale" content="fa_IR">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>ربات CST - ورود با Google Authenticator</title>
     
     <link rel="manifest" href="/cst/manifest.json">
@@ -33,6 +33,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+  
     <style>
         :root {
             --bg-gradient: linear-gradient(135deg, #735af2 0%, #5a3fd0 100%);
@@ -52,30 +53,29 @@
         
         html, body {
             height: 100%;
+            overflow: hidden; /* جلوگیری از اسکرول کلی صفحه */
         }
 
-        /* ========== BEAUTIFUL SCROLLBAR (طراحی اسکرول بار زیبا) ========== */
-        /* برای مرورگرهای Webkit (Chrome, Safari, Edge) */
+        /* ========== BEAUTIFUL SCROLLBAR ========== */
         ::-webkit-scrollbar {
-            width: 6px; /* عرض کم و ظریف */
+            width: 6px;
             height: 6px;
         }
 
         ::-webkit-scrollbar-track {
-            background: transparent; /* پس‌زمینه کاملاً شفاف */
+            background: transparent;
         }
 
         ::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.2); /* رنگ سفید شیشه‌ای */
-            border-radius: 10px; /* گوشه‌های کاملاً گرد */
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
             backdrop-filter: blur(2px);
         }
 
         ::-webkit-scrollbar-thumb:hover {
-            background: rgba(255, 255, 255, 0.4); /* پررنگ‌تر هنگام هاور */
+            background: rgba(255, 255, 255, 0.4);
         }
 
-        /* برای فایرفاکس */
         html {
             scrollbar-width: thin;
             scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
@@ -86,9 +86,9 @@
             display: flex;
             flex-direction: column;
             padding: 0;
-            /* تغییر مهم: در حالت دسکتاپ مخفی باشد، اما در مدیا کوئری موبایل بازنویسی می‌شود */
-            overflow: hidden; 
             min-height: 100vh;
+            /* استفاده از dvh برای موبایل‌ها */
+            min-height: 100dvh; 
             position: relative;
             transition: background 0.3s ease;
         }
@@ -99,21 +99,6 @@
             }
         }
 
-        /* ========== FIX FOR MOBILE SCROLLING (حل مشکل اسکرول موبایل) ========== */
-        @media (max-width: 768px) {
-            body {
-                overflow-y: auto !important; /* فعال کردن اسکرول عمودی در موبایل */
-                height: auto !important;
-                min-height: 100vh;
-            }
-            
-            .login-container {
-                /* اضافه کردن فاصله از بالا و پایین برای اینکه راحت اسکرول شود */
-                margin-top: 40px !important;
-                margin-bottom: 40px !important;
-            }
-        }
-        
         body.standalone {
             padding-top: env(safe-area-inset-top);
             padding-bottom: env(safe-area-inset-bottom);
@@ -134,10 +119,13 @@
             width: 90%;
             text-align: center;
             position: relative;
-            margin: auto;
+            margin: auto; /* مرکز چین شدن */
             overflow: hidden;
             isolation: isolate;
             transition: all 0.3s ease;
+            /* اطمینان از اسکرول شدن محتوای لاگین اگر ارتفاع صفحه کم بود */
+            max-height: 90vh;
+            overflow-y: auto;
         }
         
         :root:not([data-glass="true"]) .login-container,
@@ -300,7 +288,7 @@
 
         /* ========== DEVICE SUGGESTION ALERT ========== */
         .device-suggestion {
-            display: none; /* پیش‌فرض مخفی */
+            display: none;
             background: rgba(255, 193, 7, 0.15);
             border: 1px solid rgba(255, 193, 7, 0.3);
             border-radius: 14px;
@@ -395,8 +383,10 @@
         .main-content {
             display: none;
             flex-direction: column;
+            /* پر کردن کامل ارتفاع صفحه */
             flex: 1;
-            min-height: 0;
+            height: 100%;
+            overflow: hidden; /* جلوگیری از اسکرول اضافه */
         }
         
         .signature, .login-signature {
@@ -429,10 +419,10 @@
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
             border: 1px solid var(--glass-border);
             border-top: none;
-            margin-bottom: 15px;
+            margin-bottom: 5px; /* کاهش فاصله برای فضای بیشتر آیفریم */
             position: relative;
             z-index: 1000;
-            flex-shrink: 0;
+            flex-shrink: 0; /* جلوگیری از جمع شدن تب‌ها */
             overflow: hidden;
             transition: all 0.3s ease;
         }
@@ -535,28 +525,36 @@
             margin: 0;
         }
 
-        /* ========== IFRAME CONTAINER ========== */
+        /* ========== IFRAME CONTAINER (Responsive Fix) ========== */
         .iframe-container {
+            /* مهم: این قسمت باعث می‌شود کانتینر تمام فضای خالی باقی‌مانده را بگیرد */
             flex: 1;
+            display: flex; /* برای اینکه آیفریم داخلش کامل پر شود */
+            flex-direction: column;
+            
             position: relative;
             background: var(--glass-bg);
             border-radius: 1px;
             overflow: hidden;
             margin: 0 5px 5px 5px;
-            min-height: 0;
-            height: 100%;
+            /* ارتفاع به صورت اتوماتیک توسط فلکس باکس تنظیم می‌شود */
+            height: auto; 
             transition: all 0.3s ease;
         }
         
+        /* حذف محدودیت ارتفاع ثابت در موبایل */
         @media (max-width: 480px) {
             .iframe-container {
-                height: 85vh;
+                /* height: 85vh;  <-- این خط حذف شد تا مشکل ارتفاع حل شود */
+                flex: 1; /* اطمینان از پر کردن فضا در موبایل */
             }
         }
         
         iframe {
             width: 100%;
             height: 100%;
+            /* اضافه کردن min-height برای اطمینان */
+            min-height: 100%;
             border: none;
             display: none;
             background: white;
