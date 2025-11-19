@@ -898,14 +898,14 @@
         </div>
         
 		
-		       <div class="device-popup" id="mobilePopup">
+		      <div class="simple-mobile-popup" id="simpleMobilePopup">
             <div class="ds-icon">
                 <i class="fas fa-laptop-code"></i>
             </div>
             <div class="device-popup-box">
                 <h4>💡 پیشنهاد برای تحلیل حرفه‌ای</h4>
                 <p>این ابزار بسیار پیشرفته است. اگرچه در موبایل قابل اجراست، اما برای تسلط کامل بر چارت‌ها پیشنهاد می‌کنیم از <strong>لپ‌تاپ، تبلت یا کامپیوتر</strong> استفاده کنید.</p>
-        <button class="popup-btn" onclick="closeMobilePopup()">باشه متوجه شدم</button>
+        <button class="popup-btn" onclick="closeSimplePopup()">باشه متوجه شدم</button>
     </div>
 </div>
 		
@@ -1621,30 +1621,31 @@
             applyVisualFixes();
         });
 
-/* ======== MOBILE DEVICE POPUP SCRIPT ======== */
-function detectSmallMobilePopup() {
-    const ua = navigator.userAgent || navigator.vendor || window.opera;
 
+
+		
+
+/* ======== MOBILE DEVICE POPUP SCRIPT ======== */
+function detectSimplePopup() {
+    const ua = navigator.userAgent || navigator.vendor || window.opera;
     const isAndroid = /android/i.test(ua);
     const isIOS = /iPhone|iPod|iPad/i.test(ua);
-
     const smallScreen = window.innerWidth < 768;
 
-    // نمایش فقط اگر: موبایل باشد + صفحه کوچک + پاپ‌آپ قبلاً بسته نشده باشد
     if ((isAndroid || isIOS) && smallScreen) {
-
-        if (!localStorage.getItem("cst_popup_closed")) {
-            document.getElementById("mobilePopup").style.display = "flex";
+        if (!localStorage.getItem("simple_popup_closed")) {
+            document.getElementById("simpleMobilePopup").style.display = "block";
         }
     }
 }
 
-function closeMobilePopup() {
-    document.getElementById("mobilePopup").style.display = "none";
-    localStorage.setItem("cst_popup_closed", "1");
+function closeSimplePopup() {
+    document.getElementById("simpleMobilePopup").style.display = "none";
+    localStorage.setItem("simple_popup_closed", "1");
 }
 
 
+		
 
     </script>
 </body>
