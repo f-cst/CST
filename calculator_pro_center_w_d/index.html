@@ -1116,32 +1116,70 @@
       }, 3000);
     }
 
-    // ---------- توابع جدید و اصلاح شده برای حل مشکل جداکننده اعداد ----------
+    // ---------- توابع جدید و اصلاح شده برای حل مشکل نقطه‌گذاری ----------
 
-    // تابع اصلاح شده برای نمایش اعداد بر اساس ورودی اصلی
-    function formatNumberBasedOnInput(number, originalInput) {
-      if (!originalInput) return number.toString();
+    // تابع جدید: استخراج ساختار نقطه از ورودی
+    function extractDotStructure(inputStr) {
+      if (!inputStr || typeof inputStr !== 'string') {
+        return { hasDot: false, leftDigits: 0, rightDigits: 0, totalLength: 0 };
+      }
       
-      // بررسی آیا در ورودی اصلی از نقطه استفاده شده بود
-      const hasDot = originalInput.includes('.');
+      const dotIndex = inputStr.indexOf('.');
+      const hasDot = dotIndex !== -1;
       
-      if (hasDot) {
-        // اگر نقطه داشت، عدد را با نقطه جداکننده برگردان
-        return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-      } else {
-        // اگر نقطه نداشت، عدد را بدون جداکننده برگردان
+      if (!hasDot) {
+        return { 
+          hasDot: false, 
+          leftDigits: inputStr.length, 
+          rightDigits: 0, 
+          totalLength: inputStr.length 
+        };
+      }
+      
+      const leftDigits = dotIndex;
+      const rightDigits = inputStr.length - dotIndex - 1;
+      
+      return {
+        hasDot: true,
+        leftDigits: leftDigits,
+        rightDigits: rightDigits,
+        totalLength: inputStr.length - 1 // بدون نقطه
+      };
+    }
+
+    // تابع جدید: فرمت کردن عدد بر اساس ساختار نقطه
+    function formatNumberWithDotStructure(number, dotStructure) {
+      if (!dotStructure.hasDot) {
         return number.toString();
+      }
+      
+      const numStr = number.toString().padStart(dotStructure.totalLength, '0');
+      
+      if (numStr.length < dotStructure.totalLength) {
+        // اگر عدد کوتاه‌تر از ساختار باشد، از چپ با صفر پر می‌کنیم
+        const padded = numStr.padStart(dotStructure.totalLength, '0');
+        const leftPart = padded.substring(0, dotStructure.leftDigits);
+        const rightPart = padded.substring(dotStructure.leftDigits);
+        return `${leftPart}.${rightPart}`;
+      } else {
+        // عدد به اندازه کافی بلند است
+        const leftPart = numStr.substring(0, dotStructure.leftDigits);
+        const rightPart = numStr.substring(dotStructure.leftDigits, dotStructure.leftDigits + dotStructure.rightDigits);
+        return `${leftPart}.${rightPart}`;
       }
     }
 
-    // تابع parseNumberInput اصلاح شده - نقطه را فقط برای نمایش نگه می‌دارد
+    // تابع parseNumberInput کاملاً بازنویسی شده
     function parseNumberInput(str) { 
-      if(!str) return {value: NaN, original: str}; 
+      if(!str) return {value: NaN, original: str, dotStructure: {hasDot: false, leftDigits: 0, rightDigits: 0, totalLength: 0}}; 
       
       // ذخیره ورودی اصلی برای نمایش
       const original = str.toString();
       
-      // برای محاسبات: تمام نقاط را حذف می‌کنیم
+      // استخراج ساختار نقطه
+      const dotStructure = extractDotStructure(original);
+      
+      // برای محاسبات: تمام نقاط و جداکننده‌ها را حذف می‌کنیم
       const cleaned = str.toString()
         .replace(/[\s،]/g, '') // حذف فاصله و ویرگول فارسی
         .replace(/,/g, '')     // حذف ویرگول انگلیسی
@@ -1149,8 +1187,17 @@
       
       return {
         value: parseFloat(cleaned),
-        original: original
+        original: original,
+        dotStructure: dotStructure
       }; 
+    }
+
+    // تابع formatNumberBasedOnInput کاملاً بازنویسی شده
+    function formatNumberBasedOnInput(number, originalInput) {
+      if (!originalInput) return number.toString();
+      
+      const parsed = parseNumberInput(originalInput);
+      return formatNumberWithDotStructure(number, parsed.dotStructure);
     }
 
     // تابع formatWithDots برای مواقعی که نیاز به جداکننده داریم
@@ -1787,7 +1834,7 @@
       const sortedResults = [...results].sort((a, b) => a - b);
 
       sortedResults.forEach((res, index) => {
-        // استفاده از تابع جدید که بر اساس ورودی اصلی فرمت می‌دهد
+        // استفاده از تابع جدید که بر اساس ساختار نقطه ورودی فرمت می‌دهد
         const displayValue = formatNumberBasedOnInput(res, parsed.original);
         const span = document.createElement('span');
         span.className = `box-out box-gray cursor-pointer hover:opacity-80 transition-opacity`;
@@ -1847,7 +1894,7 @@
       if (closest && closest.pair && Array.isArray(closest.pair) && closest.pair.length === 2 && 
           closest.indexes && Array.isArray(closest.indexes) && closest.indexes.length === 2) {
         
-             // استفاده از فرمت ساده برای نمایش در تحلیل
+        // استفاده از فرمت ساده برای نمایش در تحلیل (بدون نقطه)
         const formattedPair = `${closest.pair[0]} (بخش ۱) و ${closest.pair[1]} (بخش ۲)`;
         const formattedDiff = closest.difference;
         const indexesText = `${closest.indexes[0]}/${closest.indexes[1]}`;
@@ -1888,6 +1935,11 @@
         inputFormats: {
           y1: inputs.originalY1 || '',
           y2: inputs.originalY2 || ''
+        },
+        // ذخیره ساختار نقطه برای هر ورودی
+        dotStructures: {
+          y1: inputs.dotStructureY1 || {hasDot: false, leftDigits: 0, rightDigits: 0, totalLength: 0},
+          y2: inputs.dotStructureY2 || {hasDot: false, leftDigits: 0, rightDigits: 0, totalLength: 0}
         }
       };
       entries.push(entry); 
@@ -1946,12 +1998,14 @@
         const pairId = pairSelect ? pairSelect.value || null : null;
         const note = noteInput ? noteInput.value || '' : '';
         
-        // ارسال ورودی اصلی به تابع saveEntry
+        // ارسال ورودی اصلی و ساختار نقطه به تابع saveEntry
         saveEntry(pairId, {
           y1, 
           y2,
           originalY1: parsedY1.original,
-          originalY2: parsedY2.original
+          originalY2: parsedY2.original,
+          dotStructureY1: parsedY1.dotStructure,
+          dotStructureY2: parsedY2.dotStructure
         }, results1, results2, closest, note, chosenISO);
 
       }catch(err){ if(errorMessage) errorMessage.textContent = 'خطا: '+err.message; }
@@ -2150,9 +2204,9 @@
           const wrapper = document.createElement('div'); 
           wrapper.className = 'history-entry-compact flex flex-col gap-3 hover:border-white/20 transition-colors mt-2';
           
-          // نمایش نتایج بخش ۱ و ۲ با بررسی کامل - استفاده از فرمت بر اساس ورودی اصلی
+          // نمایش نتایج بخش ۱ و ۲ با بررسی کامل - استفاده از فرمت بر اساس ساختار نقطه
           const results1Html = e.results1 && Array.isArray(e.results1) && e.results1.length ? e.results1.map((val, idx) => {
-            const displayValue = e.inputFormats && e.inputFormats.y1 && e.inputFormats.y1.includes('.') ? formatWithDots(val) : val.toString();
+            const displayValue = formatNumberWithDotStructure(val, e.dotStructures?.y1 || {hasDot: false, leftDigits: 0, rightDigits: 0, totalLength: 0});
             return `<span class="box-out box-gray cursor-pointer hover:opacity-80 transition-opacity" 
                    title="کلیک برای کپی: ${displayValue}"
                    onclick="copyToClipboard('${displayValue}')">
@@ -2161,7 +2215,7 @@
           }).join('') : '<span class="text-xs muted">بدون داده</span>';
           
           const results2Html = e.results2 && Array.isArray(e.results2) && e.results2.length ? e.results2.map((val, idx) => {
-            const displayValue = e.inputFormats && e.inputFormats.y2 && e.inputFormats.y2.includes('.') ? formatWithDots(val) : val.toString();
+            const displayValue = formatNumberWithDotStructure(val, e.dotStructures?.y2 || {hasDot: false, leftDigits: 0, rightDigits: 0, totalLength: 0});
             return `<span class="box-out box-gray cursor-pointer hover:opacity-80 transition-opacity" 
                    title="کلیک برای کپی: ${displayValue}"
                    onclick="copyToClipboard('${displayValue}')">
@@ -2262,9 +2316,9 @@
         const wrapper = document.createElement('div'); 
         wrapper.className = 'history-entry-compact flex flex-col gap-3 hover:border-white/20 transition-colors';
         
-        // نمایش نتایج بخش ۱ و ۲ با بررسی کامل - استفاده از فرمت بر اساس ورودی اصلی
+        // نمایش نتایج بخش ۱ و ۲ با بررسی کامل - استفاده از فرمت بر اساس ساختار نقطه
         const results1Html = e.results1 && Array.isArray(e.results1) && e.results1.length ? e.results1.map((val, idx) => {
-          const displayValue = e.inputFormats && e.inputFormats.y1 && e.inputFormats.y1.includes('.') ? formatWithDots(val) : val.toString();
+          const displayValue = formatNumberWithDotStructure(val, e.dotStructures?.y1 || {hasDot: false, leftDigits: 0, rightDigits: 0, totalLength: 0});
           return `<span class="box-out box-gray cursor-pointer hover:opacity-80 transition-opacity" 
                  title="کلیک برای کپی: ${displayValue}"
                  onclick="copyToClipboard('${displayValue}')">
@@ -2273,7 +2327,7 @@
         }).join('') : '<span class="text-xs muted">بدون داده</span>';
         
         const results2Html = e.results2 && Array.isArray(e.results2) && e.results2.length ? e.results2.map((val, idx) => {
-          const displayValue = e.inputFormats && e.inputFormats.y2 && e.inputFormats.y2.includes('.') ? formatWithDots(val) : val.toString();
+          const displayValue = formatNumberWithDotStructure(val, e.dotStructures?.y2 || {hasDot: false, leftDigits: 0, rightDigits: 0, totalLength: 0});
           return `<span class="box-out box-gray cursor-pointer hover:opacity-80 transition-opacity" 
                  title="کلیک برای کپی: ${displayValue}"
                  onclick="copyToClipboard('${displayValue}')">
@@ -2396,7 +2450,7 @@
           <div class="text-xs muted mb-3">نتایج بخش ۱</div>
           <div class="flex flex-wrap gap-2 justify-center">
             ${e.results1 && Array.isArray(e.results1) && e.results1.length ? e.results1.map((val, idx) => {
-              const displayValue = e.inputFormats && e.inputFormats.y1 && e.inputFormats.y1.includes('.') ? formatWithDots(val) : val.toString();
+              const displayValue = formatNumberWithDotStructure(val, e.dotStructures?.y1 || {hasDot: false, leftDigits: 0, rightDigits: 0, totalLength: 0});
               return `<span class="box-out box-gray cursor-default text-sm">
                 <span class="num-label">${idx + 1}.</span> ${displayValue}
               </span>`;
@@ -2408,7 +2462,7 @@
           <div class="text-xs muted mb-3">نتایج بخش ۲</div>
           <div class="flex flex-wrap gap-2 justify-center">
             ${e.results2 && Array.isArray(e.results2) && e.results2.length ? e.results2.map((val, idx) => {
-              const displayValue = e.inputFormats && e.inputFormats.y2 && e.inputFormats.y2.includes('.') ? formatWithDots(val) : val.toString();
+              const displayValue = formatNumberWithDotStructure(val, e.dotStructures?.y2 || {hasDot: false, leftDigits: 0, rightDigits: 0, totalLength: 0});
               return `<span class="box-out box-gray cursor-default text-sm">
                 <span class="num-label">${idx + 1}.</span> ${displayValue}
               </span>`;
@@ -2787,7 +2841,7 @@ if(exportBtn) exportBtn.addEventListener('click', ()=>{
       console.log('• ذخیره کامل تاریخچه: فعال');
       console.log('• مدیریت دستی حذف: فعال');
       console.log('• بک‌آپ کامل داده‌ها: فعال');
-      console.log('• نمایش اعداد بر اساس ورودی: فعال');
+      console.log('• نمایش اعداد بر اساس ساختار نقطه ورودی: فعال');
       console.log('• عدم تداخل با برنامه اول: فعال');
       console.log('• حالت چندتاریخی: فعال');
       console.log('• مدیریت پیشرفته دکمه تاگل: فعال');
