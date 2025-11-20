@@ -130,7 +130,7 @@
       <div class="keyboard-icon">
         <i class="fas fa-keyboard"></i>
       </div>
-      <p>برای استفاده از کیبورد فیزیکی روی ماشین‌حساب باید کلیک کنید</p>
+       <p>برای استفاده از کیبورد فیزیکی; روی ماشین‌حساب باید کلیک کنید</p>
       <button class="keyboard-hint-close" id="closeHintBtn">متوجه شدم</button>
     </div>
   </div>
@@ -254,9 +254,6 @@
     function showKeyboardHint() {
       if (hasPhysicalKeyboard) {
         keyboardHint.classList.add('show');
-        
-        // ذخیره وضعیت در localStorage که کاربر پیام را دیده
-        localStorage.setItem('keyboardHintSeen', 'true');
       }
     }
 
@@ -275,11 +272,8 @@
     function init() {
       hasPhysicalKeyboard = hasPhysicalKeyboardDevice();
       
-      // بررسی آیا کاربر قبلا پیام را دیده است
-      const hintSeen = localStorage.getItem('keyboardHintSeen');
-      
-      // فقط در دستگاه‌های دارای کیبورد فیزیکی و اگر کاربر قبلا پیام را ندیده، نمایش بده
-      if (hasPhysicalKeyboard && !hintSeen) {
+      // همیشه در دستگاه‌های دارای کیبورد فیزیکی پیام را نمایش بده
+      if (hasPhysicalKeyboard) {
         // کمی تاخیر برای نمایش پیام پس از لود کامل صفحه
         setTimeout(showKeyboardHint, 500);
       }
@@ -423,6 +417,11 @@
 
     // مقداردهی اولیه هنگام لود صفحه
     window.addEventListener('load', init);
+    
+    // نمایش پیام هنگام رفرش صفحه
+    window.addEventListener('beforeunload', () => {
+      // این اطمینان را می‌دهد که پیام در لود بعدی دوباره نمایش داده می‌شود
+    });
   </script>
 </body>
 </html>
