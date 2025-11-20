@@ -8,15 +8,18 @@
     <meta name="locale" content="fa_IR">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ربات CST - ورود با Google Authenticator</title>
+    
     <!-- ========== PWA CONFIGURATION ========== -->
     <link rel="manifest" href="/cst/manifest.json">
     <link rel="icon" type="image/x-icon" href="/cst/icons/favicon.ico">
     <link rel="icon" type="image/png" sizes="16x16" href="/cst/icons/favicon-16x16.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/cst/icons/favicon-32x32.png">
+    
     <!-- برای iOS - فقط از آیکون‌های موجود استفاده کن -->
     <link rel="apple-touch-icon" href="/cst/icons/apple-touch-icon.png">
     <link rel="apple-touch-icon" sizes="192x192" href="/cst/icons/android-chrome-192x192.png">
     <link rel="apple-touch-icon" sizes="512x512" href="/cst/icons/android-chrome-512x512.png">
+    
     <!-- THEME COLORS -->
     <meta name="theme-color" content="#735af2">
     <meta name="msapplication-TileColor" content="#735af2">
@@ -24,12 +27,15 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="ربات CST">
+    
     <!-- FONTS & STYLES -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/gh/rastikerdar/sahel-font@v3.4.0/dist/font-face.css" rel="stylesheet" type="text/css" />
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
     <style>
         :root {
@@ -40,15 +46,18 @@
             --glass-border: rgba(255, 255, 255, 0.2);
             --glass-enabled: true;
         }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             font-family: 'Vazirmatn', 'Sahel', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
+        
         html, body {
             height: 100%;
         }
+
         body {
             background: var(--bg-gradient);
             display: flex;
@@ -59,18 +68,21 @@
             position: relative;
             transition: background 0.3s ease;
         }
+        
         /* پس‌زمینه ساده فقط برای موبایل‌های کوچک */
         @media (max-width: 480px) {
             body {
                 background: var(--primary-color) !important;
             }
         }
+        
         body.standalone {
             padding-top: env(safe-area-inset-top);
             padding-bottom: env(safe-area-inset-bottom);
             padding-left: env(safe-area-inset-left);
             padding-right: env(safe-area-inset-right);
         }
+        
         /* ========== LOGIN STYLES ========== */
         .login-container {
             background-color: var(--glass-bg);
@@ -89,6 +101,7 @@
             isolation: isolate;
             transition: all 0.3s ease;
         }
+        
         /* اگر شیشه‌ای غیرفعال باشد */
         :root:not([data-glass="true"]) .login-container,
         :root:not([data-glass="true"]) .tabs-container,
@@ -101,6 +114,7 @@
             background: rgba(0, 0, 0, 0.1) !important;
             border: 1px solid rgba(255, 255, 255, 0.1) !important;
         }
+        
         /* استایل برای موبایل */
         @media (max-width: 480px) {
             .login-container {
@@ -112,46 +126,99 @@
                 -webkit-backdrop-filter: blur(8px) saturate(200%);
             }
         }
+        
         .header-group {
             position: relative;
             margin-bottom: 30px;
         }
+        
         h1 {
             color: white;
             text-align: center;
             font-size: 2.2rem;
             text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
         }
+        
         .login-form {
             display: flex;
             flex-direction: column;
             gap: 20px;
             position: relative;
         }
-        .settings-icon {
-            position: absolute;
-            top: 0;
-            right: 0;
-            color: white;
-            font-size: 1.5rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            z-index: 10;
-        }
-        .settings-icon:hover {
-            transform: rotate(90deg);
-            color: var(--primary-color);
-        }
+        
+/* ==== چرخ‌دنده گوشه‌ای بدون مخفی شدن روی هیچ دستگاهی ==== */
+.settings-icon {
+    position: absolute;
+    top: -25px;                /* یه کم بیرون از کادر */
+    right: -16px;              /* کاملاً گوشه گوشه */
+    color: white;
+    font-size: 1.75rem;
+    cursor: pointer;
+    transition: transform 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
+    z-index: 99999;            /* خیلی بالا – از همه چیز بالاتر! */
+
+    /* اینا باعث می‌شن هیچ‌وقت جابجا نشه */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    transform-origin: center center !important;
+
+    /* افکت شیشه‌ای + سایه قوی */
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 50%;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+    padding: 10px;
+
+    /* این خط طلاییه: حتی اگر پدرش overflow: hidden داشته باشه، اینو نشون می‌ده! */
+    transform: translateZ(0); /* فعال کردن GPU acceleration */
+    -webkit-transform: translateZ(0);
+}
+
+/* هاور */
+.settings-icon:hover,
+.settings-icon:active {
+    transform: rotate(0deg) translateZ(0) !important;
+    background: rgba(255, 255, 255, 0.28);
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.5);
+}
+
+/* ==== این قسمت خیلی مهمه – اضافه کن به CSS ==== */
+/* جلوگیری از مخفی شدن چرخ‌دنده وقتی صفحه کوچیک می‌شه */
+.header-group,
+.login-container {
+    overflow: visible !important;   /* این خط همه مشکلات رو حل می‌کنه */
+    position: relative !important;
+}
+
+/* برای موبایل‌های خیلی کوچیک (زیر 380px) یه کم جمع‌ترش کن */
+@media (max-width: 380px) {
+    .settings-icon {
+        top: -18px;
+        right: -10px;
+        width: 40px;
+        height: 40px;
+        font-size: 1.5rem;
+        padding: 8px;
+    }
+}
+        
         .input-group {
             display: flex;
             flex-direction: column;
             gap: 8px;
         }
+        
         label {
             color: white;
             font-size: 1.1rem;
             text-align: right;
         }
+        
         input[type="text"] {
             padding: 15px;
             border-radius: 10px;
@@ -163,15 +230,18 @@
             text-align: center;
             width: 100%;
         }
+        
         input[type="text"]:focus {
             outline: none;
             border-color: rgba(255, 255, 255, 0.6);
             background: rgba(255, 255, 255, 0.25);
             box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
         }
+        
         input[type="text"]::placeholder {
             color: rgba(255, 255, 255, 0.6);
         }
+        
         .login-btn {
             padding: 15px;
             border-radius: 10px;
@@ -185,11 +255,13 @@
             margin-top: 10px;
             border: 1px solid rgba(255, 255, 255, 0.3);
         }
+        
         .login-btn:hover {
             background: rgba(255, 255, 255, 0.3);
             transform: translateY(-3px);
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
         }
+        
         .error-message {
             color: #ff6b6b;
             background: rgba(255, 107, 107, 0.1);
@@ -199,6 +271,7 @@
             display: none;
             margin-top: 10px;
         }
+        
         .setup-guide {
             background: var(--glass-bg);
             padding: 15px;
@@ -210,22 +283,26 @@
             border: 1px solid var(--glass-border);
             transition: all 0.3s ease;
         }
+        
         .setup-guide h3 {
             color: white;
             margin-bottom: 10px;
             font-size: 1.1rem;
         }
+        
         .setup-guide p {
             color: white;
             line-height: 1.6;
             margin-bottom: 8px;
         }
+        
         .main-content {
             display: none;
             flex-direction: column;
             flex: 1;
             min-height: 0;
         }
+        
         .signature, .login-signature {
             color: white;
             text-align: center;
@@ -245,6 +322,7 @@
             box-sizing: border-box;
             transition: all 0.3s ease;
         }
+
         /* ========== TAB STYLES ========== */
         .tabs-container {
             background: var(--glass-bg);
@@ -262,6 +340,7 @@
             overflow: hidden;
             transition: all 0.3s ease;
         }
+        
         .tabs-scroll-container {
             overflow-x: auto;
             scrollbar-width: thin;
@@ -269,29 +348,36 @@
             padding-bottom: 5px;
             cursor: grab;
         }
+        
         .tabs-scroll-container::-webkit-scrollbar {
             height: 8px;
         }
+        
         .tabs-scroll-container::-webkit-scrollbar-track {
             background: rgba(255, 255, 255, 0.1);
             border-radius: 4px;
         }
+        
         .tabs-scroll-container::-webkit-scrollbar-thumb {
             background: rgba(255, 255, 255, 0.3);
             border-radius: 4px;
         }
+        
         .tabs-scroll-container::-webkit-scrollbar-thumb:hover {
             background: rgba(255, 255, 255, 0.5);
         }
+        
         .tabs-scroll-container:active {
             cursor: grabbing;
         }
+        
         .tabs {
             display: flex;
             gap: 8px;
             min-width: min-content;
             user-select: none;
         }
+        
         .tab {
             flex: 0 0 auto;
             display: flex;
@@ -313,15 +399,18 @@
             position: relative;
             z-index: 1;
         }
+        
         .tab:hover {
             background: rgba(255, 255, 255, 0.2);
         }
+        
         .tab.active {
             background: rgba(255, 255, 255, 0.25);
             border: 2px solid #ff4444;
             box-shadow: 0 0 0 1px rgba(255, 68, 68, 0.3);
             z-index: 2;
         }
+        
         /* وقتی شیشه‌ای غیرفعال، border قرمز رو نازک نگه دار */
         :root:not([data-glass="true"]) .tab.active {
             border: 2px solid #ff4444 !important;
@@ -329,10 +418,12 @@
             background: rgba(255, 68, 68, 0.1) !important;
             z-index: 2 !important;
         }
+        
         .tab i {
             font-size: 1.2rem;
             opacity: 0.9;
         }
+        
         /* ========== RESPONSIVE TABS ONLY FOR DESKTOP ========== */
         /* فقط برای دسکتاپ - حالت فشرده (فقط آیکون) در سایزهای بسیار کوچک */
         body.desktop .tabs-container.icons-only .tab {
@@ -340,13 +431,16 @@
             min-width: 55px;
             justify-content: center;
         }
+        
         body.desktop .tabs-container.icons-only .tab-text {
             display: none !important;
         }
+        
         body.desktop .tabs-container.icons-only .tab i {
             font-size: 1.4rem;
             margin: 0;
         }
+
         /* ========== IFRAME CONTAINER ========== */
         .iframe-container {
             flex: 1;
@@ -359,12 +453,14 @@
             height: 100%;
             transition: all 0.3s ease;
         }
+        
         /* کاهش ارتفاع iframe فقط در موبایل */
         @media (max-width: 480px) {
             .iframe-container {
                 height: 85vh;
             }
         }
+        
         iframe {
             width: 100%;
             height: 100%;
@@ -373,9 +469,11 @@
             background: white;
             border-radius: 1px;
         }
+        
         iframe.active {
             display: block;
         }
+
         /* ========== PWA INSTALL BUTTON ========== */
         .pwa-install-btn {
             position: fixed;
@@ -397,11 +495,13 @@
             min-height: 55px;
             display: none;
         }
+
         .pwa-install-btn:hover {
             transform: translateY(-3px);
             box-shadow: 0 8px 25px rgba(0,0,0,0.4);
             background: var(--bg-gradient);
         }
+
         /* ========== RESPONSIVE DESIGN ========== */
         @media (max-width: 1024px) {
             .tab {
@@ -409,32 +509,39 @@
                 font-size: 0.8rem;
                 gap: 6px;
             }
+            
             .tab i {
                 font-size: 1.1rem;
             }
         }
+
         @media (max-width: 768px) {
             .tabs-container {
                 padding: 12px 15px;
                 border-radius: 0 0 15px 15px;
                 margin-bottom: 12px;
             }
+            
             .tab {
                 padding: 8px 12px;
                 font-size: 0.75rem;
                 gap: 5px;
             }
+            
             .tab i {
                 font-size: 1rem;
             }
+            
             .login-container {
                 padding: 30px 20px;
                 margin: 20px auto;
                 width: 95%;
             }
+            
             h1 {
                 font-size: 2rem;
             }
+            
             .pwa-install-btn {
                 padding: 14px 22px;
                 font-size: 15px;
@@ -443,21 +550,25 @@
                 bottom: 20px;
                 left: 20px;
             }
+            
             .signature, .login-signature {
                 font-size: 14px;
                 padding: 15px;
             }
+            
             .iframe-container {
                 margin: 0 4px 8px 4px;
                 border-radius: 1px;
             }
         }
+
         @media (max-width: 480px) {
             .tabs-container {
                 padding: 10px 12px;
                 backdrop-filter: blur(12px);
                 -webkit-backdrop-filter: blur(12px);
             }
+            
             .tab {
                 padding: 6px 10px;
                 font-size: 0.7rem;
@@ -466,52 +577,65 @@
                 backdrop-filter: blur(8px);
                 -webkit-backdrop-filter: blur(8px);
             }
+            
             h1 {
                 font-size: 1.7rem;
             }
+            
             .login-container {
                 padding: 25px 15px;
                 margin: 15px auto;
             }
+            
             .setup-guide {
                 padding: 12px;
             }
+            
             .setup-guide h3 {
                 font-size: 1rem;
             }
+            
             .setup-guide p {
                 font-size: 0.9rem;
             }
+            
             .signature, .login-signature {
                 font-size: 11px;
                 padding: 12px;
             }
+            
             .iframe-container {
                 margin: 0 5px 5px 5px;
                 border-radius: 3px;
             }
         }
+
         @media all and (display-mode: standalone) {
             .tabs-container {
                 padding-top: calc(15px + env(safe-area-inset-top));
             }
         }
+
         @media (max-width: 360px) {
             .tab {
                 padding: 5px 8px;
                 font-size: 0.65rem;
             }
+            
             .tab i {
                 font-size: 0.8rem;
             }
+            
             .login-container {
                 padding: 20px 12px;
                 margin: 10px auto;
             }
+            
             h1 {
                 font-size: 1.5rem;
             }
         }
+        
         /* ========== FIXES FOR BACKDROP-FILTER ISSUES ========== */
         /* جلوگیری از خطوط شیشه‌ای ناخواسته */
         .login-container::before,
@@ -529,6 +653,7 @@
             border-radius: inherit;
             z-index: -1;
         }
+        
         /* بهبود عملکرد backdrop-filter در مرورگرهای مختلف */
         @supports not (backdrop-filter: blur(10px)) {
             .login-container,
@@ -540,6 +665,7 @@
                 background: rgba(255, 255, 255, 0.2) !important;
             }
         }
+
         /* ========== SETTINGS MODAL ========== */
         #settingsModal {
             display: none;
@@ -555,6 +681,7 @@
             padding: 20px;
             box-sizing: border-box;
         }
+
         .settings-content {
             background: var(--glass-bg);
             backdrop-filter: var(--glass-blur);
@@ -569,6 +696,12 @@
             position: relative;
             transition: all 0.3s ease;
         }
+		.settings-icon,
+.settings-icon:hover,
+.settings-icon:active {
+    box-shadow: none !important;
+}
+
         .close-settings {
             position: absolute;
             top: 15px;
@@ -578,17 +711,21 @@
             cursor: pointer;
             transition: all 0.3s ease;
         }
-        .close-settings:hover {
+
+        .close-settings:hover,
+        .close-settings:active {
             transform: rotate(90deg);
-            color: var(--primary-color);
         }
+
         .settings-section {
             margin-bottom: 20px;
         }
+
         .settings-section h3 {
             margin-bottom: 10px;
             color: white;
         }
+
         .preset-select {
             width: 100%;
             padding: 10px;
@@ -598,10 +735,12 @@
             color: white;
             margin-bottom: 10px;
         }
+
         .preset-select option {
             background: rgba(0, 0, 0, 0.6);
             color: white;
         }
+
         .color-input {
             width: 100%;
             padding: 10px;
@@ -612,24 +751,29 @@
             text-align: center;
             margin-bottom: 10px;
         }
+
         .color-type {
             display: flex;
             gap: 10px;
             margin-bottom: 10px;
         }
+
         .color-type input[type="radio"] {
             margin-left: 5px;
         }
+
         .glass-switch {
             display: flex;
             align-items: center;
             gap: 10px;
             margin-bottom: 10px;
         }
+
         .glass-switch input[type="checkbox"] {
             width: 20px;
             height: 20px;
         }
+
         .save-btn {
             padding: 15px;
             border-radius: 10px;
@@ -644,21 +788,25 @@
             margin-top: 10px;
             filter: brightness(1);
         }
+
         .save-btn:hover:not(:disabled) {
             filter: brightness(0.9);
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
         }
+
         .save-btn:disabled {
             background: #6c757d;
             cursor: not-allowed;
             opacity: 0.6;
         }
+
         /* موبایل: مخفی کردن گزینه‌های اضافی */
         .mobile-only { display: none; }
         body.mobile .mobile-only { display: block; }
         body.desktop .desktop-only { display: block; }
         body.mobile .desktop-only { display: none; }
+
         /* استایل برای پیام هشدار کنتراست */
         .contrast-warning {
             color: #ff6b6b;
@@ -670,6 +818,35 @@
             display: none;
             text-align: right;
         }
+		
+		/* ========== BEAUTIFY SETTINGS MODAL SCROLLBAR ========== */
+.settings-content::-webkit-scrollbar {
+    width: 8px; /* عرض اسکرول‌بار */
+}
+
+.settings-content::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1); /* رنگ پس‌زمینه مسیر اسکرول‌بار */
+    border-radius: 4px;
+}
+
+.settings-content::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.3); /* رنگ خود اسکرول‌بار */
+    border-radius: 4px;
+}
+
+.settings-content::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.5); /* رنگ اسکرول‌بار وقتی موس روش میره */
+}
+
+/* برای مرورگر Firefox */
+.settings-content {
+    scrollbar-width: thin; /* میتونه thin یا auto یا none باشه */
+    scrollbar-color: rgba(255, 255, 255, 0.3) rgba(255, 255, 255, 0.1); /* رنگ اسکرول‌بار و رنگ پس‌زمینه */
+}
+
+.settings-content {
+    border-radius: 5px;
+}
 
         /* ========== POPUP & OVERLAY STYLES ========== */
         #popupOverlay {
@@ -721,6 +898,7 @@
         }
     </style>
 </head>
+
 <body>
     <div class="login-container" id="loginPage">
         <div class="header-group">
@@ -729,12 +907,14 @@
                 <i class="fas fa-cog"></i>
             </div>
         </div>
+        
         <div class="setup-guide">
             <h3>📱 راهنمای ورود</h3>
             <p>• اپلیکیشن Google Authenticator را باز کنید</p>
             <p>• کد ۶ رقمی مربوط به "CST-Robot" را پیدا کنید</p>
             <p>• کد را در فیلد زیر وارد کنید</p>
         </div>
+        
         <div class="login-form" id="verifyForm">
             <div class="input-group">
                 <label for="otp">کد ۶ رقمی Google Authenticator:</label>
@@ -743,10 +923,12 @@
             <button type="button" class="login-btn" id="verifyOtpBtn">ورود به سیستم</button>
             <div class="error-message" id="verifyError">کد نامعتبر است</div>
         </div>
+        
         <div class="login-signature">
             طراحی و ساخت توسط ⦙ سعید شیخ احمد صفاری
         </div>
     </div>
+
     <div class="main-content" id="mainContent">
         <div class="tabs-container" id="tabsContainer">
             <div class="tabs-scroll-container" id="tabsScrollContainer">
@@ -782,6 +964,7 @@
                 </div>
             </div>
         </div>
+
         <div class="iframe-container">
             <iframe src="calculator_pro_w_d/index.html" class="active"></iframe>
             <iframe src="calculator_pro_formula_4/index.html"></iframe>
@@ -792,12 +975,15 @@
             <iframe src="calculator/index.html"></iframe>
         </div>
     </div>
+
     <button class="pwa-install-btn" id="pwaInstallButton">📥 نصب برنامه</button>
+
     <!-- Settings Modal -->
     <div id="settingsModal">
         <div class="settings-content">
             <span class="close-settings" onclick="toggleSettings()">&times;</span>
             <h2 style="text-align: center; margin-bottom: 20px;">تنظیمات تم</h2>
+            
             <div class="settings-section desktop-only">
                 <h3>تم‌های پیش‌فرض</h3>
                 <select id="presetSelect" class="preset-select" onchange="updateHexFromPreset()">
@@ -805,11 +991,13 @@
                     <option value="dark">تیره</option>
                 </select>
             </div>
+
             <div class="settings-section">
                 <h3>رنگ دلخواه (Hex)</h3>
                 <input type="color" id="colorInput" class="color-input" value="#735af2" onchange="handleColorChange()">
                 <input type="text" id="hexInput" class="color-input" placeholder="#000000" value="#735af2" onchange="handleHexChange()">
             </div>
+
             <div class="settings-section desktop-only">
                 <h3>نوع رنگ</h3>
                 <div class="color-type">
@@ -817,17 +1005,21 @@
                     <label><input type="radio" name="colorType" value="gradient"> گرادیان</label>
                 </div>
             </div>
+
             <div class="settings-section desktop-only">
                 <h3>افکت شیشه‌ای</h3>
                 <label class="glass-switch">
                     <input type="checkbox" id="glassSwitch" checked> فعال
                 </label>
             </div>
+
             <div class="settings-section mobile-only">
                 <h3>رنگ تک‌رنگ (موبایل)</h3>
                 <p style="color: rgba(255,255,255,0.7);">فقط تغییر رنگ تک‌رنگ در موبایل پشتیبانی می‌شود.</p>
             </div>
+
             <div class="contrast-warning" id="contrastWarning">⚠️ رنگ انتخابی باعث ناخوانایی متن‌ها، دکمه‌ها، تب‌ها می‌شه! لطفاً رنگ دیگه‌ای انتخاب کن تا کنتراست مناسب بشه.</div>
+
             <button class="save-btn" id="saveThemeBtn" onclick="saveTheme()">ذخیره تغییرات</button>
         </div>
     </div>
@@ -850,6 +1042,7 @@
         function isMobileDevice() {
             return /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
         }
+
         function detectDeviceType() {
             // اگر موبایل یا تبلت باشد، هیچ تغییری اعمال نمی‌شود
             if (isMobileDevice()) {
@@ -884,10 +1077,12 @@
         function handleDesktopResponsiveTabs() {
             const tabsContainer = document.getElementById('tabsContainer');
             const windowWidth = window.innerWidth;
+            
             // فقط برای دسکتاپ
             if (document.body.classList.contains('desktop')) {
                 // حذف کلاس قبلی
                 tabsContainer.classList.remove('icons-only');
+                
                 // فقط در سایزهای بسیار کوچک دسکتاپ (600px و پایین‌تر) حالت آیکون فعال شود
                 if (windowWidth <= 600) {
                     tabsContainer.classList.add('icons-only');
@@ -904,13 +1099,16 @@
                 document.head.appendChild(meta);
             }
             meta.content = color;
+
             document.querySelectorAll('meta[name="msapplication-TileColor"]').forEach(el => {
                 el.content = color;
             });
+            
             document.querySelectorAll('meta[name="msapplication-navbutton-color"]').forEach(el => {
                 el.content = color;
             });
         }
+
         function updateThemeColor() {
             if (window.innerWidth <= 480) {
                 setThemeColor(getComputedStyle(document.documentElement).getPropertyValue('--primary-color').trim());
@@ -931,17 +1129,20 @@
                 b: parseInt(result[3], 16) / 255
             } : null;
         }
+
         function getLuminance(color) {
             const rgb = hexToRgb(color);
             if (!rgb) return 0;
             const [r, g, b] = [rgb.r, rgb.g, rgb.b].map(c => c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4));
             return 0.2126 * r + 0.7152 * g + 0.0722 * b;
         }
+
         function getContrastRatio(lum1, lum2) {
             const brighter = Math.max(lum1, lum2);
             const darker = Math.min(lum1, lum2);
             return (brighter + 0.05) / (darker + 0.05);
         }
+
         // تابع تحلیل عناصر (اسکن متن‌ها، دکمه‌ها، لینک‌ها، تب‌ها و غیره)
         function analyzeElements(bgColor, textColor) {
             // عناصر کلیدی برای چک: متن‌ها، عنوان‌ها، دکمه‌ها، تب‌ها، لیبل‌ها
@@ -949,11 +1150,13 @@
             const bgLum = getLuminance(bgColor);
             const textLum = getLuminance(textColor); // فرض: متن‌ها سفید (white) هستند
             let hasIssue = false;
+
             for (let el of elements) {
                 if (el.textContent.trim().length > 0) { // فقط عناصر با متن
                     const isInteractive = el.tagName === 'BUTTON' || el.classList.contains('tab') || el.classList.contains('login-btn');
                     const minRatio = isInteractive ? 3 : 4.5;
                     const ratio = getContrastRatio(bgLum, textLum);
+                    
                     if (ratio < minRatio) {
                         hasIssue = true;
                         break; // اگر یکی مشکل داشته باشه، کافیه
@@ -962,11 +1165,13 @@
             }
             return !hasIssue; // true اگر همه خوانا باشن
         }
+
         // تابع چک و آپدیت دکمه ذخیره
         function validateAndUpdateSaveButton(bgColor, textColor = '#ffffff') { // متن پیش‌فرض سفید
             const isReadable = analyzeElements(bgColor, textColor);
             const saveBtn = document.getElementById('saveThemeBtn');
             const warning = document.getElementById('contrastWarning');
+
             if (isReadable) {
                 saveBtn.disabled = false;
                 warning.style.display = 'none';
@@ -982,6 +1187,7 @@
             light: { gradient: 'linear-gradient(135deg, #735af2 0%, #5a3fd0 100%)', primary: '#735af2' },
             dark: { gradient: 'linear-gradient(135deg, #1e1e1e 0%, #333 100%)', primary: '#333' }
         };
+
         function loadTheme() {
             const saved = localStorage.getItem('themeSettings');
             if (saved) {
@@ -1004,6 +1210,7 @@
             // چک اولیه کنتراست بعد از لود
             setTimeout(() => validateAndUpdateSaveButton(document.documentElement.style.getPropertyValue('--bg-gradient') || '#735af2'), 100);
         }
+
         function applyTheme(settings) {
             const root = document.documentElement;
             root.style.setProperty('--primary-color', settings.primary);
@@ -1016,13 +1223,16 @@
             }
             root.style.setProperty('--glass-border', settings.glass ? 'rgba(255, 255, 255, 0.2)' : 'rgba(255, 255, 255, 0.1)');
             root.setAttribute('data-glass', settings.glass ? 'true' : 'false');
+
             updateThemeColor();
         }
+
         function handleColorChange() {
             const colorValue = document.getElementById('colorInput').value;
             document.getElementById('hexInput').value = colorValue;
             updateThemePreview();
         }
+
         function handleHexChange() {
             const hexValue = document.getElementById('hexInput').value;
             if (hexValue.match(/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/)) {
@@ -1030,23 +1240,28 @@
             }
             updateThemePreview();
         }
+
         function updateThemePreview() {
             const hex = document.getElementById('hexInput').value;
             const type = document.querySelector('input[name="colorType"]:checked').value;
             const isGradient = type === 'gradient';
             const primary = hex.startsWith('#') ? hex : '#' + hex;
             let gradient = primary;
+
             if (isGradient && !isMobileDevice()) {
                 // ساده‌سازی: از primary به عنوان رنگ اول و تیره‌تر برای دوم
                 const darker = shadeColor(primary, -20);
                 gradient = `linear-gradient(135deg, ${primary} 0%, ${darker} 100%)`;
             }
+
             document.documentElement.style.setProperty('--primary-color', primary);
             document.documentElement.style.setProperty('--bg-gradient', gradient);
             updateThemeColor();
+
             // چک کنتراست بعد از پیش‌نمایش
             validateAndUpdateSaveButton(gradient);
         }
+
         function updateHexFromPreset() {
             const preset = document.getElementById('presetSelect').value;
             const p = presets[preset];
@@ -1054,6 +1269,7 @@
             document.getElementById('colorInput').value = p.primary;
             updateThemePreview();
         }
+
         function shadeColor(color, percent) {
             const num = parseInt(color.replace("#", ""), 16);
             const amt = Math.round(2.55 * percent);
@@ -1064,6 +1280,7 @@
                 (G < 255 ? G < 1 ? 0 : G : 255) * 0x100 +
                 (B < 255 ? B < 1 ? 0 : B : 255)).toString(16).slice(1);
         }
+
         function saveTheme() {
             const preset = document.getElementById('presetSelect').value;
             const hex = document.getElementById('hexInput').value;
@@ -1071,16 +1288,19 @@
             const colorType = document.querySelector('input[name="colorType"]:checked').value;
             const glass = document.getElementById('glassSwitch').checked;
             let gradient = primary;
+
             if (colorType === 'gradient' && !isMobileDevice()) {
                 const darker = shadeColor(primary, -20);
                 gradient = `linear-gradient(135deg, ${primary} 0%, ${darker} 100%)`;
             }
+
             // چک نهایی کنتراست قبل از ذخیره
             const isReadable = analyzeElements(gradient, '#ffffff'); // متن سفید
             if (!isReadable) {
                 alert('❌ نمی‌تونم ذخیره کنم – رنگ انتخابی ناخواناست! لطفاً رنگ دیگه‌ای انتخاب کن.');
                 return; // ذخیره نکن
             }
+
             const settings = {
                 preset,
                 primary,
@@ -1088,15 +1308,18 @@
                 colorType,
                 glass
             };
+
             localStorage.setItem('themeSettings', JSON.stringify(settings));
             applyTheme(settings);
             toggleSettings();
             alert('✅ تغییرات ذخیره شد! همه چیز خواناست.');
         }
+
         function toggleSettings() {
             const modal = document.getElementById('settingsModal');
             modal.style.display = modal.style.display === 'flex' ? 'none' : 'flex';
         }
+
         // بستن modal با کلیک خارج
         document.getElementById('settingsModal').addEventListener('click', function(e) {
             if (e.target === this) toggleSettings();
@@ -1106,10 +1329,12 @@
         function applyVisualFixes() {
             // این تابع مشکلات بصری backdrop-filter را رفع می‌کند
             const elements = document.querySelectorAll('.login-container, .tabs-container, .setup-guide, .signature, .login-signature, .tab');
+            
             elements.forEach(element => {
                 // اطمینان از اینکه border-radius به درستی اعمال شده
                 const computedStyle = window.getComputedStyle(element);
                 const borderRadius = computedStyle.borderRadius;
+                
                 // اگر border-radius مشکل دارد، آن را تنظیم کن
                 if (borderRadius === '0px' && element.classList.contains('login-container')) {
                     element.style.borderRadius = '20px';
@@ -1130,16 +1355,20 @@
             const base32Chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
             let bits = '';
             let hex = '';
+            
             base32 = base32.toUpperCase().replace(/=+$/, '');
+            
             for (let i = 0; i < base32.length; i++) {
                 const val = base32Chars.indexOf(base32.charAt(i));
                 if (val === -1) throw new Error('Invalid Base32 character');
                 bits += val.toString(2).padStart(5, '0');
             }
+            
             for (let i = 0; i + 8 <= bits.length; i += 8) {
                 const chunk = bits.substr(i, 8);
                 hex += parseInt(chunk, 2).toString(16).padStart(2, '0');
             }
+            
             return hex;
         }
 
@@ -1150,12 +1379,15 @@
                 const timeHex = CryptoJS.enc.Hex.parse(
                     ('0000000000000000' + time.toString(16)).slice(-16)
                 );
+                
                 const keyHex = base32ToHex(secretKey);
                 const key = CryptoJS.enc.Hex.parse(keyHex);
                 const hmac = CryptoJS.HmacSHA1(timeHex, key);
                 const hmacHex = hmac.toString(CryptoJS.enc.Hex);
+                
                 const offset = (parseInt(hmacHex.substr(-1), 16)) & 0xf;
                 const code = parseInt(hmacHex.substr(offset * 2, 8), 16) & 0x7fffffff;
+                
                 return (code % 1000000).toString().padStart(6, '0');
             } catch (error) {
                 console.error('Error generating TOTP:', error);
@@ -1181,12 +1413,15 @@
                 const timeHex = CryptoJS.enc.Hex.parse(
                     ('0000000000000000' + timeValue.toString(16)).slice(-16)
                 );
+                
                 const keyHex = base32ToHex(secretKey);
                 const key = CryptoJS.enc.Hex.parse(keyHex);
                 const hmac = CryptoJS.HmacSHA1(timeHex, key);
                 const hmacHex = hmac.toString(CryptoJS.enc.Hex);
+                
                 const offset = (parseInt(hmacHex.substr(-1), 16)) & 0xf;
                 const code = parseInt(hmacHex.substr(offset * 2, 8), 16) & 0x7fffffff;
+                
                 return (code % 1000000).toString().padStart(6, '0');
             } catch (error) {
                 console.error('Error generating TOTP with time:', error);
@@ -1197,16 +1432,19 @@
         // رویداد کلیک برای ورود
         verifyOtpBtn.addEventListener('click', function() {
             const enteredOtp = otpInput.value.trim();
+            
             if (enteredOtp.length !== 6 || isNaN(enteredOtp)) {
                 verifyError.textContent = 'کد باید ۶ رقمی باشد';
                 verifyError.style.display = 'block';
                 return;
             }
+            
             if (verifyOTP(enteredOtp)) {
                 loginPage.style.display = 'none';
                 mainContent.style.display = 'flex';
                 sessionStorage.setItem('cst_authenticated', 'true');
                 sessionStorage.setItem('cst_login_time', new Date().getTime());
+                
                 // فعال کردن اسکرول موس برای تب‌ها بعد از لاگین
                 initMouseWheelScroll();
             } else {
@@ -1214,6 +1452,7 @@
                 verifyError.style.display = 'block';
                 otpInput.value = '';
                 otpInput.focus();
+                
                 setTimeout(() => {
                     verifyError.style.display = 'none';
                 }, 5000);
@@ -1261,16 +1500,20 @@
         function initMouseWheelScroll() {
             const tabsScrollContainer = document.getElementById('tabsScrollContainer');
             const tabs = document.getElementById('tabs');
+            
             if (!tabsScrollContainer || !tabs) return;
+            
             // اسکرول با چرخ موس
             tabsScrollContainer.addEventListener('wheel', function(e) {
                 e.preventDefault();
                 this.scrollLeft += e.deltaY;
             });
+            
             // اسکرول با کلیک و درگ روی هر قسمتی از تب‌ها
             let isDragging = false;
             let startX;
             let scrollLeft;
+            
             // برای کل کانتینر تب‌ها
             tabsScrollContainer.addEventListener('mousedown', function(e) {
                 isDragging = true;
@@ -1279,6 +1522,7 @@
                 this.style.cursor = 'grabbing';
                 this.style.userSelect = 'none';
             });
+            
             // برای خود تب‌ها (اگر کاربر روی تب کلیک کرد)
             tabs.addEventListener('mousedown', function(e) {
                 isDragging = true;
@@ -1287,11 +1531,13 @@
                 tabsScrollContainer.style.cursor = 'grabbing';
                 tabsScrollContainer.style.userSelect = 'none';
             });
+            
             document.addEventListener('mouseup', function() {
                 isDragging = false;
                 tabsScrollContainer.style.cursor = 'grab';
                 tabsScrollContainer.style.userSelect = 'auto';
             });
+            
             document.addEventListener('mousemove', function(e) {
                 if (!isDragging) return;
                 e.preventDefault();
@@ -1299,17 +1545,21 @@
                 const walk = (x - startX) * 2;
                 tabsScrollContainer.scrollLeft = scrollLeft - walk;
             });
+            
             // برای تاچ دیوایس‌ها
             let touchStartX;
             let touchScrollLeft;
+            
             tabsScrollContainer.addEventListener('touchstart', function(e) {
                 touchStartX = e.touches[0].pageX;
                 touchScrollLeft = this.scrollLeft;
             });
+            
             tabs.addEventListener('touchstart', function(e) {
                 touchStartX = e.touches[0].pageX;
                 touchScrollLeft = tabsScrollContainer.scrollLeft;
             });
+            
             tabsScrollContainer.addEventListener('touchmove', function(e) {
                 if (!touchStartX) return;
                 e.preventDefault();
@@ -1317,6 +1567,7 @@
                 const walk = (x - touchStartX) * 2;
                 this.scrollLeft = touchScrollLeft - walk;
             });
+            
             tabsScrollContainer.addEventListener('touchend', function() {
                 touchStartX = null;
             });
@@ -1326,26 +1577,32 @@
         let deferredPrompt;
         const pwaInstallButton = document.getElementById('pwaInstallButton');
         let installPromptTimeout;
+
         function showInstallButton() {
             pwaInstallButton.style.display = 'block';
+            
             if (installPromptTimeout) {
                 clearTimeout(installPromptTimeout);
             }
+            
             installPromptTimeout = setTimeout(() => {
                 pwaInstallButton.style.display = 'none';
             }, 120000);
         }
+
         function hideInstallButton() {
             pwaInstallButton.style.display = 'none';
             if (installPromptTimeout) {
                 clearTimeout(installPromptTimeout);
             }
         }
+
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
             showInstallButton();
         });
+
         pwaInstallButton.addEventListener('click', async () => {
             if (deferredPrompt) {
                 deferredPrompt.prompt();
@@ -1356,6 +1613,7 @@
                 deferredPrompt = null;
             }
         });
+
         window.addEventListener('appinstalled', () => {
             hideInstallButton();
             deferredPrompt = null;
@@ -1381,6 +1639,7 @@
             loadTheme();
             updateThemeColor();
             handleDesktopResponsiveTabs();
+            
             // اعمال فیکس‌های بصری برای جلوگیری از خطوط شیشه‌ای
             setTimeout(applyVisualFixes, 100);
         });
@@ -1391,6 +1650,7 @@
             handleDesktopResponsiveTabs();
             applyVisualFixes();
         });
+
     </script>
 </body>
 </html>
