@@ -2309,48 +2309,73 @@
                 });
             });
         }
-        // تابع تشخیص فرمت عدد ورودی
-        function detectNumberFormat(input) {
-            if (input.includes('.')) {
-                return {
-                    hasSeparator: true,
-                    separator: '.',
-                    parts: input.split('.')
+
+        // تابع جدید: تجزیه و تحلیل ساختار نقطه‌گذاری ورودی
+        function analyzeInputFormat(input) {
+            if (!input) {
+                return { hasDot: false, leftPart: '', rightPart: '', totalLength: 0 };
+            }
+            
+            const dotIndex = input.indexOf('.');
+            
+            if (dotIndex === -1) {
+                // بدون نقطه
+                return { 
+                    hasDot: false, 
+                    leftPart: input, 
+                    rightPart: '', 
+                    totalLength: input.length,
+                    leftLength: input.length,
+                    rightLength: 0
+                };
+            } else {
+                // با نقطه
+                const leftPart = input.substring(0, dotIndex);
+                const rightPart = input.substring(dotIndex + 1);
+                return { 
+                    hasDot: true, 
+                    leftPart: leftPart, 
+                    rightPart: rightPart, 
+                    totalLength: input.length - 1, // بدون نقطه
+                    leftLength: leftPart.length,
+                    rightLength: rightPart.length
                 };
             }
-            if (input.includes(',')) {
-                return {
-                    hasSeparator: true,
-                    separator: ',',
-                    parts: input.split(',')
-                };
-            }
-            return {
-                hasSeparator: false,
-                separator: '',
-                parts: [input]
-            };
         }
-        // تابع تبدیل عدد ورودی به عدد صحیح
-        function parseNumber(input) {
-            const cleanedInput = input.replace(/[.,\s]/g, '');
-            return parseInt(cleanedInput, 10);
-        }
-        // تابع فرمت کردن عدد خروجی مطابق با فرمت ورودی
-        function formatNumber(num, format) {
-            if (!format.hasSeparator) {
-                return num.toString();
+
+        // تابع جدید: تبدیل عدد به فرمت نقطه‌گذاری مشخص
+        function formatNumberWithDotPattern(number, format) {
+            if (!format.hasDot) {
+                return number.toString();
             }
-            const numStr = num.toString();
-            if (numStr.length <= format.parts[0].length) {
+            
+            const numStr = number.toString().padStart(format.totalLength, '0');
+            
+            if (numStr.length <= format.leftLength) {
+                // اگر عدد کوتاه‌تر از الگو است
                 return numStr;
             }
-            const beforeSeparator = numStr.slice(0, format.parts[0].length);
-            const afterSeparator = numStr.slice(format.parts[0].length);
-            return beforeSeparator + format.separator + afterSeparator;
+            
+            const leftPart = numStr.substring(0, format.leftLength);
+            const rightPart = numStr.substring(format.leftLength);
+            
+            return leftPart + '.' + rightPart;
         }
-        // تابع ایجاد خروجی قابل کلیک
-        function createClickableOutput(label, value, currentLow, currentHigh, format) {
+
+        // تابع جدید: تجزیه عدد ورودی با حفظ ساختار نقطه
+        function parseNumberInput(input) {
+            const format = analyzeInputFormat(input);
+            const numericValue = parseInt(input.replace('.', '')) || 0;
+            return { numericValue, format };
+        }
+
+        // تابع جدید: فرمت کردن عدد خروجی بر اساس ساختار ورودی
+        function formatNumberBasedOnInput(number, inputFormat) {
+            return formatNumberWithDotPattern(number, inputFormat);
+        }
+
+        // تابع ایجاد خروجی قابل کلیک - بازنویسی شده
+        function createClickableOutput(label, value, currentLow, currentHigh, inputFormat) {
             let colorClass = '';
             let suffix = '';
             if (value < currentLow) {
@@ -2360,9 +2385,11 @@
                 colorClass = 'above-high';
                 suffix = ' ↑ بالای سقف فعلی';
             }
-            const displayValue = formatNumber(value, format);
+            
+            const displayValue = formatNumberBasedOnInput(value, inputFormat);
             const fullDisplayText = `${label}: ${displayValue}${suffix}`;
             const textToCopy = displayValue;
+            
             const div = document.createElement('div');
             div.className = `result ${colorClass}`;
             div.textContent = fullDisplayText;
@@ -2373,6 +2400,7 @@
             });
             return div;
         }
+
         // تابع محاسبه و ذخیره - منطق جدید
         async function calculateAndSave() {
             try {
@@ -2383,6 +2411,7 @@
                 const currentLowValue = document.getElementById('input_current_low').value.trim();
                 const currencyPair = document.getElementById('currencyPairSelect').value;
                 const calculationDate = document.getElementById('calculationDate').value;
+                
                 if (!y1Value || !y2Value || !currentHighValue || !currentLowValue) {
                     throw new Error("لطفاً تمام فیلدها را پر کنید!");
                 }
@@ -2392,29 +2421,37 @@
                 if (!calculationDate) {
                     throw new Error("لطفاً تاریخ را انتخاب کنید!");
                 }
-                const y1 = parseNumber(y1Value);
-                const y2 = parseNumber(y2Value);
-                const currentHigh = parseNumber(currentHighValue);
-                const currentLow = parseNumber(currentLowValue);
-                // تشخیص فرمت اعداد ورودی
-                const formatY1 = detectNumberFormat(y1Value);
-                const formatY2 = detectNumberFormat(y2Value);
+
+                // تجزیه اعداد ورودی با حفظ ساختار نقطه
+                const y1Parsed = parseNumberInput(y1Value);
+                const y2Parsed = parseNumberInput(y2Value);
+                const currentHighParsed = parseNumberInput(currentHighValue);
+                const currentLowParsed = parseNumberInput(currentLowValue);
+
+                const y1 = y1Parsed.numericValue;
+                const y2 = y2Parsed.numericValue;
+                const currentHigh = currentHighParsed.numericValue;
+                const currentLow = currentLowParsed.numericValue;
+
                 // پاک کردن نتایج قبلی
                 const resultsList = document.getElementById('results_list');
                 const errorMessage = document.getElementById('error_message');
                 resultsList.innerHTML = '';
                 errorMessage.style.display = 'none';
+
                 if (isNaN(y1) || isNaN(y2) || isNaN(currentHigh) || isNaN(currentLow)) {
                     throw new Error("لطفاً اعداد معتبر وارد کنید!");
                 }
                 if (y1 < 0 || y2 < 0 || currentHigh < 0 || currentLow < 0) {
                     throw new Error("لطفاً فقط اعداد مثبت وارد کنید.");
                 }
+
                 // محاسبه فرمول‌ها - منطق جدید
                 const result1 = Math.floor((Math.sqrt(y1) - 1) ** 2);
                 const result2 = Math.floor((Math.sqrt(y1) - 0.5) ** 2);
                 const result3 = Math.floor((Math.sqrt(y2) + 1) ** 2);
                 const result4 = Math.floor((Math.sqrt(y2) + 0.5) ** 2);
+
                 // ایجاد آرایه نتایج و مرتب‌سازی
                 const results = [
                     { label: "فرمول ۱", value: result1 },
@@ -2422,25 +2459,30 @@
                     { label: "فرمول ۳", value: result3 },
                     { label: "فرمول ۴", value: result4 }
                 ];
+
                 // مرتب‌سازی از کوچک به بزرگ
                 results.sort((a, b) => a.value - b.value);
-                // نمایش نتایج مرتب‌شده
+
+                // نمایش نتایج مرتب‌شده با حفظ ساختار نقطه‌گذاری
                 results.forEach((result, index) => {
                     const newLabel = `${index + 1}. (از ${result.label})`;
+                    const inputFormat = index < 2 ? y1Parsed.format : y2Parsed.format;
                     const resultElement = createClickableOutput(
                         newLabel, 
                         result.value, 
                         currentLow, 
                         currentHigh, 
-                        index < 2 ? formatY1 : formatY2
+                        inputFormat
                     );
                     resultsList.appendChild(resultElement);
                 });
+
                 // اگر در حال ویرایش هستیم، رکورد قدیم را حذف می‌کنیم
                 if (currentEditId) {
                     await deleteFromDatabase(STORE_CALCULATIONS, currentEditId);
                     currentEditId = null;
                 }
+
                 // ذخیره در پایگاه داده
                 await saveToDatabase(STORE_CALCULATIONS, {
                     date: calculationDate,
@@ -2449,14 +2491,15 @@
                     inputY2: y2,
                     inputCurrentHigh: currentHigh,
                     inputCurrentLow: currentLow,
-                    inputFormatY1: formatY1,
-                    inputFormatY2: formatY2,
+                    inputFormatY1: y1Parsed.format,
+                    inputFormatY2: y2Parsed.format,
                     result1: result1,
                     result2: result2,
                     result3: result3,
                     result4: result4,
                     createdAt: new Date().toISOString()
                 });
+
                 showNotification('محاسبات با موفقیت ذخیره شد.');
             } catch (error) {
                 const errorMessage = document.getElementById('error_message');
@@ -2465,6 +2508,7 @@
                 showNotification(error.message, 'error');
             }
         }
+
         // تابع ریست کردن فیلدها
         function resetFields() {
             // ریست فیلدهای دسکتاپ
@@ -2482,62 +2526,85 @@
             resultsList.innerHTML = '';
             errorMessage.style.display = 'none';
         }
+
         // تابع باز کردن مودال ویرایش محاسبه
         function openEditCalculationModal(calculation) {
+            // فرمت کردن اعداد برای نمایش در فیلدها
             document.getElementById('currencyPairSelect').value = calculation.currencyPair;
             document.getElementById('calculationDate').value = calculation.date;
-            document.getElementById('input_y1').value = formatNumberDisplay(calculation.inputY1, calculation.inputFormatY1);
-            document.getElementById('input_y2').value = formatNumberDisplay(calculation.inputY2, calculation.inputFormatY2);
-            document.getElementById('input_current_high').value = formatNumberDisplay(calculation.inputCurrentHigh, calculation.inputFormatY1);
-            document.getElementById('input_current_low').value = formatNumberDisplay(calculation.inputCurrentLow, calculation.inputFormatY2);
+            document.getElementById('input_y1').value = formatNumberBasedOnInput(calculation.inputY1, calculation.inputFormatY1);
+            document.getElementById('input_y2').value = formatNumberBasedOnInput(calculation.inputY2, calculation.inputFormatY2);
+            document.getElementById('input_current_high').value = formatNumberBasedOnInput(calculation.inputCurrentHigh, calculation.inputFormatY1);
+            document.getElementById('input_current_low').value = formatNumberBasedOnInput(calculation.inputCurrentLow, calculation.inputFormatY2);
+            
             // همگام‌سازی با فیلدهای موبایل
-            document.getElementById('input_y1_mobile').value = formatNumberDisplay(calculation.inputY1, calculation.inputFormatY1);
-            document.getElementById('input_y2_mobile').value = formatNumberDisplay(calculation.inputY2, calculation.inputFormatY2);
-            document.getElementById('input_current_high_mobile').value = formatNumberDisplay(calculation.inputCurrentHigh, calculation.inputFormatY1);
-            document.getElementById('input_current_low_mobile').value = formatNumberDisplay(calculation.inputCurrentLow, calculation.inputFormatY2);
+            document.getElementById('input_y1_mobile').value = formatNumberBasedOnInput(calculation.inputY1, calculation.inputFormatY1);
+            document.getElementById('input_y2_mobile').value = formatNumberBasedOnInput(calculation.inputY2, calculation.inputFormatY2);
+            document.getElementById('input_current_high_mobile').value = formatNumberBasedOnInput(calculation.inputCurrentHigh, calculation.inputFormatY1);
+            document.getElementById('input_current_low_mobile').value = formatNumberBasedOnInput(calculation.inputCurrentLow, calculation.inputFormatY2);
+            
             switchTab('calculator');
             showNotification('داده‌ها به ماشین حساب منتقل شدند. پس از ویرایش، دکمه "محاسبه و ذخیره" را بزنید.', 'success', 5000);
             currentEditId = calculation.id;
         }
-        // تابع بارگذاری جدول محاسبات
+
+        // تابع بارگذاری جدول محاسبات - به‌روزرسانی شده
         async function loadCalculationsTable() {
             try {
                 const currencyPair = document.getElementById('filterCurrencyPair').value;
                 const date = document.getElementById('filterDate').value;
                 let calculations = await getAllFromDatabase(STORE_CALCULATIONS);
+                
                 if (currencyPair) {
                     calculations = calculations.filter(c => c.currencyPair === currencyPair);
                 }
+                
                 // رفع مشکل: فقط زمانی که تاریخ مشخص شده باشد، داده‌ها نمایش داده می‌شوند
                 if (date) {
                     calculations = calculations.filter(c => c.date === date);
                 } else {
                     calculations = [];
                 }
+                
                 calculations.sort((a, b) => new Date(b.date) - new Date(a.date));
+                
                 const tableBody = document.getElementById('calculationsTableBody');
                 const mobileCardsContainer = document.getElementById('mobileCardsContainer');
                 const noDataMessage = document.getElementById('noDataMessage');
+                
                 tableBody.innerHTML = '';
                 mobileCardsContainer.innerHTML = '';
+                
                 if (calculations.length === 0) {
                     noDataMessage.style.display = 'block';
                     return;
                 }
+                
                 noDataMessage.style.display = 'none';
+                
                 calculations.forEach(calc => {
+                    // فرمت کردن اعداد برای نمایش در جدول
+                    const formattedY1 = formatNumberBasedOnInput(calc.inputY1, calc.inputFormatY1);
+                    const formattedY2 = formatNumberBasedOnInput(calc.inputY2, calc.inputFormatY2);
+                    const formattedCurrentHigh = formatNumberBasedOnInput(calc.inputCurrentHigh, calc.inputFormatY1);
+                    const formattedCurrentLow = formatNumberBasedOnInput(calc.inputCurrentLow, calc.inputFormatY2);
+                    const formattedResult1 = formatNumberBasedOnInput(calc.result1, calc.inputFormatY1);
+                    const formattedResult2 = formatNumberBasedOnInput(calc.result2, calc.inputFormatY1);
+                    const formattedResult3 = formatNumberBasedOnInput(calc.result3, calc.inputFormatY2);
+                    const formattedResult4 = formatNumberBasedOnInput(calc.result4, calc.inputFormatY2);
+                    
                     const row = document.createElement('tr');
                     row.innerHTML = `
                         <td class="table-cell" data-copy="${formatDate(calc.date)}">${formatDate(calc.date)}</td>
                         <td class="table-cell" data-copy="${calc.currencyPair}">${calc.currencyPair}</td>
-                        <td class="table-cell" data-copy="${formatNumberDisplay(calc.inputY1, calc.inputFormatY1)}">${formatNumberDisplay(calc.inputY1, calc.inputFormatY1)}</td>
-                        <td class="table-cell" data-copy="${formatNumberDisplay(calc.inputY2, calc.inputFormatY2)}">${formatNumberDisplay(calc.inputY2, calc.inputFormatY2)}</td>
-                        <td class="table-cell" data-copy="${formatNumberDisplay(calc.inputCurrentHigh, calc.inputFormatY1)}">${formatNumberDisplay(calc.inputCurrentHigh, calc.inputFormatY1)}</td>
-                        <td class="table-cell" data-copy="${formatNumberDisplay(calc.inputCurrentLow, calc.inputFormatY2)}">${formatNumberDisplay(calc.inputCurrentLow, calc.inputFormatY2)}</td>
-                        <td class="table-cell" data-copy="${formatNumberDisplay(calc.result1, calc.inputFormatY1)}">${formatNumberDisplay(calc.result1, calc.inputFormatY1)}</td>
-                        <td class="table-cell" data-copy="${formatNumberDisplay(calc.result2, calc.inputFormatY1)}">${formatNumberDisplay(calc.result2, calc.inputFormatY1)}</td>
-                        <td class="table-cell" data-copy="${formatNumberDisplay(calc.result3, calc.inputFormatY2)}">${formatNumberDisplay(calc.result3, calc.inputFormatY2)}</td>
-                        <td class="table-cell" data-copy="${formatNumberDisplay(calc.result4, calc.inputFormatY2)}">${formatNumberDisplay(calc.result4, calc.inputFormatY2)}</td>
+                        <td class="table-cell" data-copy="${formattedY1}">${formattedY1}</td>
+                        <td class="table-cell" data-copy="${formattedY2}">${formattedY2}</td>
+                        <td class="table-cell" data-copy="${formattedCurrentHigh}">${formattedCurrentHigh}</td>
+                        <td class="table-cell" data-copy="${formattedCurrentLow}">${formattedCurrentLow}</td>
+                        <td class="table-cell" data-copy="${formattedResult1}">${formattedResult1}</td>
+                        <td class="table-cell" data-copy="${formattedResult2}">${formattedResult2}</td>
+                        <td class="table-cell" data-copy="${formattedResult3}">${formattedResult3}</td>
+                        <td class="table-cell" data-copy="${formattedResult4}">${formattedResult4}</td>
                         <td class="action-buttons">
                             <button class="action-btn edit-calculation" data-id="${calc.id}">ویرایش</button>
                             <button class="action-btn danger delete-calculation" data-id="${calc.id}">حذف</button>
@@ -2545,6 +2612,7 @@
                     `;
                     tableBody.appendChild(row);
                 });
+
                 // اضافه کردن event listener برای کپی در جدول
                 document.querySelectorAll('#calculationsTableBody .table-cell').forEach(cell => {
                     cell.addEventListener('click', function(e) {
@@ -2552,7 +2620,18 @@
                         copyToClipboard(this, this.dataset.copy);
                     });
                 });
+
                 calculations.forEach(calc => {
+                    // فرمت کردن اعداد برای نمایش در کارت‌های موبایل
+                    const formattedY1 = formatNumberBasedOnInput(calc.inputY1, calc.inputFormatY1);
+                    const formattedY2 = formatNumberBasedOnInput(calc.inputY2, calc.inputFormatY2);
+                    const formattedCurrentHigh = formatNumberBasedOnInput(calc.inputCurrentHigh, calc.inputFormatY1);
+                    const formattedCurrentLow = formatNumberBasedOnInput(calc.inputCurrentLow, calc.inputFormatY2);
+                    const formattedResult1 = formatNumberBasedOnInput(calc.result1, calc.inputFormatY1);
+                    const formattedResult2 = formatNumberBasedOnInput(calc.result2, calc.inputFormatY1);
+                    const formattedResult3 = formatNumberBasedOnInput(calc.result3, calc.inputFormatY2);
+                    const formattedResult4 = formatNumberBasedOnInput(calc.result4, calc.inputFormatY2);
+                    
                     const card = document.createElement('div');
                     card.className = 'calculation-card';
                     card.innerHTML = `
@@ -2563,35 +2642,35 @@
                         <div class="card-content">
                             <div class="card-item">
                                 <div class="card-label">عدد سقف</div>
-                                <div class="card-value" data-value="${formatNumberDisplay(calc.inputY1, calc.inputFormatY1)}">${formatNumberDisplay(calc.inputY1, calc.inputFormatY1)}</div>
+                                <div class="card-value" data-value="${formattedY1}">${formattedY1}</div>
                             </div>
                             <div class="card-item">
                                 <div class="card-label">عدد کف</div>
-                                <div class="card-value" data-value="${formatNumberDisplay(calc.inputY2, calc.inputFormatY2)}">${formatNumberDisplay(calc.inputY2, calc.inputFormatY2)}</div>
+                                <div class="card-value" data-value="${formattedY2}">${formattedY2}</div>
                             </div>
                             <div class="card-item">
                                 <div class="card-label">سقف فعلی</div>
-                                <div class="card-value" data-value="${formatNumberDisplay(calc.inputCurrentHigh, calc.inputFormatY1)}">${formatNumberDisplay(calc.inputCurrentHigh, calc.inputFormatY1)}</div>
+                                <div class="card-value" data-value="${formattedCurrentHigh}">${formattedCurrentHigh}</div>
                             </div>
                             <div class="card-item">
                                 <div class="card-label">کف فعلی</div>
-                                <div class="card-value" data-value="${formatNumberDisplay(calc.inputCurrentLow, calc.inputFormatY2)}">${formatNumberDisplay(calc.inputCurrentLow, calc.inputFormatY2)}</div>
+                                <div class="card-value" data-value="${formattedCurrentLow}">${formattedCurrentLow}</div>
                             </div>
                             <div class="card-item">
                                 <div class="card-label">فرمول ۱</div>
-                                <div class="card-value" data-value="${formatNumberDisplay(calc.result1, calc.inputFormatY1)}">${formatNumberDisplay(calc.result1, calc.inputFormatY1)}</div>
+                                <div class="card-value" data-value="${formattedResult1}">${formattedResult1}</div>
                             </div>
                             <div class="card-item">
                                 <div class="card-label">فرمول ۲</div>
-                                <div class="card-value" data-value="${formatNumberDisplay(calc.result2, calc.inputFormatY1)}">${formatNumberDisplay(calc.result2, calc.inputFormatY1)}</div>
+                                <div class="card-value" data-value="${formattedResult2}">${formattedResult2}</div>
                             </div>
                             <div class="card-item">
                                 <div class="card-label">فرمول ۳</div>
-                                <div class="card-value" data-value="${formatNumberDisplay(calc.result3, calc.inputFormatY2)}">${formatNumberDisplay(calc.result3, calc.inputFormatY2)}</div>
+                                <div class="card-value" data-value="${formattedResult3}">${formattedResult3}</div>
                             </div>
                             <div class="card-item">
                                 <div class="card-label">فرمول ۴</div>
-                                <div class="card-value" data-value="${formatNumberDisplay(calc.result4, calc.inputFormatY2)}">${formatNumberDisplay(calc.result4, calc.inputFormatY2)}</div>
+                                <div class="card-value" data-value="${formattedResult4}">${formattedResult4}</div>
                             </div>
                         </div>
                         <div class="card-actions">
@@ -2601,6 +2680,7 @@
                     `;
                     mobileCardsContainer.appendChild(card);
                 });
+
                 // اضافه کردن event listener برای کپی در کارت‌ها
                 document.querySelectorAll('#mobileCardsContainer .card-value').forEach(value => {
                     value.addEventListener('click', function(e) {
@@ -2608,6 +2688,7 @@
                         copyToClipboard(this);
                     });
                 });
+
                 document.querySelectorAll('.edit-calculation').forEach(btn => {
                     btn.addEventListener('click', async function() {
                         const id = this.getAttribute('data-id');
@@ -2623,6 +2704,7 @@
                         }
                     });
                 });
+
                 document.querySelectorAll('.delete-calculation').forEach(btn => {
                     btn.addEventListener('click', function() {
                         const id = this.getAttribute('data-id');
@@ -2636,6 +2718,7 @@
                 console.error('خطا در بارگذاری جدول محاسبات:', error);
             }
         }
+
         // تابع حذف محاسبه
         async function deleteCalculation(id) {
             try {
@@ -2647,6 +2730,7 @@
                 showNotification('خطا در حذف محاسبه.', 'error');
             }
         }
+
         // تابع حذف داده‌های بر اساس تاریخ
         async function deleteDataByDate() {
             const deleteBeforeDate = document.getElementById('deleteBeforeDate').value;
@@ -2673,6 +2757,7 @@
                 showNotification('خطا در حذف داده‌ها.', 'error');
             }
         }
+
         // تابع حذف داده‌های بر اساس تعداد روز
         async function deleteDataByDays() {
             const deleteDays = document.getElementById('deleteDays').value;
@@ -2702,23 +2787,12 @@
                 showNotification('خطا در حذف داده‌های قدیمی.', 'error');
             }
         }
+
         // تابع فرمت تاریخ برای نمایش (میلادی)
         function formatDate(dateString) {
             return dateString;
         }
-        // تابع فرمت اعداد برای نمایش
-        function formatNumberDisplay(number, inputFormat) {
-            if (!inputFormat || !inputFormat.hasSeparator) {
-                return number.toString();
-            }
-            const numStr = number.toString();
-            if (numStr.length <= inputFormat.parts[0].length) {
-                return numStr;
-            }
-            const beforeSeparator = numStr.slice(0, inputFormat.parts[0].length);
-            const afterSeparator = numStr.slice(inputFormat.parts[0].length);
-            return beforeSeparator + inputFormat.separator + afterSeparator;
-        }
+
         // تابع پشتیبان‌گیری از داده‌ها
         async function backupData() {
             try {
@@ -2750,6 +2824,7 @@
                 showNotification('خطا در پشتیبان‌گیری.', 'error');
             }
         }
+
         // تابع بازیابی داده‌ها
         async function restoreData() {
             const fileInput = document.getElementById('restoreFileInput');
@@ -2795,6 +2870,7 @@
                 fileInput.value = '';
             };
         }
+
         // تابع خواندن فایل به صورت متن
         function readFileAsText(file) {
             return new Promise((resolve, reject) => {
@@ -2804,6 +2880,7 @@
                 reader.readAsText(file);
             });
         }
+
         // تابع حذف تمام داده‌ها
         async function clearAllData() {
             try {
@@ -2827,6 +2904,7 @@
                 throw error;
             }
         }
+
         // تابع مقایسه داده‌ها
         async function compareData() {
             const currencyPair = document.getElementById('comparisonCurrencyPair').value;
@@ -2853,17 +2931,27 @@
                     comparisonItem.className = 'comparison-item';
                     if (calc) {
                         foundAnyData = true;
+                        // فرمت کردن اعداد برای نمایش در مقایسه
+                        const formattedY1 = formatNumberBasedOnInput(calc.inputY1, calc.inputFormatY1);
+                        const formattedY2 = formatNumberBasedOnInput(calc.inputY2, calc.inputFormatY2);
+                        const formattedCurrentHigh = formatNumberBasedOnInput(calc.inputCurrentHigh, calc.inputFormatY1);
+                        const formattedCurrentLow = formatNumberBasedOnInput(calc.inputCurrentLow, calc.inputFormatY2);
+                        const formattedResult1 = formatNumberBasedOnInput(calc.result1, calc.inputFormatY1);
+                        const formattedResult2 = formatNumberBasedOnInput(calc.result2, calc.inputFormatY1);
+                        const formattedResult3 = formatNumberBasedOnInput(calc.result3, calc.inputFormatY2);
+                        const formattedResult4 = formatNumberBasedOnInput(calc.result4, calc.inputFormatY2);
+                        
                         comparisonItem.innerHTML = `
                             <h3>${formatDate(date)}</h3>
                             <p><strong>جفت ارز:</strong> ${calc.currencyPair}</p>
-                            <p><strong>عدد سقف:</strong> ${formatNumberDisplay(calc.inputY1, calc.inputFormatY1)}</p>
-                            <p><strong>عدد کف:</strong> ${formatNumberDisplay(calc.inputY2, calc.inputFormatY2)}</p>
-                            <p><strong>سقف فعلی:</strong> ${formatNumberDisplay(calc.inputCurrentHigh, calc.inputFormatY1)}</p>
-                            <p><strong>کف فعلی:</strong> ${formatNumberDisplay(calc.inputCurrentLow, calc.inputFormatY2)}</p>
-                            <p><strong>فرمول ۱:</strong> ${formatNumberDisplay(calc.result1, calc.inputFormatY1)}</p>
-                            <p><strong>فرمول ۲:</strong> ${formatNumberDisplay(calc.result2, calc.inputFormatY1)}</p>
-                            <p><strong>فرمول ۳:</strong> ${formatNumberDisplay(calc.result3, calc.inputFormatY2)}</p>
-                            <p><strong>فرمول ۴:</strong> ${formatNumberDisplay(calc.result4, calc.inputFormatY2)}</p>
+                            <p><strong>عدد سقف:</strong> ${formattedY1}</p>
+                            <p><strong>عدد کف:</strong> ${formattedY2}</p>
+                            <p><strong>سقف فعلی:</strong> ${formattedCurrentHigh}</p>
+                            <p><strong>کف فعلی:</strong> ${formattedCurrentLow}</p>
+                            <p><strong>فرمول ۱:</strong> ${formattedResult1}</p>
+                            <p><strong>فرمول ۲:</strong> ${formattedResult2}</p>
+                            <p><strong>فرمول ۳:</strong> ${formattedResult3}</p>
+                            <p><strong>فرمول ۴:</strong> ${formattedResult4}</p>
                         `;
                     } else {
                         comparisonItem.innerHTML = `
@@ -2881,6 +2969,7 @@
                 showNotification('خطا در مقایسه داده‌ها.', 'error');
             }
         }
+
         // تابع افزودن فیلد تاریخ جدید برای مقایسه
         function addComparisonDate() {
             const datesContainer = document.getElementById('comparisonDatesContainer');
@@ -2895,6 +2984,7 @@
             datesContainer.appendChild(dateRow);
             updateRemoveButtonsVisibility();
         }
+
         // تابع به‌روزرسانی نمایش دکمه‌های حذف
         function updateRemoveButtonsVisibility() {
             const dateRows = document.querySelectorAll('.comparison-date-row');
@@ -2909,6 +2999,7 @@
                 });
             });
         }
+
         // تابع تغییر حالت تاریک/روشن
         function toggleTheme() {
             document.body.classList.toggle('dark-mode');
@@ -2921,6 +3012,7 @@
                 localStorage.setItem('theme_2', 'light');
             }
         }
+
         // تابع تغییر تب
         function switchTab(tabName) {
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
@@ -2938,6 +3030,7 @@
                 loadCalculationsTable();
             }
         }
+
         // تابع نمایش/مخفی کردن منوی موبایل
         function toggleMobileMenu() {
             const mobileTabs = document.getElementById('mobileTabs');
@@ -2952,12 +3045,14 @@
                 menuToggle.classList.add('active');
             }
         }
+
         // تابع نمایش مودال تأیید حذف
         function showConfirmDeleteModal(message, callback) {
             document.getElementById('confirmDeleteMessage').textContent = message;
             deleteCallback = callback;
             document.getElementById('confirmDeleteModal').style.display = 'flex';
         }
+
         // تابع بستن همه مودال‌ها
         function closeModals() {
             document.querySelectorAll('.modal').forEach(modal => {
@@ -2968,6 +3063,7 @@
             deleteCallback = null;
             currentDeleteCategoryId = null;
         }
+
         // تابع تنظیم event listenerها
         function setupEventListeners() {
             // تب‌های اصلی
@@ -3048,6 +3144,7 @@
             // تغییر حالت تاریک/روشن
             document.getElementById('themeToggle').addEventListener('click', toggleTheme);
         }
+
         // بارگذاری حالت ذخیره شده
         if (localStorage.getItem('theme_2') === 'dark') {
             document.body.classList.add('dark-mode');
