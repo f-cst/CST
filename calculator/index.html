@@ -7,7 +7,6 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" type="text/css" />
-
   <style>
     body { font-family: 'Vazirmatn', sans-serif; background-color: #111827; }
     /* اسکرول بار سفارشی */
@@ -16,19 +15,30 @@
     .custom-scroll::-webkit-scrollbar-thumb { background: #4b5563; border-radius: 4px; }
     .custom-scroll::-webkit-scrollbar-thumb:hover { background: #6b7280; }
     .custom-scroll { scrollbar-width: thin; scrollbar-color: #4b5563 #1f2937; }
-    
     .display-hide-scroll::-webkit-scrollbar { display: none; }
     .display-hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
-    
     /* مودال */
-    .modal { display: none; background-color: rgba(0, 0, 0, 0.9); transition: opacity 0.3s; opacity: 0; }
-    .modal.show { display: flex; opacity: 1; }
-    
+    .modal {
+      display: none;
+      background-color: rgba(0, 0, 0, 0.9);
+      transition: opacity 0.3s;
+      opacity: 0;
+      position: fixed;
+      inset: 0;
+      z-index: 50;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+    .modal.show {
+      display: flex !important;
+      opacity: 1 !important;
+      align-items: flex-start !important;
+      padding-top: 2.5rem; /* pt-10 */
+    }
     .no-select { user-select: none; -webkit-user-select: none; }
     .btn-active:active { opacity: 0.7; transform: scale(0.98); }
-    
     .signature { color: white; text-align: center; padding: 16px; font-family: Vazirmatn, system-ui; background: rgba(255, 255, 255, 0.05); border-radius: 10px; border: 1px solid rgba(255, 255, 255, 0.1); font-size: 14px; font-weight: 500; display: block; margin: 30px auto; width: fit-content; max-width: 90%; box-sizing: border-box; }
-    
     /* کیبورد هینت */
     .keyboard-hint { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; z-index: 1000; opacity: 0; transition: opacity 0.4s ease; pointer-events: none; }
     .keyboard-hint.show { opacity: 1; pointer-events: all; }
@@ -37,7 +47,6 @@
     .keyboard-icon { font-size: 32px; margin-bottom: 16px; color: #60a5fa; }
     .keyboard-hint-close { background: #4b5563; color: white; border: none; padding: 10px 20px; border-radius: 8px; margin-top: 20px; cursor: pointer; font-family: inherit; transition: background 0.2s; }
     .keyboard-hint-close:hover { background: #6b7280; }
-    
     /* اینپوت‌های تاریخ */
     input[type="date"] {
         background-color: #374151;
@@ -52,7 +61,6 @@
   </style>
 </head>
 <body class="min-h-[100dvh] flex flex-col items-center justify-center py-8 px-0">
-
   <div class="keyboard-hint" id="keyboardHint">
     <div class="keyboard-hint-content">
       <div class="keyboard-icon"><i class="fas fa-keyboard"></i></div>
@@ -60,73 +68,58 @@
       <button class="keyboard-hint-close" id="closeHintBtn">متوجه شدم</button>
     </div>
   </div>
-
   <div class="bg-gray-800 w-[98%] md:max-w-lg shadow-none rounded-2xl overflow-hidden flex flex-col relative h-auto border border-gray-700" id="calculator" tabindex="0">
-    
     <div class="bg-gray-800 p-4 pb-2 relative z-10 border-b border-gray-700">
       <div class="flex justify-between items-center mb-2">
-        
         <button id="openHistoryBtn" type="button" class="bg-gray-700 hover:bg-gray-600 text-gray-200 hover:text-white px-4 py-1.5 rounded-md transition cursor-pointer z-50 relative text-sm font-medium shadow-sm border border-gray-600/50 flex items-center gap-2" title="مشاهده تاریخچه">
           <i class="fas fa-history text-xs opacity-70"></i>
           <span>تاریخچه</span>
         </button>
-
         <span class="text-gray-500 text-xs font-bold tracking-widest uppercase">Calculator</span>
         <div class="w-20"></div> 
       </div>
-
       <div class="bg-gray-900 p-4 rounded-xl border border-gray-700">
         <div id="calcHistory" class="text-right text-sm text-gray-500 h-6 overflow-x-auto display-hide-scroll whitespace-nowrap px-1 font-mono"></div>
         <div id="calcDisplay" class="text-right text-4xl sm:text-5xl font-mono h-14 overflow-x-auto display-hide-scroll whitespace-nowrap text-white px-1">0</div>
       </div>
     </div>
-
     <div class="bg-gray-800 p-2 sm:p-3 grid grid-cols-4 gap-1 sm:gap-2 no-select pb-4">
       <button class="btn-active bg-indigo-900 text-indigo-200 py-3 sm:py-4 rounded-lg text-sm font-medium" data-value="sqrt">√x</button>
       <button class="btn-active bg-indigo-900 text-indigo-200 py-3 sm:py-4 rounded-lg text-sm font-medium" data-value="square">x²</button>
       <button class="btn-active bg-indigo-900 text-indigo-200 py-3 sm:py-4 rounded-lg text-sm font-medium" data-value="reciprocal">1/x</button>
       <button class="btn-active bg-red-600 text-white py-3 sm:py-4 rounded-lg font-bold" data-value="C">C</button>
-
       <button class="btn-active bg-gray-700 text-gray-200 py-3 sm:py-4 rounded-lg text-lg" data-value="CE">CE</button>
       <button class="btn-active bg-gray-700 text-gray-200 py-3 sm:py-4 rounded-lg text-lg" data-value="backspace"><i class="fas fa-backspace"></i></button>
       <button class="btn-active bg-gray-700 text-gray-200 py-3 sm:py-4 rounded-lg text-lg" data-value="percent">%</button>
       <button class="btn-active bg-amber-600 text-white py-3 sm:py-4 rounded-lg text-xl font-bold" data-value="/">÷</button>
-      
       <button class="btn-active bg-gray-700/50 text-white py-3 sm:py-4 rounded-lg text-2xl font-medium" data-value="7">7</button>
       <button class="btn-active bg-gray-700/50 text-white py-3 sm:py-4 rounded-lg text-2xl font-medium" data-value="8">8</button>
       <button class="btn-active bg-gray-700/50 text-white py-3 sm:py-4 rounded-lg text-2xl font-medium" data-value="9">9</button>
       <button class="btn-active bg-amber-600 text-white py-3 sm:py-4 rounded-lg text-xl font-bold" data-value="*">×</button>
-      
       <button class="btn-active bg-gray-700/50 text-white py-3 sm:py-4 rounded-lg text-2xl font-medium" data-value="4">4</button>
       <button class="btn-active bg-gray-700/50 text-white py-3 sm:py-4 rounded-lg text-2xl font-medium" data-value="5">5</button>
       <button class="btn-active bg-gray-700/50 text-white py-3 sm:py-4 rounded-lg text-2xl font-medium" data-value="6">6</button>
       <button class="btn-active bg-amber-600 text-white py-3 sm:py-4 rounded-lg text-xl font-bold" data-value="-">−</button>
-      
       <button class="btn-active bg-gray-700/50 text-white py-3 sm:py-4 rounded-lg text-2xl font-medium" data-value="1">1</button>
       <button class="btn-active bg-gray-700/50 text-white py-3 sm:py-4 rounded-lg text-2xl font-medium" data-value="2">2</button>
       <button class="btn-active bg-gray-700/50 text-white py-3 sm:py-4 rounded-lg text-2xl font-medium" data-value="3">3</button>
       <button class="btn-active bg-amber-600 text-white py-3 sm:py-4 rounded-lg text-xl font-bold" data-value="+">+</button>
-      
       <button class="btn-active bg-gray-700/50 text-white py-3 sm:py-4 rounded-lg text-2xl font-medium col-span-2" data-value="0">0</button>
       <button class="btn-active bg-gray-700/50 text-white py-3 sm:py-4 rounded-lg text-2xl font-bold" data-value=".">.</button>
       <button class="btn-active bg-green-600 text-white py-3 sm:py-4 rounded-lg text-2xl font-bold" data-value="=">=</button>
     </div>
   </div>
-
   <div class="signature">
     طراحی و ساخت توسط ⦙ سعید شیخ احمد صفاری
   </div>
-
-  <div id="historyModal" class="modal fixed inset-x-0 top-0 z-50 items-start justify-center p-4 pt-10 backdrop-blur-none overflow-y-auto">
+  <div id="historyModal" class="modal">
     <div class="bg-gray-800 w-full max-w-md rounded-2xl shadow-none border border-gray-600 flex flex-col max-h-[85vh]">
-      
       <div class="flex justify-between items-center p-4 border-b border-gray-700 bg-gray-800 rounded-t-2xl">
         <h3 class="text-lg font-bold text-gray-200">تاریخچه محاسبات</h3>
         <button id="closeHistoryBtn" class="text-gray-400 hover:text-white p-2">
           <i class="fas fa-times text-xl"></i>
         </button>
       </div>
-
       <div class="p-4 bg-gray-900 border-b border-gray-700 text-sm space-y-3">
         <div class="flex gap-2 items-center justify-between">
             <div class="flex flex-col w-1/2">
@@ -150,10 +143,8 @@
             </button>
         </div>
       </div>
-
       <div id="historyList" class="flex-1 overflow-y-auto p-2 custom-scroll min-h-[100px]">
-        </div>
-
+      </div>
       <div class="p-3 border-t border-gray-700 bg-gray-800 rounded-b-2xl">
         <button id="clearHistory" class="w-full bg-red-600 hover:bg-red-500 text-white py-2 rounded-lg text-sm transition">
           پاک کردن کل تاریخچه
@@ -161,14 +152,12 @@
       </div>
     </div>
   </div>
-
   <script>
     let currentInput = '0';
     let previousInput = '';
     let operation = null;
     let resetInput = false;
     let calculationHistory = []; 
-    
     // المنت‌ها
     const calcDisplay = document.getElementById('calcDisplay');
     const calcHistory = document.getElementById('calcHistory');
@@ -180,48 +169,33 @@
     const startDateInput = document.getElementById('startDate');
     const endDateInput = document.getElementById('endDate');
 
-    // تابع هوشمند تشخیص دستگاه‌های غیر لمسی (دارای کیبورد/ماوس)
     function isDesktopOrKeyboardDevice() {
-      // 1. تشخیص سیستم عامل‌های دسکتاپ
       const isDesktopOS = /Win|Mac|Linux|CrOS/.test(navigator.platform);
-      
-      // 2. تشخیص دستگاه‌های موبایل برای حذف کردن
       const isMobileUserAgent = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-      
-      // 3. تشخیص قابلیت Hover (ماوس) - دستگاه‌های لمسی معمولاً hover ندارند
       const hasHover = window.matchMedia('(hover: hover)').matches;
-      
-      // 4. تشخیص دقت اشاره‌گر (ماوس دقیقه، انگشت coarse است)
       const hasFinePointer = window.matchMedia('(pointer: fine)').matches;
-
-      // منطق نهایی: 
-      // اگر سیستم عامل دسکتاپ است (حتی اگر لمسی باشد مثل سرفیس) -> True
-      // یا اگر ماوس دارد و موبایل نیست -> True
       if (isDesktopOS && !isMobileUserAgent) return true;
       if (hasHover && hasFinePointer && !isMobileUserAgent) return true;
-      
       return false;
     }
 
     function showKeyboardHint() {
        keyboardHint.classList.add('show');
     }
+
     function hideKeyboardHint() {
       keyboardHint.classList.remove('show');
     }
+
     function focusCalculator() {
       calculator.focus();
       hideKeyboardHint();
     }
 
-    // بارگذاری اولیه 
     function init() {
-      // فقط اگر دستگاه دسکتاپ/کیبورد دار تشخیص داده شد پیام را نشان بده
       if (isDesktopOrKeyboardDevice()) {
         setTimeout(showKeyboardHint, 500);
       }
-
-      // بازیابی تاریخچه
       const savedHistory = localStorage.getItem('calc_history_v3');
       if (savedHistory) {
           try {
@@ -256,10 +230,8 @@
           res: result,
           date: new Date().toISOString()
       };
-      
       calculationHistory.unshift(newItem);
       if(calculationHistory.length > 200) calculationHistory.pop();
-      
       try {
           localStorage.setItem('calc_history_v3', JSON.stringify(calculationHistory));
       } catch (e) { console.log('Storage full or disabled'); }
@@ -282,20 +254,15 @@
     function renderHistory(filteredList = null) {
       const listToRender = filteredList || calculationHistory;
       historyList.innerHTML = '';
-
       if (!listToRender || listToRender.length === 0) {
         historyList.innerHTML = '<div class="text-center text-gray-500 text-sm py-8">تاریخچه خالی است</div>';
         return;
       }
-      
       listToRender.forEach(item => {
         if (!item || typeof item !== 'object' || !item.res) return;
-
         const div = document.createElement('div');
         div.className = 'p-3 border-b border-gray-700 hover:bg-gray-700 cursor-pointer flex flex-col gap-1 rounded transition-colors mx-1';
-        
         const dateStr = item.date ? toPersianDate(item.date) : 'بدون تاریخ';
-        
         div.innerHTML = `
             <span class="text-gray-500 text-[10px] self-end">${dateStr}</span>
             <div class="flex justify-between items-center w-full">
@@ -303,7 +270,6 @@
                 <span class="text-indigo-400 font-bold text-lg dir-ltr">${item.res}</span>
             </div>
         `;
-       
         div.onclick = () => {
             currentInput = item.res.toString();
             resetInput = true;
@@ -317,13 +283,10 @@
     function getFilteredHistory() {
         const startStr = startDateInput.value;
         const endStr = endDateInput.value;
-        
         if (!startStr && !endStr) return calculationHistory;
-
         const start = startStr ? new Date(startStr) : new Date('1970-01-01');
         const end = endStr ? new Date(endStr) : new Date();
         end.setHours(23, 59, 59, 999);
-
         return calculationHistory.filter(item => {
             if(!item.date) return false;
             const itemDate = new Date(item.date);
@@ -335,7 +298,6 @@
       const prev = parseFloat(previousInput);
       const current = parseFloat(currentInput);
       if (isNaN(prev) || isNaN(current)) return;
-
       let result;
       switch(operation) {
         case '+': result = prev + current; break;
@@ -343,7 +305,6 @@
         case '*': result = prev * current; break;
         case '/': result = current === 0 ? 'Error' : prev / current; break;
       }
-
       if (result === 'Error') {
           currentInput = 'خطا';
       } else {
@@ -352,7 +313,6 @@
           addToHistory(expression, result);
           currentInput = result.toString();
       }
-      
       operation = null; previousInput = ''; resetInput = true;
       updateDisplay();
     }
@@ -361,7 +321,6 @@
       const num = parseFloat(currentInput);
       if (isNaN(num)) return;
       let res, txt;
-      
       if (op === 'sqrt') {
         if (num < 0) return;
         res = Math.sqrt(num); txt = `√(${num})`;
@@ -371,7 +330,6 @@
         if (num === 0) return;
         res = 1 / num; txt = `1/(${num})`;
       }
-      
       res = parseFloat(res.toPrecision(12));
       addToHistory(txt, res);
       currentInput = res.toString(); resetInput = true;
@@ -387,7 +345,6 @@
       }
     }
 
-    // ایونت لیسنرها
     document.addEventListener('DOMContentLoaded', () => {
         const openBtn = document.getElementById('openHistoryBtn');
         if(openBtn) {
@@ -397,9 +354,7 @@
                 toggleModal(true);
             });
         }
-
         document.getElementById('closeHistoryBtn').addEventListener('click', () => toggleModal(false));
-        
         document.getElementById('clearHistory').addEventListener('click', () => { 
             if(confirm('آیا مطمئن هستید؟')) {
                 calculationHistory = []; 
@@ -407,17 +362,14 @@
                 renderHistory(); 
             }
         });
-
         document.getElementById('applyFilter').addEventListener('click', () => {
             renderHistory(getFilteredHistory());
         });
-
         document.getElementById('showAll').addEventListener('click', () => {
             startDateInput.value = '';
             endDateInput.value = '';
             renderHistory();
         });
-
         document.getElementById('deleteRange').addEventListener('click', () => {
             if(!startDateInput.value && !endDateInput.value) {
                 alert('لطفا بازه زمانی را انتخاب کنید');
@@ -429,20 +381,16 @@
                 const start = startStr ? new Date(startStr) : new Date('1970-01-01');
                 const end = endStr ? new Date(endStr) : new Date();
                 end.setHours(23, 59, 59, 999);
-
                 calculationHistory = calculationHistory.filter(item => {
                     if(!item.date) return false; 
                     const itemDate = new Date(item.date);
                     return !(itemDate >= start && itemDate <= end);
                 });
-
                 localStorage.setItem('calc_history_v3', JSON.stringify(calculationHistory));
                 renderHistory();
             }
         });
-
         historyModal.addEventListener('click', (e) => { if(e.target === historyModal) toggleModal(false); });
-        
         document.querySelectorAll('button[data-value]').forEach(btn => {
             btn.addEventListener('click', () => {
                 const val = btn.getAttribute('data-value');
@@ -462,18 +410,15 @@
                 updateDisplay();
             });
         });
-
         document.addEventListener('keydown', (e) => {
             const map = {'Enter': '=', 'Escape': 'C', 'Backspace': 'backspace'};
             const key = map[e.key] || e.key;
             const btn = document.querySelector(`button[data-value="${key}"]`);
             if(btn) { e.preventDefault(); btn.click(); }
         });
-        
         calculator.addEventListener('click', focusCalculator);
         closeHintBtn.addEventListener('click', hideKeyboardHint);
         keyboardHint.addEventListener('click', (e) => { if (e.target === keyboardHint) hideKeyboardHint(); });
-
         init();
     });
   </script>
