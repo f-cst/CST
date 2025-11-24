@@ -2349,17 +2349,21 @@
                 return number.toString();
             }
             
-            const numStr = number.toString().padStart(format.totalLength, '0');
-            
-            if (numStr.length <= format.leftLength) {
-                // اگر عدد کوتاه‌تر از الگو است
-                return numStr;
+            const decimals = format.rightLength || 0;
+            if (decimals === 0) {
+                return number.toString();
             }
             
-            const leftPart = numStr.substring(0, format.leftLength);
-            const rightPart = numStr.substring(format.leftLength);
+            let numStr = number.toString();
+            // اطمینان از اینکه حداقل به اندازه تعداد اعشار، رقم داریم
+            if (numStr.length <= decimals) {
+                numStr = numStr.padStart(decimals + 1, '0');
+            }
             
-            return leftPart + '.' + rightPart;
+            const intPart = numStr.slice(0, -decimals);
+            const fracPart = numStr.slice(-decimals);
+            
+            return intPart + '.' + fracPart;
         }
 
         // تابع جدید: تجزیه عدد ورودی با حفظ ساختار نقطه
