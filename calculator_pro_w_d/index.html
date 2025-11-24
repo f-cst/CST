@@ -1617,7 +1617,7 @@ function showNotification(message, type = 'success') {
     if (document.body.contains(toast)) {
       document.body.removeChild(toast);
     }
-  }, 3000);
+  }, 4000);
 }
 if(exportBtn) exportBtn.addEventListener('click', ()=>{
   try {
@@ -1670,6 +1670,7 @@ if(importFile) importFile.addEventListener('change', (e)=>{
         else storageSet('entries', []);
         if(Array.isArray(obj.categories)) storageSet('categories', obj.categories);
         else storageSet('categories', []);
+        showNotification('بک‌آپ با موفقیت بارگذاری شد','success');
         renderPairs(); 
         renderHistory(); 
         let message = '✅ بک‌آپ با موفقیت بارگذاری شد!\n';
