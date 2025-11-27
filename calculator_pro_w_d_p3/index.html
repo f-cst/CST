@@ -1,3 +1,6 @@
+
+
+
 ﻿
 <!doctype html>
 <html lang="fa" dir="rtl">
@@ -5,7 +8,60 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <title>calculator pro w/d - برنامه سوم</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.tailwindcss.com">
+// ------------------- Multi-Date Fix -------------------
+let isMultiDate = false;
+let dateRanges = [];
+const toggleMultiDateBtn = document.getElementById("toggle_multi_date");
+const singleDateSection = document.getElementById("single_date_section");
+const multiDateSection = document.getElementById("multi_date_section");
+const dateRangesContainer = document.getElementById("date_ranges_container");
+const addDateBtn = document.getElementById("add_date_btn");
+
+if (toggleMultiDateBtn) {
+  toggleMultiDateBtn.addEventListener("click", () => {
+    isMultiDate = !isMultiDate;
+    if (isMultiDate) {
+      toggleMultiDateBtn.textContent = "غیرفعال کردن چندتاریخی";
+      singleDateSection.classList.add("hidden");
+      multiDateSection.classList.remove("hidden");
+    } else {
+      toggleMultiDateBtn.textContent = "فعال کردن حالت چندتاریخی";
+      singleDateSection.classList.remove("hidden");
+      multiDateSection.classList.add("hidden");
+    }
+    renderHistory();
+  });
+}
+
+if (addDateBtn) {
+  addDateBtn.addEventListener("click", () => {
+    const id = uid();
+    dateRanges.push({ id, date: null });
+    const div = document.createElement("div");
+    div.className = "date-range-item";
+    div.id = "range_" + id;
+    div.innerHTML = `
+      <div class="flex gap-2 items-center">
+        <input type="date" class="multi-date-input flex-1" data-id="${id}">
+        <button class="small-btn bg-rose-600 hover:bg-rose-700 remove-range" data-id="${id}">❌</button>
+      </div>`;
+    dateRangesContainer.appendChild(div);
+    div.querySelector(".multi-date-input").addEventListener("change", (e) => {
+      const rid = e.target.dataset.id;
+      const item = dateRanges.find(r => r.id === rid);
+      if (item) item.date = e.target.value;
+    });
+    div.querySelector(".remove-range").addEventListener("click", (e) => {
+      const rid = e.target.dataset.id;
+      dateRanges = dateRanges.filter(r => r.id !== rid);
+      document.getElementById("range_" + rid)?.remove();
+      renderHistory();
+    });
+  });
+}
+
+</script>
 <style>
     :root{
       --bg:#1e293b;
@@ -863,6 +919,81 @@ const multiDatePairFilter = $('multi_date_pair_filter');
 const dateRangesContainer = $('date_ranges_container');
 const addDateBtn = $('add_date_btn');
 const applyMultiDateBtn = $('apply_multi_date_btn');
+// ---------- Multi-date state & controls ----------
+let isMultiDate = false;
+let dateRanges = [];
+
+function resetMultiDateUI(){
+  if(dateRangesContainer) dateRangesContainer.innerHTML = '';
+  dateRanges = [];
+}
+
+function addMultiDateRangeUI(){
+  if(!dateRangesContainer) return;
+  const id = Date.now().toString() + '_' + Math.random().toString(16).slice(2);
+  dateRanges.push({ id, date: null });
+  const div = document.createElement('div');
+  div.className = 'date-range-item';
+  div.id = 'range_' + id;
+  div.innerHTML = `
+      <div class="flex gap-2 items-center">
+        <input type="date" class="multi-date-input flex-1" data-id="${id}">
+        <button class="small-btn bg-rose-600 hover:bg-rose-700 remove-range" data-id="${id}">❌</button>
+      </div>`;
+  dateRangesContainer.appendChild(div);
+  const input = div.querySelector('.multi-date-input');
+  const removeBtn = div.querySelector('.remove-range');
+  if(input){
+    input.addEventListener('change', (e)=>{
+      const rid = e.target.dataset.id;
+      const item = dateRanges.find(r => r.id === rid);
+      if(item) item.date = e.target.value;
+    });
+  }
+  if(removeBtn){
+    removeBtn.addEventListener('click', (e)=>{
+      const rid = e.target.dataset.id;
+      dateRanges = dateRanges.filter(r => r.id !== rid);
+      const row = document.getElementById('range_' + rid);
+      if(row && row.parentNode) row.parentNode.removeChild(row);
+      renderHistory();
+    });
+  }
+}
+
+if(toggleMultiDateBtn){
+  toggleMultiDateBtn.addEventListener('click', ()=>{
+    isMultiDate = !isMultiDate;
+    if(isMultiDate){
+      toggleMultiDateBtn.textContent = 'غیرفعال کردن چندتاریخی';
+      if(singleDateSection) singleDateSection.classList.add('hidden');
+      if(multiDateSection) multiDateSection.classList.remove('hidden');
+      if(historyDate) historyDate.value = '';
+      if(dateRanges.length === 0) addMultiDateRangeUI();
+    } else {
+      toggleMultiDateBtn.textContent = 'فعال کردن حالت چندتاریخی';
+      if(singleDateSection) singleDateSection.classList.remove('hidden');
+      if(multiDateSection) multiDateSection.classList.add('hidden');
+      resetMultiDateUI();
+      renderHistory();
+    }
+  });
+}
+
+if(addDateBtn){
+  addDateBtn.addEventListener('click', (e)=>{
+    e.preventDefault();
+    addMultiDateRangeUI();
+  });
+}
+
+if(applyMultiDateBtn){
+  applyMultiDateBtn.addEventListener('click', (e)=>{
+    e.preventDefault();
+    renderHistory();
+  });
+}
+
 // ---------- UI utils ----------
 function safeForEach(arr, fn){ if(!Array.isArray(arr)) return; arr.forEach(fn); }
 
@@ -977,9 +1108,6 @@ function buildDisplayOutputs(outputs, currentLow, currentHigh, inputFormat, clos
   results.sort((a, b) => a.value - b.value);
   return results.map((result, index) => {
     const color = decideColor(result.value, currentLow, currentHigh);
-    const isClosest = closestPairs.some(pair => 
-      pair.some(p => p.label === result.label && p.value === result.value)
-    );
     const displayVal = formatOutputByInputFormat(result.value, inputFormat);
     const suffix = (result.value < currentLow ? ' ↓ زیر کف فعلی' : (result.value > currentHigh ? ' ↑ بالای سقف فعلی' : ''));
     return { 
@@ -987,7 +1115,7 @@ function buildDisplayOutputs(outputs, currentLow, currentHigh, inputFormat, clos
       label: result.label,
       raw: result.value, 
       display: displayVal, 
-      color: isClosest ? 'box-yellow' : color, 
+      color: color, 
       suffix: suffix 
     };
   });
@@ -1345,6 +1473,126 @@ if(categoriesContainer){
   });
 }
 // ---------- تاریخچه ----------
+function renderMultiDateHistory(selectedPair, selectedDates){
+  const entries = (storageGet('entries')||[]).slice();
+  if(!historyList) return;
+  historyList.innerHTML = '';
+  if(!selectedDates || selectedDates.length === 0){
+    historyList.innerHTML = '<div class="muted text-sm text-center py-4">هیچ تاریخی انتخاب نشده است.</div>';
+    return;
+  }
+  const normDates = Array.from(new Set(selectedDates
+    .map(d => {
+      if(!d) return null;
+      const dt = new Date(d);
+      return isNaN(dt.getTime()) ? null : dt.toISOString().split('T')[0];
+    })
+    .filter(Boolean)
+  )).sort();
+  if(normDates.length === 0){
+    historyList.innerHTML = '<div class="muted text-sm text-center py-4">هیچ تاریخ معتبری انتخاب نشده است.</div>';
+    return;
+  }
+  const header = document.createElement('div');
+  header.className = 'date-comparison-header';
+  header.textContent = 'مقایسه چند تاریخ انتخاب‌شده';
+  historyList.appendChild(header);
+
+  const pairs = storageGet('pairs') || [];
+  const categories = storageGet('categories') || [];
+
+  const entriesByDate = {};
+  normDates.forEach(d => { entriesByDate[d] = []; });
+
+  entries.forEach(e => {
+    const dt = new Date(e.dateISO);
+    if(isNaN(dt.getTime())) return;
+    const key = dt.toISOString().split('T')[0];
+    if(!entriesByDate[key]) return;
+    if(selectedPair && e.pairId !== selectedPair) return;
+    entriesByDate[key].push(e);
+  });
+
+  let hasAny = false;
+  normDates.forEach(dateKey => {
+    const groupEntries = entriesByDate[dateKey] || [];
+    const group = document.createElement('div');
+    group.className = 'comparison-group';
+
+    const title = document.createElement('div');
+    title.className = 'text-xs muted mb-2 font-semibold';
+    try{
+      title.textContent = 'تاریخ: ' + new Date(dateKey).toLocaleDateString('en-CA');
+    }catch(_){
+      title.textContent = 'تاریخ: ' + dateKey;
+    }
+    group.appendChild(title);
+
+    if(groupEntries.length === 0){
+      const empty = document.createElement('div');
+      empty.className = 'muted text-xs';
+      empty.textContent = 'رکوردی برای این تاریخ وجود ندارد.';
+      group.appendChild(empty);
+    } else {
+      hasAny = true;
+      groupEntries.sort((a,b)=> new Date(b.dateISO).getTime() - new Date(a.dateISO).getTime());
+      groupEntries.forEach(e => {
+        const pair = pairs.find(p=>p.id===e.pairId);
+        const pairName = pair?.name || '—';
+        const category = pair ? categories.find(c=>c.id===pair.categoryId) : null;
+        const wrapper = document.createElement('div'); 
+        wrapper.className = 'history-entry-compact flex flex-col gap-3 hover:border-white/20 transition-colors';
+        let closestHTML = '';
+        if (e.closestInfo && e.closestInfo.closestPairs && e.closestInfo.closestPairs.length > 0) {
+          const displayDist = formatOutputByInputFormat(e.closestInfo.minDistance, e.inputFormat);
+          closestHTML = `
+            <div class="mt-2 pt-2 border-t border-white/10">
+              <div class="text-xs muted mb-1">نزدیک‌ترین اعداد (فاصله: ${displayDist}):</div>
+              <div class="text-xs space-y-1">
+                ${e.closestInfo.closestPairs.map(pair => 
+                  `• ${pair[0].label} و ${pair[1].label}`
+                ).join('<br>')}
+              </div>
+            </div>
+          `;
+        }
+        wrapper.innerHTML = `
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <div class="text-sm font-semibold">${pairName}</div>
+              ${category ? `<span class="text-xs bg-blue-600 px-2 py-1 rounded">${category.name}</span>` : ''}
+            </div>
+            <div class="text-xs muted">${e.dateDisplay}</div>
+          </div>
+          <div class="flex gap-2 flex-wrap justify-center">
+            ${e.outputsDisplay.map(it => 
+              `<span class="box-out ${it.color} cursor-pointer hover:opacity-80 transition-opacity" 
+                      title="کلیک برای کپی: ${it.display}"
+                      onclick="copyToClipboard('${it.display}')">
+                <span class="num-label">${it.order}.</span> (${it.label}) ${it.display} ${it.suffix}
+              </span>`
+            ).join('')}
+          </div>
+          ${closestHTML}
+        `;
+        const bottom = document.createElement('div'); 
+        bottom.className = 'flex gap-2 justify-end';
+        const viewBtn = document.createElement('button'); 
+        viewBtn.className = 'small-btn bg-indigo-600 hover:bg-indigo-700 rounded transition-colors'; 
+        viewBtn.textContent = 'نمایش جزئیات'; 
+        viewBtn.addEventListener('click', ()=> showDetail(e.id));
+        bottom.appendChild(viewBtn);
+        wrapper.appendChild(bottom);
+        group.appendChild(wrapper);
+      });
+    }
+    historyList.appendChild(group);
+  });
+
+  if(!hasAny){
+    historyList.innerHTML = '<div class="muted text-sm text-center py-4">برای تاریخ‌های انتخاب‌شده رکوردی یافت نشد.</div>';
+  }
+}
 function renderHistory(){
   if (multiDateSection && !multiDateSection.classList.contains('hidden')) {
     const selectedPair = multiDatePairFilter ? multiDatePairFilter.value : null;
