@@ -7,6 +7,7 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css">
 <style>
   :root {
     /* --- پالت رنگی جدید --- */
@@ -29,19 +30,20 @@
     --success-color: #10b981;
   }
   
-  * {
-    box-sizing: border-box;
-  }
+* {
+  box-sizing: border-box;
+  font-family: Vazirmatn, sans-serif !important; /* اضافه کردن این خط */
+}
   
-  body {
-    font-family: Vazirmatn , sans-serif;
-    background: var(--bg-primary);
-    color: var(--text-primary);
-    padding: 12px;
-    margin: 0;
-    line-height: 1.5;
-    overscroll-behavior-y: none;
-  }
+body {
+  font-family: Vazirmatn, sans-serif; /* این خط قبلاً وجود دارد */
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  padding: 12px;
+  margin: 0;
+  line-height: 1.5;
+  overscroll-behavior-y: none;
+}
   
   .container {
     max-width: 1150px;
@@ -142,9 +144,9 @@
   }
   
   input, select, textarea, button {
-    font-family: inherit;
-    font-size: 1rem;
-  }
+  font-family: inherit; /* این خط قبلاً وجود دارد و خوب است */
+  font-size: 1rem;
+}
   
   input, select, textarea {
     width: 100%;
@@ -620,22 +622,22 @@
   .history-card .value { color: var(--text-primary); font-size: 0.9rem; text-align: left; }
   .history-card .actions { display: flex; justify-content: center; gap: 6px; margin-top: 8px; }
   
-  .footer {
-    color: white;
-    text-align: center;
-    padding: 16px;
-    font-family: Vazirmatn, system-ui;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 10px;
-    backdrop-filter: blur(5px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    font-size: 14px;
-    font-weight: 500;
-    display: block;
-    margin: 30px auto;
-    width: fit-content;
-    max-width: 90%;
-  }
+.footer {
+  color: white;
+  text-align: center;
+  padding: 16px;
+  font-family: Vazirmatn, system-ui; /* این خط قبلاً وجود دارد */
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+  backdrop-filter: blur(5px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  font-size: 14px;
+  font-weight: 500;
+  display: block;
+  margin: 30px auto;
+  width: fit-content;
+  max-width: 90%;
+}
 
   .toast {
     position: fixed;
