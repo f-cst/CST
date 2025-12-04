@@ -331,6 +331,10 @@
       background: rgba(0, 0, 0, 0.6);
       backdrop-filter: blur(4px);
       z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
     }
     .modal-content {
       position: relative;
@@ -725,7 +729,7 @@
     </section>
   </div>
   <div id="stats_modal" class="hidden modal-overlay">
-    <div class="modal-content bg-[var(--card)] p-6 rounded-lg max-w-md w-full mx-4 border border-white/10">
+    <div class="modal-content bg-[var(--card)] p-6 rounded-lg max-w-md w-full border border-white/10">
       <div class="flex justify-between items-center mb-4 border-b border-white/10 pb-3">
         <h4 class="font-bold text-lg">📊 آمار و اطلاعات سیستم - برنامه سوم</h4>
         <button id="close_stats" class="small-btn bg-slate-600 hover:bg-slate-700">✕</button>
@@ -735,7 +739,7 @@
     </div>
   </div>
   <div id="backups_modal" class="hidden modal-overlay">
-    <div class="modal-content bg-[var(--card)] p-6 rounded-lg max-w-2xl w-full mx-4 border border-white/10">
+    <div class="modal-content bg-[var(--card)] p-6 rounded-lg max-w-2xl w-full border border-white/10">
       <div class="flex justify-between items-center mb-4 border-b border-white/10 pb-3">
         <h4 class="font-bold text-lg">💾 مدیریت بک‌آپ‌ها - برنامه سوم</h4>
         <button id="close_backups" class="small-btn bg-slate-600 hover:bg-slate-700">✕</button>
