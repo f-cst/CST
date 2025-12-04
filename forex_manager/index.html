@@ -4,10 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>سیستم مدیریت جفت ارزها - فارکس</title>
-    <!-- لینک فونت وزیرمتن -->
     <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-<style>
+    <style>
         :root {
             --primary-color: #2a5298;
             --secondary-color: #1e3c72;
@@ -38,7 +37,7 @@
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Vazirmatn', sans-serif; /* اصلاح نام فونت */
+            font-family: 'Vazirmatn', sans-serif;
             transition: background-color 0.3s, color 0.3s, border-color 0.3s;
         }
         body {
@@ -47,7 +46,7 @@
             min-height: 100vh;
             padding: 15px;
             line-height: 1.6;
-            font-size: 16px; /* افزایش سایز پایه برای خوانایی بهتر */
+            font-size: 16px;
         }
         .dark-mode body {
             background: var(--bg-dark);
@@ -121,6 +120,7 @@
             transition: all 0.3s ease;
             display: flex;
             align-items: center;
+            justify-content: center; /* مرکزچین کردن محتوا */
             gap: 8px;
             font-size: 0.95rem;
             box-shadow: 
@@ -734,33 +734,51 @@
                 grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
             }
         }
+
+        /* ----------------------------------------------------- */
+        /* اصلاحات بخش موبایل برای هدر و دکمه‌ها */
+        /* ----------------------------------------------------- */
         @media (max-width: 768px) {
             body {
                 padding: 10px;
-                font-size: 15px; /* تنظیم بهینه برای تبلت و موبایل */
+                font-size: 15px;
             }
             .header-glass {
-                padding: 20px 25px;
-                flex-direction: column;
-                text-align: center;
-                gap: 15px;
+                padding: 12px 15px; /* کاهش پدینگ */
+                flex-direction: row; /* تغییر از ستونی به ردیفی */
+                text-align: right;
+                gap: 10px;
+                justify-content: space-between; /* فاصله بین تیتر و دکمه‌ها */
+                border-radius: 16px;
             }
             .header-glass h1 {
-                font-size: 1.6rem;
+                font-size: 1.1rem; /* سایز فونت بهینه برای موبایل */
+                white-space: nowrap; /* جلوگیری از شکستن خط */
+                overflow: hidden;
+                text-overflow: ellipsis;
             }
             .header-controls {
-                width: 100%;
-                justify-content: center;
+                width: auto; /* عرض خودکار به جای 100% */
+                justify-content: flex-end;
+                gap: 8px;
             }
             .glass-btn {
-                padding: 10px 16px;
-                font-size: 0.9rem;
+                padding: 0; /* حذف پدینگ اضافی برای کنترل سایز */
+                font-size: 1.1rem;
+                /* تنظیم سایز ثابت و مربعی برای دکمه‌ها */
+                width: 42px; 
+                height: 42px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
             }
             .tabs {
                 display: none;
             }
             .hamburger-menu {
-                display: block;
+                display: flex; /* نمایش دکمه همبرگری */
+                align-items: center;
+                justify-content: center;
             }
             .mobile-tabs.active {
                 display: flex;
@@ -807,18 +825,16 @@
         @media (max-width: 576px) {
             body {
                 padding: 8px;
-                font-size: 14px; /* حداقل سایز استاندارد برای موبایل */
-            }
-            .header-glass {
-                padding: 15px 20px;
-                border-radius: 16px;
+                font-size: 14px;
             }
             .header-glass h1 {
-                font-size: 1.4rem;
+                font-size: 1rem;
             }
+            /* دکمه‌ها در سایز خیلی کوچک هم مربعی و فیکس باقی می‌مانند */
             .glass-btn {
-                padding: 8px 14px;
-                font-size: 0.85rem;
+                width: 38px;
+                height: 38px;
+                font-size: 1rem;
             }
             .category-header {
                 flex-direction: column;
@@ -876,10 +892,10 @@
                 padding: 5px;
             }
             .header-glass {
-                padding: 12px 15px;
+                padding: 10px;
             }
             .header-glass h1 {
-                font-size: 1.2rem;
+                font-size: 0.9rem;
             }
             .tab-content {
                 padding: 10px;
@@ -891,10 +907,6 @@
                 padding: 5px 8px;
             }
             .btn {
-                padding: 6px 10px;
-                font-size: 0.8rem;
-            }
-            .glass-btn {
                 padding: 6px 10px;
                 font-size: 0.8rem;
             }
@@ -1086,7 +1098,6 @@
             <div class="mobile-tab" data-tab="data-management">مدیریت داده</div>
         </div>
         <div class="tab-content active" id="calculator">
-            <!-- ماشین حساب اصلی -->
             <div class="calculator">
                 <h2 class="section-title">ماشین حساب محاسبه سود/ضرر</h2>
                 <div class="calculator-grid">
@@ -1159,7 +1170,6 @@
                     </div>
                 </div>				
             </div>
-            <!-- ماشین حساب ارزش پیپ -->
             <div class="pip-calculator-container">
                 <div class="pip-calculator-header">
                     <div class="pip-calculator-title">
@@ -1271,8 +1281,7 @@
                 </div>
             </div>
             <div class="history-list" id="history-list">
-                <!-- تاریخچه معاملات به صورت داینامیک لود می‌شود -->
-            </div>
+                </div>
         </div>
         <div class="tab-content" id="currency-management">
             <h2 class="section-title">مدیریت جفت ارزها</h2>
@@ -1288,8 +1297,7 @@
                 </button>
             </div>
             <div class="categories-management" id="categories-management">
-                <!-- دسته‌بندی‌ها و جفت ارزها به صورت داینامیک لود می‌شوند -->
-            </div>
+                </div>
         </div>
         <div class="tab-content" id="delete-records">
             <h2 class="section-title">حذف رکوردها</h2>
@@ -1356,7 +1364,6 @@
             </div>
         </div>
     </div>
-    <!-- مودال‌ها -->
     <div class="modal" id="categoryModal">
         <div class="modal-content">
             <h2 id="categoryModalTitle">افزودن دسته جدید</h2>
@@ -1443,12 +1450,10 @@
             </div>
         </div>
     </div>
-    <!-- اعلان خودکار -->
     <div class="auto-alert" id="autoAlert">
         <i class="fas fa-check-circle"></i>
         <span id="alertMessage">عملیات با موفقیت انجام شد</span>
     </div>
-    <!-- امضا -->
     <div class="signature">
         طراحی و ساخت توسط ❤️ سعید شیخ احمد صفاری
     </div>
@@ -1470,7 +1475,6 @@
                 themeToggle.innerHTML = '<i class="fas fa-moon"></i> ';
             }
         });
-
         // مدیریت تب‌ها
         const tabs = document.querySelectorAll('.tab, .mobile-tab');
         const tabContents = document.querySelectorAll('.tab-content');
@@ -1478,7 +1482,6 @@
         const mobileTabs = document.getElementById('mobileTabs');
         let selectedCurrencyHistory = "all";
         let selectedCurrencyCalculator = localStorage.getItem('selectedCurrencyCalculator') || "";
-
         // ✅ تابع بستن منوی موبایل و بازگرداندن آیکون
         function closeMobileMenu() {
             mobileTabs.classList.remove('active');
@@ -1498,7 +1501,6 @@
             }
             // ✅ بستن منوی موبایل هنگام تغییر تب
             closeMobileMenu();
-
             if (tabName === 'history') {
                 document.getElementById('filter-currency').value = selectedCurrencyHistory;
                 loadHistory();
@@ -1518,7 +1520,6 @@
                 switchTab(tabName);
             });
         });
-
         hamburgerMenu.addEventListener('click', () => {
             const icon = hamburgerMenu.querySelector('.hamburger-icon');
             mobileTabs.classList.toggle('active');
@@ -1530,13 +1531,11 @@
                 icon.classList.add('fa-bars');
             }
         });
-
         document.addEventListener('click', (e) => {
             if (!hamburgerMenu.contains(e.target) && !mobileTabs.contains(e.target)) {
                 closeMobileMenu();
             }
         });
-
         // === بقیه کدها بدون تغییر ===
         function showAlert(message, type = 'success') {
             const alert = document.getElementById('autoAlert');
@@ -1820,7 +1819,6 @@
             localStorage.setItem('history', JSON.stringify(history));
             showAlert('محاسبه انجام و در تاریخچه ذخیره شد');
         });
-
         document.getElementById('reset').addEventListener('click', function() {
             const fieldsToReset = [
                 'lot-size', 'entry-price', 'take-profit', 
@@ -1843,7 +1841,6 @@
             document.getElementById('result').style.display = 'none';
             showAlert('فیلدهای ورودی با موفقیت ریست شدند', 'info');
         });
-
         document.getElementById('calculate-pip-value').addEventListener('click', function() {
             const currencyPair = document.getElementById('pip-currency').value;
             const lotSize = parseFloat(document.getElementById('pip-lot-size').value);
@@ -1876,7 +1873,6 @@
             document.getElementById('pip50-currency-display').textContent = accountCurrency;
             document.getElementById('pip-result').style.display = 'block';
         });
-
         document.getElementById('reset-pip-calculator').addEventListener('click', function() {
             const fieldsToReset = ['pip-lot-size', 'pip-price'];
             const defaultValues = {
@@ -1892,14 +1888,12 @@
             document.getElementById('pip-result').style.display = 'none';
             showAlert('فیلدهای ماشین حساب ارزش پیپ ریست شدند', 'info');
         });
-
         document.querySelectorAll('.quick-lot-btn').forEach(button => {
             button.addEventListener('click', function() {
                 const lotSize = this.getAttribute('data-lot');
                 document.getElementById('pip-lot-size').value = lotSize;
             });
         });
-
         document.getElementById('apply-filter').addEventListener('click', loadHistory);
         document.getElementById('clear-filter').addEventListener('click', function() {
             document.getElementById('filter-currency').value = 'all';
@@ -1908,7 +1902,6 @@
             loadHistory();
             showAlert('فیلترها حذف شدند', 'info');
         });
-
         document.addEventListener('DOMContentLoaded', function() {
             loadCurrencyPairs();
             loadHistory();
@@ -1917,7 +1910,6 @@
             document.getElementById('trade-date').value = today;
             switchTab('calculator');
         });
-
         function loadCategories() {
             const categoriesContainer = document.getElementById('categories-management');
             const currencyCategorySelect = document.getElementById('currency-category');
@@ -2128,7 +2120,6 @@
             document.getElementById('category-name').value = '';
             document.getElementById('categoryModal').style.display = 'flex';
         });
-
         document.getElementById('saveCategory').addEventListener('click', function() {
             const categoryName = document.getElementById('category-name').value.trim();
             if (!categoryName) {
@@ -2147,11 +2138,9 @@
             loadCategories();
             showAlert('دسته جدید با موفقیت ایجاد شد');
         });
-
         document.getElementById('cancelCategory').addEventListener('click', function() {
             document.getElementById('categoryModal').style.display = 'none';
         });
-
         function editCategory(categoryId) {
             const categories = JSON.parse(localStorage.getItem('categories')) || [];
             const category = categories.find(c => c.id == categoryId);
@@ -2182,7 +2171,8 @@
             if (!category) return;
             if (category.currencies.length > 0) {
                 document.getElementById('delete-category-message').textContent = 
-                    `دسته‌بندی "${category.name}" دارای ${category.currencies.length} جفت ارز است. می‌خواهید چه عملی انجام دهید؟`;
+                    `دسته‌بندی "${category.name}" دارای ${category.currencies.length} جفت ارز است.
+                    می‌خواهید چه عملی انجام دهید؟`;
                 const moveSection = document.getElementById('move-currencies-section');
                 moveSection.style.display = 'block';
                 const moveToSelect = document.getElementById('move-to-category');
@@ -2230,14 +2220,12 @@
         document.getElementById('cancelDeleteCategory').addEventListener('click', function() {
             document.getElementById('deleteCategoryModal').style.display = 'none';
         });
-
         document.getElementById('add-currency').addEventListener('click', function() {
             document.getElementById('currencyModalTitle').textContent = 'افزودن جفت ارز جدید';
             document.getElementById('currency-name').value = '';
             document.getElementById('currency-type').value = 'standard';
             document.getElementById('currencyModal').style.display = 'flex';
         });
-
         document.getElementById('saveCurrency').addEventListener('click', function() {
             const currencyName = document.getElementById('currency-name').value.trim().toUpperCase();
             const categoryId = document.getElementById('currency-category').value;
@@ -2273,11 +2261,9 @@
             loadCurrencyPairs();
             showAlert('جفت ارز جدید با موفقیت اضافه شد');
         });
-
         document.getElementById('cancelCurrency').addEventListener('click', function() {
             document.getElementById('currencyModal').style.display = 'none';
         });
-
         function editCurrency(currencyId) {
             const categories = JSON.parse(localStorage.getItem('categories')) || [];
             let currency = null;
@@ -2333,7 +2319,6 @@
         document.getElementById('cancelEditCurrency').addEventListener('click', function() {
             document.getElementById('editCurrencyModal').style.display = 'none';
         });
-
         function deleteCurrency(currencyId) {
             if (!confirm('آیا از حذف این جفت ارز اطمینان دارید؟')) return;
             const categories = JSON.parse(localStorage.getItem('categories')) || [];
@@ -2357,7 +2342,6 @@
             loadHistory();
             showAlert('تاریخچه معاملات با موفقیت حذف شد');
         });
-
         document.getElementById('delete-currencies').addEventListener('click', function() {
             if (!confirm('آیا از حذف تمام جفت ارزها و دسته‌بندی‌ها اطمینان دارید؟ این عمل قابل بازگشت نیست.')) return;
             localStorage.removeItem('categories');
@@ -2365,7 +2349,6 @@
             loadCurrencyPairs();
             showAlert('جفت ارزها و دسته‌بندی‌ها با موفقیت حذف شد');
         });
-
         document.getElementById('delete-all').addEventListener('click', function() {
             if (!confirm('آیا از حذف تمام داده‌های سیستم اطمینان دارید؟ این عمل قابل بازگشت نیست.')) return;
             localStorage.clear();
@@ -2438,7 +2421,6 @@
             };
             reader.readAsText(file);
         });
-
         document.getElementById('show-stats').addEventListener('click', function() {
             const history = JSON.parse(localStorage.getItem('history')) || [];
             const categories = JSON.parse(localStorage.getItem('categories')) || [];
@@ -2500,7 +2482,5 @@
             });
         });
     </script>
-      <BR>
-    <BR>
 </body>
 </html>
