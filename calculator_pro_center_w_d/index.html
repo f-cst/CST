@@ -4,6 +4,8 @@
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <title>calculator pro center w/d - برنامه دوم</title>
+  <!-- لینک فونت وزیرمتن اضافه شد -->
+  <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" type="text/css" />
   <script src="https://cdn.tailwindcss.com"></script>
 <style>
     :root{
@@ -15,11 +17,20 @@
     }
     
     body{
-      font-family: Vazirmatn , sans-serif; 
+      /* اعمال فونت وزیرمتن روی کل بدنه */
+      font-family: 'Vazirmatn', sans-serif; 
       background:var(--bg); 
       color:var(--text-light); 
       min-height:100vh; 
       padding:20px;
+      /* جلوگیری از پرش فونت */
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* اطمینان از اعمال فونت روی تمام اجزای فرم */
+    input, button, select, textarea {
+      font-family: 'Vazirmatn', sans-serif;
     }
     
     .card{
@@ -59,6 +70,7 @@
       width:100%; 
       outline: none;
       transition: all 0.2s ease;
+      font-size: 1rem; /* اندازه مناسب برای موبایل برای جلوگیری از زوم ناخواسته */
     }
     
     input[type="text"]:focus, input[type="date"]:focus, input[type="number"]:focus, select:focus, textarea:focus { 
@@ -110,7 +122,7 @@
       opacity:.95; 
     }
     
-    /* استایل کامل و اصلاح شده برای دکمه‌ها - مشکل اصلی اینجا بود */
+    /* استایل کامل و اصلاح شده برای دکمه‌ها */
     .small-btn{ 
       padding:0.5rem 0.75rem; 
       border-radius:0.5rem; 
@@ -129,6 +141,7 @@
       font-weight: 500;
       text-decoration: none;
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      font-family: 'Vazirmatn', sans-serif;
     }
     
     /* استایل‌های hover و focus برای دکمه‌ها */
@@ -151,95 +164,30 @@
     }
     
     /* استایل‌های خاص برای رنگ‌های مختلف دکمه‌ها */
-    .small-btn.bg-slate-600 {
-      background: #475569;
-      border-color: #64748b;
-      color: #fff;
-    }
+    .small-btn.bg-slate-600 { background: #475569; border-color: #64748b; color: #fff; }
+    .small-btn.bg-slate-600:hover { background: #64748b; border-color: #94a3b8; }
     
-    .small-btn.bg-slate-600:hover {
-      background: #64748b;
-      border-color: #94a3b8;
-    }
+    .small-btn.bg-emerald-600 { background: #059669; border-color: #10b981; color: #fff; }
+    .small-btn.bg-emerald-600:hover { background: #10b981; border-color: #34d399; }
     
-    .small-btn.bg-emerald-600 {
-      background: #059669;
-      border-color: #10b981;
-      color: #fff;
-    }
+    .small-btn.bg-rose-600 { background: #dc2626; border-color: #ef4444; color: #fff; }
+    .small-btn.bg-rose-600:hover { background: #ef4444; border-color: #f87171; }
     
-    .small-btn.bg-emerald-600:hover {
-      background: #10b981;
-      border-color: #34d399;
-    }
+    .small-btn.bg-blue-600 { background: #2563eb; border-color: #3b82f6; color: #fff; }
+    .small-btn.bg-blue-600:hover { background: #3b82f6; border-color: #60a5fa; }
     
-    .small-btn.bg-rose-600 {
-      background: #dc2626;
-      border-color: #ef4444;
-      color: #fff;
-    }
+    .small-btn.bg-yellow-600 { background: #d97706; border-color: #f59e0b; color: #fff; }
+    .small-btn.bg-yellow-600:hover { background: #f59e0b; border-color: #fbbf24; }
     
-    .small-btn.bg-rose-600:hover {
-      background: #ef4444;
-      border-color: #f87171;
-    }
+    .small-btn.bg-indigo-600 { background: #4f46e5; border-color: #6366f1; color: #fff; }
+    .small-btn.bg-indigo-600:hover { background: #6366f1; border-color: #818cf8; }
     
-    .small-btn.bg-blue-600 {
-      background: #2563eb;
-      border-color: #3b82f6;
-      color: #fff;
-    }
+    .small-btn.bg-purple-600 { background: #7c3aed; border-color: #8b5cf6; color: #fff; }
+    .small-btn.bg-purple-600:hover { background: #8b5cf6; border-color: #a78bfa; }
     
-    .small-btn.bg-blue-600:hover {
-      background: #3b82f6;
-      border-color: #60a5fa;
-    }
+    .small-btn.bg-green-600 { background: #059669; border-color: #10b981; color: #fff; }
+    .small-btn.bg-green-600:hover { background: #10b981; border-color: #34d399; }
     
-    .small-btn.bg-yellow-600 {
-      background: #d97706;
-      border-color: #f59e0b;
-      color: #fff;
-    }
-    
-    .small-btn.bg-yellow-600:hover {
-      background: #f59e0b;
-      border-color: #fbbf24;
-    }
-    
-    .small-btn.bg-indigo-600 {
-      background: #4f46e5;
-      border-color: #6366f1;
-      color: #fff;
-    }
-    
-    .small-btn.bg-indigo-600:hover {
-      background: #6366f1;
-      border-color: #818cf8;
-    }
-    
-    .small-btn.bg-purple-600 {
-      background: #7c3aed;
-      border-color: #8b5cf6;
-      color: #fff;
-    }
-    
-    .small-btn.bg-purple-600:hover {
-      background: #8b5cf6;
-      border-color: #a78bfa;
-    }
-    
-    .small-btn.bg-green-600 {
-      background: #059669;
-      border-color: #10b981;
-      color: #fff;
-    }
-    
-    .small-btn.bg-green-600:hover {
-      background: #10b981;
-      border-color: #34d399;
-    }
-    
-    /* استایل برای دکمه‌های در حالت disabled */
     .small-btn:disabled {
       opacity: 0.5;
       cursor: not-allowed;
@@ -262,7 +210,6 @@
       white-space: nowrap;
     }
     
-    /* استایل برای selectهای داخل فهرست جفت‌ارزها */
     #categories_container select.small-btn {
       padding: 0.15rem 0.3rem !important;
       font-size: 0.65rem !important;
@@ -270,7 +217,6 @@
       max-width: 120px;
     }
     
-    /* استایل برای دکمه‌های عمل در لیست جفت‌ارزها */
     #categories_container button.small-btn {
       min-width: 28px;
       display: flex;
@@ -278,32 +224,21 @@
       justify-content: center;
     }
     
-    /* استایل برای آیتم‌های لیست جفت‌ارزها */
     #categories_container li {
       padding: 0.4rem 0.5rem !important;
       gap: 0.3rem !important;
     }
     
-    /* استایل برای container دکمه‌ها در هر آیتم */
     #categories_container .flex.gap-1 {
       flex-wrap: nowrap !important;
       gap: 0.2rem !important;
       min-width: fit-content;
     }
     
-    .thin-scroll::-webkit-scrollbar{ 
-      width:8px; 
-      height:8px; 
-    }
+    .thin-scroll::-webkit-scrollbar{ width:8px; height:8px; }
+    .thin-scroll::-webkit-scrollbar-thumb{ background:rgba(255,255,255,0.1); border-radius:8px; }
     
-    .thin-scroll::-webkit-scrollbar-thumb{ 
-      background:rgba(255,255,255,0.1); 
-      border-radius:8px; 
-    }
-    
-    .hidden{ 
-      display:none !important; 
-    }
+    .hidden{ display:none !important; }
     
     .icon-btn{ 
       background:var(--input-bg); 
@@ -315,16 +250,9 @@
       transition: all 0.2s ease;
     }
     
-    .icon-btn:hover {
-      background: rgba(255, 255, 255, 0.1);
-      border-color: rgba(255, 255, 255, 0.2);
-    }
+    .icon-btn:hover { background: rgba(255, 255, 255, 0.1); border-color: rgba(255, 255, 255, 0.2); }
     
-    .title-click{ 
-      display:flex; 
-      align-items:center; 
-      gap:8px; 
-    }
+    .title-click{ display:flex; align-items:center; gap:8px; }
     
     .category-header{ 
       background:rgba(255,255,255,0.08); 
@@ -336,29 +264,13 @@
       transition: all 0.2s ease;
     }
     
-    .category-header:hover {
-      background: rgba(255, 255, 255, 0.12);
-      border-color: rgba(255, 255, 255, 0.15);
-    }
+    .category-header:hover { background: rgba(255, 255, 255, 0.12); border-color: rgba(255, 255, 255, 0.15); }
     
-    .category-content{ 
-      padding:.5rem; 
-      border-right:2px solid #0ea5a4; 
-      margin-right:.5rem; 
-    }
+    .category-content{ padding:.5rem; border-right:2px solid #0ea5a4; margin-right:.5rem; }
     
-    .danger-zone{ 
-      background:#7f1d1d; 
-      border:1px solid rgba(239,68,68,0.3); 
-      padding:12px; 
-      border-radius:8px; 
-      margin-top:12px; 
-    }
+    .danger-zone{ background:#7f1d1d; border:1px solid rgba(239,68,68,0.3); padding:12px; border-radius:8px; margin-top:12px; }
     
-    .calendar-icon{ 
-      color:var(--text-light); 
-      font-size:1.2rem; 
-    }
+    .calendar-icon{ color:var(--text-light); font-size:1.2rem; }
     
     .show-picker-btn{ 
       color:var(--text-light) !important; 
@@ -370,34 +282,15 @@
       transition: all 0.2s ease;
     }
     
-    .show-picker-btn:hover {
-      background: rgba(255, 255, 255, 0.25) !important;
-      border-color: rgba(255, 255, 255, 0.3) !important;
-    }
+    .show-picker-btn:hover { background: rgba(255, 255, 255, 0.25) !important; border-color: rgba(255, 255, 255, 0.3) !important; }
     
-    .center-modal{ 
-      display:flex !important; 
-      align-items:center; 
-      justify-content:center; 
-    }
+    .center-modal{ display:flex !important; align-items:center; justify-content:center; }
     
-    .category-item{ 
-      background:rgba(255,255,255,0.05); 
-      border:1px solid rgba(255,255,255,0.1); 
-    }
+    .category-item{ background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); }
     
-    .resizable-container { 
-      resize: vertical; 
-      overflow: auto; 
-      min-height: 120px; 
-      max-height: 400px; 
-    }
+    .resizable-container { resize: vertical; overflow: auto; min-height: 120px; max-height: 400px; }
     
-    /* استایل جدید برای تاریخچه بدون نیاز به اسکرول */
-    .history-compact { 
-      max-height: none !important; 
-      overflow: visible !important;
-    }
+    .history-compact { max-height: none !important; overflow: visible !important; }
     
     .history-entry-compact {
       background: var(--input-bg);
@@ -408,12 +301,8 @@
       transition: all 0.2s ease;
     }
     
-    .history-entry-compact:hover {
-      border-color: rgba(255,255,255,0.2);
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-    }
+    .history-entry-compact:hover { border-color: rgba(255,255,255,0.2); box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2); }
 
-    /* استایل‌های جدید برای مدیریت پیشرفته */
     .backup-item {
       background: rgba(255,255,255,0.05);
       border: 1px solid rgba(255,255,255,0.1);
@@ -422,12 +311,7 @@
       margin-bottom: 8px;
     }
     
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 8px;
-      margin: 10px 0;
-    }
+    .stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin: 10px 0; }
     
     .stat-item {
       background: rgba(255,255,255,0.05);
@@ -437,37 +321,21 @@
       border: 1px solid rgba(255,255,255,0.1);
     }
     
-    /* بهبود استایل مودال‌ها */
     .modal-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
       background: rgba(0, 0, 0, 0.6);
       backdrop-filter: blur(4px);
       z-index: 1000;
     }
     
-    .modal-content {
-      position: relative;
-      max-height: 90vh;
-      overflow-y: auto;
-      margin: auto;
-    }
+    .modal-content { position: relative; max-height: 90vh; overflow-y: auto; margin: auto; }
 
-    /* استایل جدید برای نمایش جفت‌ارز حذف شده */
     .deleted-pair {
-      background: #7f1d1d;
-      color: white;
-      padding: 2px 6px;
-      border-radius: 4px;
-      font-size: 0.75rem;
-      margin-right: 4px;
+      background: #7f1d1d; color: white; padding: 2px 6px;
+      border-radius: 4px; font-size: 0.75rem; margin-right: 4px;
       border: 1px solid #991b1b;
     }
 
-    /* استایل‌های جدید برای تاریخ‌های چندگانه */
     .multi-date-controls {
       background: rgba(255,255,255,0.05);
       border: 1px solid rgba(255,255,255,0.1);
@@ -500,20 +368,18 @@
       transition: all 0.2s ease;
     }
     
-    .comparison-group:hover {
-      border-color: rgba(255,255,255,0.2);
-    }
+    .comparison-group:hover { border-color: rgba(255,255,255,0.2); }
 
     .signature {
       color: white;
       text-align: center;
       padding: 16px;
-      font-family: Vazirmatn, system-ui;
+      font-family: 'Vazirmatn', system-ui; /* اعمال فونت با کوتیشن */
       background: rgba(255, 255, 255, 0.1);
       border-radius: 10px;
       backdrop-filter: blur(5px);
       border: 1px solid rgba(255, 255, 255, 0.2);
-      font-size: 14px;
+      font-size: 12px;
       font-weight: 500;
       display: block;
       margin: 30px auto;
@@ -524,30 +390,32 @@
 
     /* استایل‌های مخصوص موبایل */
     @media only screen and (max-width: 768px) {
+      /* تنظیم اندازه فونت دکمه‌ها برای خوانایی بهتر در موبایل */
       .small-btn {
         min-height: 44px;
         padding: 0.75rem 1rem;
-        font-size: 0.9rem;
+        font-size: 0.95rem; /* کمی افزایش سایز برای خوانایی */
         border-width: 2px;
       }
       
-      /* استایل مخصوص موبایل برای دکمه‌های فهرست جفت‌ارزها */
+      input[type="text"], input[type="date"], input[type="number"], select, textarea {
+        font-size: 16px; /* جلوگیری از زوم خودکار در iOS */
+      }
+      
       #categories_container .small-btn {
         padding: 0.15rem 0.3rem !important;
-        font-size: 0.65rem !important;
-        min-height: 22px !important;
+        font-size: 0.75rem !important;
+        min-height: 28px !important;
       }
       
       #categories_container select.small-btn {
         padding: 0.1rem 0.25rem !important;
-        font-size: 0.6rem !important;
-        min-height: 20px !important;
+        font-size: 0.7rem !important;
+        min-height: 26px !important;
         max-width: 100px;
       }
       
-      #categories_container button.small-btn {
-        min-width: 24px;
-      }
+      #categories_container button.small-btn { min-width: 24px; }
       
       #categories_container li {
         padding: 0.3rem 0.4rem !important;
@@ -565,17 +433,10 @@
         border-top: 1px solid rgba(255,255,255,0.1);
       }
       
-      #categories_container .flex-1 {
-        order: 1;
-        width: 100%;
-      }
+      #categories_container .flex-1 { order: 1; width: 100%; }
       
-      .signature {
-        font-size: 14px;
-        padding: 15px;
-      }
+      .signature { font-size: 14px; padding: 15px; }
       
-      /* اطمینان از نمایش border در موبایل */
       .small-btn:active {
         background: rgba(255, 255, 255, 0.2);
         border-color: rgba(255, 255, 255, 0.4);
@@ -589,89 +450,41 @@
         align-items: center;
       }
       
-      .stats-grid {
-        grid-template-columns: 1fr;
-        gap: 6px;
-      }
+      .stats-grid { grid-template-columns: 1fr; gap: 6px; }
     }
 
     @media only screen and (max-width: 480px) {
-      .signature {
-        font-size: 12px;
-        padding: 13px;
-      }
-      
-      .small-btn {
-        padding: 0.875rem 1rem;
-        font-size: 0.95rem;
-      }
+      .signature { font-size: 12px; padding: 13px; }
+      .small-btn { padding: 0.875rem 1rem; font-size: 0.95rem; }
     }
 
+    /* استایل برای آیکون دکمه تاگل */
+    #toggle_icon {
+      transition: all 0.3s ease;
+      font-weight: bold;
+      display: inline-block;
+    }
 
+    #toggle_history_btn:hover #toggle_icon { transform: scale(1.2); }
+    #toggle_history_btn.open { background: #374151 !important; border-color: #6b7280 !important; }
+    #toggle_history_btn.closed { background: #475569 !important; border-color: #64748b !important; }
 
-/* استایل برای آیکون دکمه تاگل */
-#toggle_icon {
-  transition: all 0.3s ease;
-  font-weight: bold;
-  display: inline-block;
-}
+    .toast-notification {
+      position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
+      padding: 12px 20px; border-radius: 8px;
+      font-size: 14px; font-weight: 500; z-index: 9999;
+      min-width: 280px; max-width: 90vw;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      opacity: 0; transform: translateX(-50%) translateY(-20px) scale(0.9);
+      transition: all 0.3s ease;
+      display: flex; align-items: center; gap: 8px;
+      backdrop-filter: blur(10px);
+      font-family: 'Vazirmatn', sans-serif; /* فونت تست */
+    }
 
-/* افکت hover برای دکمه تاگل */
-#toggle_history_btn:hover #toggle_icon {
-  transform: scale(1.2);
-}
-
-/* استایل برای حالت باز بودن */
-#toggle_history_btn.open {
-  background: #374151 !important;
-  border-color: #6b7280 !important;
-}
-
-/* استایل برای حالت بسته بودن */
-#toggle_history_btn.closed {
-  background: #475569 !important;
-  border-color: #64748b !important;
-}
-
-/* استایل برای اعلان‌های toast - یکسان با افکت کپی */
-.toast-notification {
-  position: fixed;
-  top: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  padding: 12px 20px;
-  border-radius: 8px;
-  font-size: 14px;
-  font-weight: 500;
-  z-index: 9999;
-  min-width: 280px;
-  max-width: 90vw;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-  opacity: 0;
-  transform: translateX(-50%) translateY(-20px) scale(0.9);
-  transition: all 0.3s ease;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  backdrop-filter: blur(10px);
-}
-
-.toast-notification.show {
-  opacity: 1;
-  transform: translateX(-50%) translateY(0) scale(1);
-}
-
-.toast-success {
-  background: rgba(34, 197, 94, 0.95);
-  color: white;
-  border: 1px solid rgba(34, 197, 94, 0.3);
-}
-
-.toast-error {
-  background: rgba(239, 68, 68, 0.95);
-  color: white;
-  border: 1px solid rgba(239, 68, 68, 0.3);
-}
+    .toast-notification.show { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
+    .toast-success { background: rgba(34, 197, 94, 0.95); color: white; border: 1px solid rgba(34, 197, 94, 0.3); }
+    .toast-error { background: rgba(239, 68, 68, 0.95); color: white; border: 1px solid rgba(239, 68, 68, 0.3); }
   
 </style>
 </head>
