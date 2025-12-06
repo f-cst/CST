@@ -1777,6 +1777,8 @@
           a.click(); 
           a.remove(); 
           URL.revokeObjectURL(url);
+          // ثبت این بک‌آپ به‌عنوان بک‌آپ داخلی نیز
+          try { createBackup('manual-file', { note: 'ساخته شده همراه با دانلود فایل پشتیبان' }); } catch (e) { console.warn('خطا در ساخت بک‌آپ داخلی همزمان با دانلود:', e); }
           showNotification('✅ فایل پشتیبان با موفقیت دانلود شد');
         } catch (err) {
           console.error('خطا در دانلود بک‌آپ:', err);
@@ -2053,17 +2055,511 @@
         if (statsModal) statsModal.classList.add('hidden');
       });
     }
-    if (manageBackupsBtn) {
-      manageBackupsBtn.addEventListener('click', () => {
-        if (backupsModal) backupsModal.classList.remove('hidden');
-        // در اینجا می‌توانید محتوای مدیریت بک‌آپ‌ها را اضافه کنید
-        if (backupsContent) {
-          backupsContent.innerHTML = `
-            <div class="text-center py-4">
-              <p class="muted">مدیریت بک‌آپ‌ها به زودی اضافه خواهد شد.</p>
+    
+    // ---------- Backups modal & prune with advanced features ----------
+    function openBackupsModal() {
+      if (!backupsModal || !backupsContent) return;
+      backupsModal.classList.remove('hidden');
+      renderBackupsUI();
+    }
+
+    function getBackups() {
+      return storageGet('backups') || [];
+    }
+
+    function saveBackups(list) {
+      storageSet('backups', list || []);
+    }
+
+    function estimateSizeBytes(str) {
+      if (!str) return 0;
+      // Rough UTF-8 size estimation
+      let size = 0;
+      for (let i = 0; i < str.length; i++) {
+        const code = str.charCodeAt(i);
+        if (code <= 0x7F) size += 1;
+        else if (code <= 0x7FF) size += 2;
+        else size += 3;
+      }
+      return size;
+    }
+
+    function simpleEncrypt(text, password) {
+      if (!password) return { cipher: text, encrypted: false };
+      let result = '';
+      for (let i = 0; i < text.length; i++) {
+        const code = text.charCodeAt(i) ^ password.charCodeAt(i % password.length);
+        result += String.fromCharCode(code);
+      }
+      return { cipher: btoa(result), encrypted: true };
+    }
+
+    function simpleDecrypt(cipher, password) {
+      if (!password) throw new Error('رمز لازم است.');
+      const bin = atob(cipher);
+      let result = '';
+      for (let i = 0; i < bin.length; i++) {
+        const code = bin.charCodeAt(i) ^ password.charCodeAt(i % password.length);
+        result += String.fromCharCode(code);
+      }
+      return result;
+    }
+
+    function buildCurrentPayload() {
+      return {
+        pairs: storageGet('pairs') || [],
+        entries: storageGet('entries') || [],
+        categories: storageGet('categories') || [],
+        meta: {
+          created: new Date().toISOString(),
+          version: '3.0',
+          entryCount: (storageGet('entries') || []).length,
+          pairCount: (storageGet('pairs') || []).length,
+          categoryCount: (storageGet('categories') || []).length,
+          backupId: uid()
+        }
+      };
+    }
+
+    function createBackup(type = 'manual', options = {}) {
+      const payload = buildCurrentPayload();
+      const json = JSON.stringify(payload);
+      const enc = simpleEncrypt(json, options.password || '');
+      const sizeBytes = estimateSizeBytes(enc.cipher);
+      const backups = getBackups();
+      const backup = {
+        id: payload.meta.backupId,
+        createdISO: payload.meta.created,
+        type,
+        sizeBytes,
+        meta: payload.meta,
+        data: enc.cipher,
+        encrypted: enc.encrypted,
+        note: options.note || '',
+        passwordHint: options.passwordHint || ''
+      };
+      backups.push(backup);
+      saveBackups(backups);
+      return backup;
+    }
+
+    function formatBytes(bytes) {
+      if (!bytes || bytes <= 0) return '0 KB';
+      const kb = bytes / 1024;
+      if (kb < 1024) return kb.toFixed(1) + ' KB';
+      const mb = kb / 1024;
+      return mb.toFixed(2) + ' MB';
+    }
+
+    function renderBackupsUI() {
+      const backups = getBackups().slice().sort((a, b) => new Date(b.createdISO) - new Date(a.createdISO));
+      let totalSize = backups.reduce((sum, b) => sum + (b.sizeBytes || 0), 0);
+      let autoCount = backups.filter(b => b.type && b.type.startsWith('auto')).length;
+      let manualCount = backups.length - autoCount;
+
+      let html = `
+        <div class="multi-date-controls">
+          <div class="flex flex-col gap-2 mb-3">
+            <div class="flex gap-2 flex-wrap items-center">
+              <span class="muted text-xs">فیلتر نوع بک‌آپ:</span>
+              <select id="backup_filter_type" class="small-btn bg-slate-600 text-xs">
+                <option value="">همه</option>
+                <option value="manual">دستی</option>
+                <option value="manual-file">دستی (همراه دانلود)</option>
+                <option value="auto-daily">خودکار روزانه</option>
+                <option value="auto-prune">خودکار قبل از حذف</option>
+              </select>
+              <input id="backup_search" class="small-btn bg-slate-600 flex-1 text-xs" placeholder="جستجو در یادداشت / شناسه / نسخه">
+            </div>
+            <div class="stats-grid">
+              <div class="stat-item">
+                <div class="text-lg font-bold">${backups.length}</div>
+                <div class="text-xs muted">تعداد کل بک‌آپ‌ها</div>
+              </div>
+              <div class="stat-item">
+                <div class="text-lg font-bold">${manualCount}</div>
+                <div class="text-xs muted">بک‌آپ‌های دستی</div>
+              </div>
+              <div class="stat-item">
+                <div class="text-lg font-bold">${autoCount}</div>
+                <div class="text-xs muted">بک‌آپ‌های خودکار</div>
+              </div>
+              <div class="stat-item">
+                <div class="text-lg font-bold">${formatBytes(totalSize)}</div>
+                <div class="text-xs muted">حجم تقریبی ذخیره‌شده</div>
+              </div>
+            </div>
+          </div>
+          <div class="date-range-item mb-3">
+            <div class="text-xs font-semibold mb-2">ساخت بک‌آپ داخلی جدید</div>
+            <div class="flex flex-col gap-2">
+              <input id="backup_note" class="small-btn bg-slate-600 text-xs" placeholder="یادداشت (اختیاری) مثلا قبل از تغییرات مهم">
+              <div class="flex gap-2 items-center">
+                <input id="backup_password" type="password" class="small-btn bg-slate-600 text-xs flex-1" placeholder="رمز (اختیاری برای قفل کردن بک‌آپ)">
+                <input id="backup_password_hint" class="small-btn bg-slate-600 text-xs flex-1" placeholder="یادآور رمز (اختیاری)">
+              </div>
+              <button id="create_internal_backup" class="small-btn bg-green-600 hover:bg-green-700 w-full">💾 ساخت بک‌آپ داخلی</button>
+            </div>
+          </div>
+          <div class="date-range-item mb-3">
+            <div class="text-xs font-semibold mb-2">حذف بک‌آپ‌های قدیمی</div>
+            <div class="flex gap-2 items-center mb-2">
+              <span class="muted text-xs">حذف بک‌آپ‌های قدیمی‌تر از</span>
+              <input id="backup_prune_days" type="number" min="1" max="3650" value="365" class="small-btn bg-slate-600 text-xs text-center" style="max-width:90px;">
+              <span class="muted text-xs">روز</span>
+            </div>
+            <div class="flex gap-2">
+              <button id="backup_prune_all" class="small-btn bg-rose-600 hover:bg-rose-700 flex-1 text-xs">حذف بک‌آپ‌های قدیمی (همه انواع)</button>
+              <button id="backup_prune_auto" class="small-btn bg-rose-700 hover:bg-rose-800 flex-1 text-xs">حذف فقط خودکارهای قدیمی</button>
+            </div>
+          </div>
+          <div class="date-comparison-header flex items-center justify-between mb-2">
+            <span class="text-xs">مقایسه دو بک‌آپ انتخاب‌شده</span>
+            <button id="backup_compare_btn" class="small-btn bg-blue-600 hover:bg-blue-700 text-xs">🔍 مقایسه</button>
+          </div>
+        </div>
+        <div id="backups_list" class="space-y-2"></div>
+        <div id="backups_compare_result" class="closest-info hidden"></div>
+      `;
+
+      backupsContent.innerHTML = html;
+
+      const listContainer = document.getElementById('backups_list');
+      const filterSelect = document.getElementById('backup_filter_type');
+      const searchInput = document.getElementById('backup_search');
+      const compareResult = document.getElementById('backups_compare_result');
+
+      let selectedForCompare = [];
+
+      function renderList() {
+        if (!listContainer) return;
+        const typeFilter = filterSelect ? filterSelect.value : '';
+        const query = (searchInput ? searchInput.value : '').toLowerCase();
+        listContainer.innerHTML = '';
+
+        let filtered = backups.filter(b => {
+          let ok = true;
+          if (typeFilter && b.type !== typeFilter) ok = false;
+          if (ok && query) {
+            const q = query;
+            const hay = (b.note || '') + ' ' + (b.meta?.version || '') + ' ' + (b.id || '');
+            if (!hay.toLowerCase().includes(q)) ok = false;
+          }
+          return ok;
+        });
+
+        if (filtered.length === 0) {
+          listContainer.innerHTML = '<div class="muted text-center text-xs py-4">هیچ بک‌آپی برای نمایش وجود ندارد.</div>';
+          return;
+        }
+
+        filtered.forEach(b => {
+          const created = new Date(b.createdISO);
+          const row = document.createElement('div');
+          row.className = 'backup-item flex flex-col gap-2';
+          const dateText = isNaN(created) ? b.createdISO : created.toLocaleString('fa-IR');
+          const typeLabel = (b.type || 'manual')
+            .replace('manual-file', 'دستی+فایل')
+            .replace('manual', 'دستی')
+            .replace('auto-daily', 'خودکار روزانه')
+            .replace('auto-prune', 'خودکار قبل حذف');
+          const encText = b.encrypted ? '🔒 رمزدار' : '🔓 معمولی';
+
+          row.innerHTML = `
+            <div class="flex items-center justify-between gap-2">
+              <div class="flex flex-col">
+                <span class="text-xs font-semibold">شناسه: ${b.id}</span>
+                <span class="text-xs muted">نوع: ${typeLabel} | ${encText}</span>
+              </div>
+              <div class="text-xs text-right">
+                <div>${dateText}</div>
+                <div class="muted">حجم تقریبی: ${formatBytes(b.sizeBytes || 0)}</div>
+              </div>
+            </div>
+            <div class="flex flex-wrap gap-2 text-xs muted">
+              <span>رکوردها: ${b.meta?.entryCount || 0}</span>
+              <span>جفت‌ارز: ${b.meta?.pairCount || 0}</span>
+              <span>دسته‌بندی: ${b.meta?.categoryCount || 0}</span>
+              ${b.note ? `<span class="bg-slate-700 px-2 py-0.5 rounded">یادداشت: ${b.note}</span>` : ''}
+              ${b.passwordHint ? `<span class="bg-yellow-700 px-2 py-0.5 rounded">یادآور رمز: ${b.passwordHint}</span>` : ''}
+            </div>
+            <div class="flex flex-wrap gap-2 mt-1">
+              <button class="small-btn bg-blue-600 hover:bg-blue-700 text-xs flex-1" data-action="preview" data-id="${b.id}">مشاهده جزئیات</button>
+              <button class="small-btn bg-emerald-600 hover:bg-emerald-700 text-xs flex-1" data-action="restore" data-id="${b.id}">بازیابی</button>
+              <button class="small-btn bg-rose-600 hover:bg-rose-700 text-xs flex-1" data-action="delete" data-id="${b.id}">حذف بک‌آپ</button>
+              <button class="small-btn bg-slate-600 hover:bg-slate-700 text-xs" data-action="select-compare" data-id="${b.id}">
+                ${selectedForCompare.includes(b.id) ? '❌ حذف از مقایسه' : '🔁 انتخاب برای مقایسه'}
+              </button>
             </div>
           `;
+
+          listContainer.appendChild(row);
+        });
+      }
+
+      renderList();
+
+      if (filterSelect) filterSelect.addEventListener('change', renderList);
+      if (searchInput) searchInput.addEventListener('input', () => {
+        if (compareResult) {
+          compareResult.classList.add('hidden');
+          compareResult.innerHTML = '';
         }
+        renderList();
+      });
+
+      if (listContainer) {
+        listContainer.addEventListener('click', (e) => {
+          const btn = e.target.closest('button');
+          if (!btn) return;
+          const id = btn.getAttribute('data-id');
+          const action = btn.getAttribute('data-action');
+          if (!id || !action) return;
+
+          if (action === 'preview') {
+            previewBackup(id);
+          } else if (action === 'restore') {
+            restoreBackup(id);
+          } else if (action === 'delete') {
+            deleteBackup(id);
+            renderBackupsUI();
+          } else if (action === 'select-compare') {
+            if (selectedForCompare.includes(id)) {
+              selectedForCompare = selectedForCompare.filter(x => x !== id);
+            } else {
+              if (selectedForCompare.length >= 2) {
+                alert('فقط دو بک‌آپ را می‌توانید برای مقایسه انتخاب کنید.');
+              } else {
+                selectedForCompare.push(id);
+              }
+            }
+            renderBackupsUI();
+          }
+        });
+      }
+
+      const createBtn = document.getElementById('create_internal_backup');
+      if (createBtn) {
+        createBtn.addEventListener('click', () => {
+          const noteEl = document.getElementById('backup_note');
+          const passEl = document.getElementById('backup_password');
+          const hintEl = document.getElementById('backup_password_hint');
+          const note = noteEl ? noteEl.value : '';
+          const password = passEl ? passEl.value : '';
+          const hint = hintEl ? hintEl.value : '';
+          createBackup('manual', { note, password, passwordHint: hint });
+          showNotification('✅ بک‌آپ داخلی با موفقیت ساخته شد', 'success');
+          renderBackupsUI();
+        });
+      }
+
+      const pruneAllBtn = document.getElementById('backup_prune_all');
+      const pruneAutoBtn = document.getElementById('backup_prune_auto');
+      const pruneDaysEl = document.getElementById('backup_prune_days');
+
+      function doPrune(autoOnly) {
+        const days = pruneDaysEl ? parseInt(pruneDaysEl.value, 10) : NaN;
+        if (!days || isNaN(days) || days < 1) {
+          alert('لطفاً تعداد روز معتبر برای حذف بک‌آپ‌ها وارد کنید.');
+          return;
+        }
+        const cutoff = Date.now() - (days * 24 * 60 * 60 * 1000);
+        let backups = getBackups();
+        const before = backups.length;
+        backups = backups.filter(b => {
+          const t = new Date(b.createdISO).getTime();
+          if (isNaN(t)) return true;
+          if (t < cutoff) {
+            if (!autoOnly) return false;
+            if (b.type && b.type.startsWith('auto')) {
+              return false;
+            }
+          }
+          return true;
+        });
+        saveBackups(backups);
+        const removed = before - backups.length;
+        showNotification(removed > 0 ? `✅ ${removed} بک‌آپ قدیمی حذف شد` : 'بک‌آپ قدیمی مطابق فیلتر یافت نشد.');
+        renderBackupsUI();
+      }
+
+      if (pruneAllBtn) pruneAllBtn.addEventListener('click', () => doPrune(false));
+      if (pruneAutoBtn) pruneAutoBtn.addEventListener('click', () => doPrune(true));
+
+      const compareBtn = document.getElementById('backup_compare_btn');
+      if (compareBtn) {
+        compareBtn.addEventListener('click', () => {
+          if (!compareResult) return;
+          if (selectedForCompare.length !== 2) {
+            alert('برای مقایسه باید دقیقاً دو بک‌آپ انتخاب کنید.');
+            return;
+          }
+          const [id1, id2] = selectedForCompare;
+          const backupsMap = Object.fromEntries(backups.map(b => [b.id, b]));
+          const b1 = backupsMap[id1];
+          const b2 = backupsMap[id2];
+          if (!b1 || !b2) {
+            alert('خطا در یافتن بک‌آپ‌های انتخاب‌شده.');
+            return;
+          }
+          const report = compareBackups(b1, b2);
+          compareResult.classList.remove('hidden');
+          compareResult.innerHTML = report;
+        });
+      }
+    }
+
+    function previewBackup(id) {
+      const backups = getBackups();
+      const b = backups.find(x => x.id === id);
+      if (!b) return alert('بک‌آپ یافت نشد.');
+      let payload = null;
+      try {
+        let jsonStr = b.data;
+        if (b.encrypted) {
+          const password = prompt('این بک‌آپ رمزدار است. لطفاً رمز را برای مشاهده وارد کنید:');
+          if (!password) return;
+          jsonStr = simpleDecrypt(jsonStr, password);
+        }
+        payload = JSON.parse(jsonStr);
+      } catch (err) {
+        alert('خطا در خواندن محتوای بک‌آپ: ' + err.message);
+        return;
+      }
+      const pairsCount = payload.pairs?.length || 0;
+      const entriesCount = payload.entries?.length || 0;
+      const categoriesCount = payload.categories?.length || 0;
+      const samplePairs = payload.pairs?.slice(0, 5).map(p => p.name).join('، ') || 'بدون جفت‌ارز';
+      let msg = `
+        نوع: ${b.type}
+        تاریخ ایجاد: ${new Date(b.createdISO).toLocaleString('fa-IR')}
+        رکوردها: ${entriesCount}
+        جفت‌ارزها: ${pairsCount}
+        دسته‌بندی‌ها: ${categoriesCount}
+        نمونه جفت‌ارزها: ${samplePairs}
+      `;
+      alert(msg);
+    }
+
+    function restoreBackup(id) {
+      const backups = getBackups();
+      const b = backups.find(x => x.id === id);
+      if (!b) {
+        alert('بک‌آپ یافت نشد.');
+        return;
+      }
+      let jsonStr = b.data;
+      if (b.encrypted) {
+        const password = prompt('این بک‌آپ رمزدار است. برای بازیابی، رمز را وارد کنید:');
+        if (!password) return;
+        try {
+          jsonStr = simpleDecrypt(jsonStr, password);
+        } catch (err) {
+          alert('رمز اشتباه یا خطا در باز کردن بک‌آپ.');
+          return;
+        }
+      }
+      let payload = null;
+      try {
+        payload = JSON.parse(jsonStr);
+      } catch (err) {
+        alert('محتوای بک‌آپ نامعتبر است.');
+        return;
+      }
+      const mode = prompt('نوع بازیابی را انتخاب کنید:\n1 = کامل (همه داده‌ها جایگزین شوند)\n2 = فقط جفت‌ارزها و دسته‌بندی‌ها\n3 = فقط تاریخچه');
+      if (!mode) return;
+      const m = mode.trim();
+      if (!['1','2','3'].includes(m)) {
+        alert('گزینه نامعتبر.');
+        return;
+      }
+      if (!confirm('آیا از بازیابی این بک‌آپ مطمئن هستید؟ داده‌های فعلی شما مطابق نوع بازیابی تغییر می‌کنند.')) return;
+
+      const currentData = {
+        pairs: storageGet('pairs') || [],
+        entries: storageGet('entries') || [],
+        categories: storageGet('categories') || []
+      };
+      try {
+        if (m === '1' || m === '2') {
+          storageSet('pairs', Array.isArray(payload.pairs) ? payload.pairs : []);
+          storageSet('categories', Array.isArray(payload.categories) ? payload.categories : []);
+        }
+        if (m === '1' || m === '3') {
+          storageSet('entries', Array.isArray(payload.entries) ? payload.entries : []);
+        }
+        renderPairs();
+        renderHistory();
+        showNotification('✅ بازیابی بک‌آپ با موفقیت انجام شد', 'success');
+      } catch (err) {
+        storageSet('pairs', currentData.pairs);
+        storageSet('entries', currentData.entries);
+        storageSet('categories', currentData.categories);
+        alert('خطا در بازیابی بک‌آپ: ' + err.message);
+      }
+    }
+
+    function deleteBackup(id) {
+      let backups = getBackups();
+      const before = backups.length;
+      backups = backups.filter(b => b.id !== id);
+      saveBackups(backups);
+      if (backups.length < before) {
+        showNotification('✅ بک‌آپ انتخاب‌شده حذف شد', 'success');
+      }
+    }
+
+    function compareBackups(b1, b2) {
+      let p1, p2;
+      try {
+        let j1 = b1.data;
+        let j2 = b2.data;
+        if (b1.encrypted) {
+          const pass1 = prompt('بک‌آپ اول رمزدار است. رمز را وارد کنید:');
+          if (!pass1) throw new Error('رمز لازم است.');
+          j1 = simpleDecrypt(j1, pass1);
+        }
+        if (b2.encrypted) {
+          const pass2 = prompt('بک‌آپ دوم رمزدار است. رمز را وارد کنید:');
+          if (!pass2) throw new Error('رمز لازم است.');
+          j2 = simpleDecrypt(j2, pass2);
+        }
+        p1 = JSON.parse(j1);
+        p2 = JSON.parse(j2);
+      } catch (err) {
+        return `<div class="text-xs text-red-300">خطا در مقایسه: ${err.message}</div>`;
+      }
+      const setPairs1 = new Set((p1.pairs || []).map(p => p.name));
+      const setPairs2 = new Set((p2.pairs || []).map(p => p.name));
+      const addedPairs = [...setPairs2].filter(x => !setPairs1.has(x));
+      const removedPairs = [...setPairs1].filter(x => !setPairs2.has(x));
+
+      const e1 = p1.entries || [];
+      const e2 = p2.entries || [];
+      const diffEntries = e2.length - e1.length;
+
+      return `
+        <div class="text-xs">
+          <div class="font-semibold mb-1">نتیجه مقایسه دو بک‌آپ:</div>
+          <div class="mb-1">تفاوت تعداد رکوردها: ${diffEntries}</div>
+          <div class="mb-1">جفت‌ارزهای اضافه‌شده در بک‌آپ دوم: ${addedPairs.length ? addedPairs.join('، ') : 'ندارد'}</div>
+          <div class="mb-1">جفت‌ارزهای حذف‌شده نسبت به بک‌آپ اول: ${removedPairs.length ? removedPairs.join('، ') : 'ندارد'}</div>
+        </div>
+      `;
+    }
+
+    function ensureDailyAutoBackup() {
+      const today = new Date().toISOString().slice(0, 10);
+      const backups = getBackups();
+      const exists = backups.some(b => b.type === 'auto-daily' && (b.createdISO || '').slice(0, 10) === today);
+      if (!exists) {
+        createBackup('auto-daily', { note: 'بک‌آپ خودکار روزانه' });
+      }
+    }
+
+    if (manageBackupsBtn) {
+      manageBackupsBtn.addEventListener('click', () => {
+        openBackupsModal();
       });
     }
     if (closeBackups) {
@@ -2078,7 +2574,9 @@
           alert('لطفاً تعداد روز معتبر وارد کنید.');
           return;
         }
-        if (confirm(`آیا از حذف رکوردهای قدیمی‌تر از ${days} روز مطمئن هستید؟ این عمل غیرقابل بازگشت است.`)) {
+        if (confirm(`قبل از حذف رکوردهای قدیمی، یک بک‌آپ خودکار گرفته می‌شود. سپس رکوردهای قدیمی‌تر از ${days} روز حذف خواهند شد. ادامه می‌دهید؟`)) {
+          // Emergency backup before prune
+          createBackup('auto-prune', { note: `قبل از حذف رکوردهای قدیمی‌تر از ${days} روز` });
           const entries = storageGet('entries') || [];
           const cutoff = Date.now() - (days * 24 * 60 * 60 * 1000);
           const kept = entries.filter(e => new Date(e.dateISO).getTime() >= cutoff);
@@ -2093,7 +2591,7 @@
       });
     }
     // ---------- شروع اولیه ----------
-    if ((storageGet('pairs') || []).length === 0) { 
+    if ((storageGet('pairs') || []).length === 0) {
       storageSet('pairs', [
         {id: uid(), name: 'EURUSD', categoryId: 'forex'},
         {id: uid(), name: 'GBPUSD', categoryId: 'forex'},
@@ -2102,6 +2600,7 @@
       ]);
     }
     window.addEventListener('load', () => {
+      try { ensureDailyAutoBackup(); } catch (e) { console.warn('خطا در بک‌آپ خودکار روزانه:', e); }
       const today = new Date().toISOString().split('T')[0];
       if (historyDate) historyDate.value = today;
       setTimeout(() => { if (inputY1) inputY1.focus(); }, 1000);
