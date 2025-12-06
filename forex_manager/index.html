@@ -1046,21 +1046,28 @@
         .auto-alert.warning {
             background: var(--warning-color);
         }
-        .signature {
-            text-align: center;
-            padding: 10px 20px;
-            font-family: Vazirmatn, system-ui;
-            background: rgba(0, 0, 0, 0.05);
-            border-radius: 8px;
-            backdrop-filter: blur(5px);
-            border: 1px solid rgba(0, 0, 0, 0.1);
-            font-size: 12px;
-            font-weight: 500;
-            display: block;
-            margin: 30px auto;
-            width: fit-content;
-            color: var(--text-color);
-        }
+.signature {
+    text-align: center;
+    padding: 10px 20px;
+    font-family: Vazirmatn, system-ui;
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 8px;
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    font-size: 14px; /* دسکتاپ */
+    font-weight: 500;
+    display: block;
+    margin: 30px auto;
+    width: fit-content;
+    color: var(--text-color);
+}
+
+/* موبایل */
+@media (max-width: 768px) {
+    .signature {
+        font-size: 12px;
+    }
+}
         .dark-mode .signature {
             background: rgba(255, 255, 255, 0.1);
             border: 1px solid rgba(255, 255, 255, 0.2);
