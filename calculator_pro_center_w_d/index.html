@@ -370,23 +370,24 @@
     
     .comparison-group:hover { border-color: rgba(255,255,255,0.2); }
 
-    .signature {
+.signature {
       color: white;
       text-align: center;
       padding: 16px;
-      font-family: 'Vazirmatn', system-ui; /* اعمال فونت با کوتیشن */
+      font-family: 'Vazirmatn', system-ui;
       background: rgba(255, 255, 255, 0.1);
       border-radius: 10px;
       backdrop-filter: blur(5px);
       border: 1px solid rgba(255, 255, 255, 0.2);
-      font-size: 12px;
+      font-size: 14px;  /* دسکتاپ */
       font-weight: 500;
       display: block;
       margin: 30px auto;
       width: fit-content;
       max-width: 90%;
       box-sizing: border-box;
-    }
+}
+
 
     /* استایل‌های مخصوص موبایل */
     @media only screen and (max-width: 768px) {
@@ -435,7 +436,7 @@
       
       #categories_container .flex-1 { order: 1; width: 100%; }
       
-      .signature { font-size: 14px; padding: 15px; }
+      .signature { font-size: 12px; padding: 15px; }
       
       .small-btn:active {
         background: rgba(255, 255, 255, 0.2);
@@ -454,7 +455,7 @@
     }
 
     @media only screen and (max-width: 480px) {
-      .signature { font-size: 12px; padding: 13px; }
+      .signature { font-size: 12px; padding: 15px; }
       .small-btn { padding: 0.875rem 1rem; font-size: 0.95rem; }
     }
 
