@@ -166,12 +166,39 @@
     .small-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
     .small-btn:disabled:hover { background: inherit; border-color: inherit; transform: none; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); }
     
-    /* استایل لیست‌ها */
-    #categories_container .small-btn { padding: 0.2rem 0.4rem !important; font-size: 0.75rem !important; min-height: 28px !important; border-width: 1px !important; white-space: nowrap; }
-    #categories_container select.small-btn { padding: 0.15rem 0.3rem !important; font-size: 0.7rem !important; min-height: 26px !important; max-width: 120px; }
-    #categories_container button.small-btn { min-width: 30px; display: flex; align-items: center; justify-content: center; }
-    #categories_container li { padding: 0.5rem !important; gap: 0.5rem !important; }
-    #categories_container .flex.gap-1 { flex-wrap: nowrap !important; gap: 0.3rem !important; min-width: fit-content; }
+    /* استایل لیست‌ها - اصلاح شده و منظم */
+    #categories_container .small-btn {
+      padding: 0.2rem 0.4rem !important;
+      font-size: 0.7rem !important;
+      min-height: 24px !important;
+      border-width: 1px !important;
+      white-space: nowrap;
+    }
+    
+    #categories_container select.small-btn {
+      padding: 0.15rem 0.3rem !important;
+      font-size: 0.65rem !important;
+      min-height: 22px !important;
+      max-width: 120px;
+    }
+    
+    #categories_container button.small-btn {
+      min-width: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    #categories_container li {
+      padding: 0.4rem 0.5rem !important;
+      gap: 0.3rem !important;
+    }
+    
+    #categories_container .flex.gap-1 {
+      flex-wrap: nowrap !important;
+      gap: 0.2rem !important;
+      min-width: fit-content;
+    }
     
     .thin-scroll::-webkit-scrollbar{ width:8px; height:8px; }
     .thin-scroll::-webkit-scrollbar-thumb{ background:rgba(255,255,255,0.1); border-radius:8px; }
@@ -1111,6 +1138,7 @@ function renderCategorySection(categoryId, categoryName, pairs){
   section.innerHTML = `
     <div class="category-header flex justify-between items-center" data-category="${categoryId || ''}">
       <div class="font-semibold text-sm">${categoryName} (${pairs.length})</div>
+      <div class="muted text-xs">▼</div>
     </div>
     <div class="category-content">
       <ul class="space-y-2 pairs-list-${categoryId || 'uncategorized'}"></ul>
