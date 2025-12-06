@@ -641,7 +641,7 @@
         </div>
         <div class="mb-3">
           <label class="muted">یادداشت (اختیاری)</label>
-          <textarea id="note_input" rows="2" placeholder=""></textarea>
+          <textarea id="note_input" rows="6" placeholder=""></textarea>
         </div>
         <div class="flex gap-2 mb-3">
           <button id="calculate_button" class="small-btn bg-emerald-600 hover:bg-emerald-700 flex-1">محاسبه و ذخیره</button>
@@ -2166,7 +2166,7 @@
                 <option value="">همه</option>
                 <option value="manual">دستی</option>
                 <option value="manual-file">دستی (همراه دانلود)</option>
-                <option value="auto-daily">خودکار روزانه</option>
+                
                 <option value="auto-prune">خودکار قبل از حذف</option>
               </select>
               <input id="backup_search" class="small-btn bg-slate-600 flex-1 text-xs" placeholder="جستجو در یادداشت / شناسه / نسخه">
@@ -2194,9 +2194,9 @@
             <div class="text-xs font-semibold mb-2">ساخت بک‌آپ داخلی جدید</div>
             <div class="flex flex-col gap-2">
               <input id="backup_note" class="small-btn bg-slate-600 text-xs" placeholder="یادداشت (اختیاری) مثلا قبل از تغییرات مهم">
-              <div class="flex gap-2 items-center">
-                <input id="backup_password" type="password" class="small-btn bg-slate-600 text-xs flex-1" placeholder="رمز (قفل کردن بک‌آپ)">
-                <input id="backup_password_hint" class="small-btn bg-slate-600 text-xs flex-1" placeholder="یادآوری رمز (اختیاری)">
+              <div class="flex flex-col md:flex-row gap-2 items-stretch md:items-center">
+                <input id="backup_password" type="password" class="small-btn bg-slate-600 text-xs w-full md:flex-1" placeholder="رمز (اختیاری برای قفل کردن بک‌آپ)">
+                <input id="backup_password_hint" class="small-btn bg-slate-600 text-xs w-full md:flex-1" placeholder="یادآور رمز (اختیاری)">
               </div>
               <button id="create_internal_backup" class="small-btn bg-green-600 hover:bg-green-700 w-full">💾 ساخت بک‌آپ داخلی</button>
             </div>
@@ -2210,10 +2210,10 @@
             </div>
             <div class="flex gap-2">
               <button id="backup_prune_all" class="small-btn bg-rose-600 hover:bg-rose-700 flex-1 text-xs">حذف بک‌آپ‌های قدیمی (همه انواع)</button>
-              <button id="backup_prune_auto" class="small-btn bg-rose-700 hover:bg-rose-800 flex-1 text-xs">حذف فقط خودکارهای قدیمی</button>
+              <button id="backup_prune_auto" class="small-btn bg-rose-700 hover:bg-rose-800 flex-1 text-xs" style="display:none">حذف فقط خودکارهای قدیمی</button>
             </div>
           </div>
-          <div class="date-comparison-header flex items-center justify-between mb-2">
+          <div class="date-comparison-header flex items-center justify-between mb-2" style="display:none">
             <span class="text-xs">مقایسه دو بک‌آپ انتخاب‌شده</span>
             <button id="backup_compare_btn" class="small-btn bg-blue-600 hover:bg-blue-700 text-xs">🔍 مقایسه</button>
           </div>
@@ -2287,7 +2287,7 @@
               <button class="small-btn bg-blue-600 hover:bg-blue-700 text-xs flex-1" data-action="preview" data-id="${b.id}">مشاهده جزئیات</button>
               <button class="small-btn bg-emerald-600 hover:bg-emerald-700 text-xs flex-1" data-action="restore" data-id="${b.id}">بازیابی</button>
               <button class="small-btn bg-rose-600 hover:bg-rose-700 text-xs flex-1" data-action="delete" data-id="${b.id}">حذف بک‌آپ</button>
-              <button class="small-btn bg-slate-600 hover:bg-slate-700 text-xs" data-action="select-compare" data-id="${b.id}">
+              <button class="small-btn bg-slate-600 hover:bg-slate-700 text-xs" data-action="select-compare" data-id="${b.id}" style="display:none">
                 ${selectedForCompare.includes(b.id) ? '❌ حذف از مقایسه' : '🔁 انتخاب برای مقایسه'}
               </button>
             </div>
@@ -2600,7 +2600,6 @@
       ]);
     }
     window.addEventListener('load', () => {
-      try { ensureDailyAutoBackup(); } catch (e) { console.warn('خطا در بک‌آپ خودکار روزانه:', e); }
       const today = new Date().toISOString().split('T')[0];
       if (historyDate) historyDate.value = today;
       setTimeout(() => { if (inputY1) inputY1.focus(); }, 1000);
