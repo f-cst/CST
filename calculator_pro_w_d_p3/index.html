@@ -9,7 +9,6 @@
   <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet" type="text/css" />
   
   <style>
-    /* استایل‌های CSS */
     :root{
       --bg:#1e293b;
       --card:#334155;
@@ -23,15 +22,12 @@
       color:var(--text-light); 
       min-height:100vh; 
       padding:20px;
-      font-size: 16px; /* سایز استاندارد پایه */
+      font-size: 16px;
       line-height: 1.6;
     }
-    
-    /* اطمینان از اعمال فونت روی تمام اجزا */
     button, input, optgroup, select, textarea {
       font-family: 'Vazirmatn', sans-serif;
     }
-
     .card{
       background:var(--card); 
       border:1px solid rgba(255,255,255,0.08); 
@@ -65,7 +61,7 @@
       width:100%; 
       outline: none;
       transition: all 0.2s ease;
-      font-size: 1rem; /* سایز مناسب برای موبایل */
+      font-size: 1rem;
     }
     input[type="text"]:focus, input[type="date"]:focus, input[type="number"]:focus, select:focus, textarea:focus { 
       border-color: rgba(59, 130, 246, 0.5);
@@ -148,7 +144,6 @@
       transform: translateY(0);
       box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
     }
-    /* رنگ دکمه‌ها */
     .small-btn.bg-slate-600 { background: #475569; border-color: #64748b; color: #fff; }
     .small-btn.bg-slate-600:hover { background: #64748b; border-color: #94a3b8; }
     .small-btn.bg-emerald-600 { background: #059669; border-color: #10b981; color: #fff; }
@@ -165,7 +160,6 @@
     .small-btn.bg-purple-600:hover { background: #8b5cf6; border-color: #a78bfa; }
     .small-btn.bg-green-600 { background: #059669; border-color: #10b981; color: #fff; }
     .small-btn.bg-green-600:hover { background: #10b981; border-color: #34d399; }
-
     .small-btn:disabled {
       opacity: 0.5;
       cursor: not-allowed;
@@ -323,7 +317,6 @@
       border: 1px solid rgba(255,255,255,0.1);
     }
     
-    /* --- FIX: Unified Modal Styles --- */
     .modal-overlay {
       position: fixed;
       top: 0;
@@ -333,14 +326,10 @@
       background: rgba(0, 0, 0, 0.6);
       backdrop-filter: blur(4px);
       z-index: 1000;
-      
-      /* Flexbox for perfect centering */
       display: flex;
       align-items: center;
       justify-content: center;
-      
-      /* Padding to ensure space from screen edges on mobile */
-      padding: 20px; 
+      padding: 20px;
     }
     
     .modal-content {
@@ -348,19 +337,12 @@
       background: var(--card);
       border: 1px solid rgba(255,255,255,0.1);
       border-radius: 10px;
-      
-      /* Size constraints */
       width: 100%;
-      /* Adjust max-height to leave some space vertically if needed, though padding on overlay handles most */
-      max-height: 90vh; 
+      max-height: 90vh;
       overflow-y: auto;
-      
-      /* Inner spacing handled by padding utility classes in HTML, but ensured here */
       box-shadow: 0 10px 25px rgba(0,0,0,0.5);
     }
     
-    /* Specific max-widths can be handled by Tailwind classes (max-w-md, max-w-2xl) */
-
     .closest-info {
       background: rgba(245, 158, 11, 0.2);
       border: 1px solid rgba(245, 158, 11, 0.3);
@@ -417,15 +399,14 @@
       box-sizing: border-box;
     }
     
-    /* مدیا کوئری برای موبایل */
     @media only screen and (max-width: 768px) {
       body {
-        padding: 10px; /* حاشیه کمتر در موبایل */
+        padding: 10px;
       }
       .small-btn {
         min-height: 44px;
         padding: 0.6rem 0.8rem;
-        font-size: 0.95rem; /* فونت خواناتر */
+        font-size: 0.95rem;
         border-width: 2px;
       }
       #categories_container .small-btn {
@@ -539,6 +520,7 @@
 </head>
 <body>
   <div class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-4">
+    <!-- ستون اول: مدیریت جفت‌ارزها -->
     <aside class="card">
       <div id="hdr_pairs" class="section-header">
         <div class="title-click">
@@ -613,6 +595,8 @@
         </div>
       </div>
     </aside>
+
+    <!-- ستون دوم: ماشین حساب -->
     <main class="card">
       <div id="hdr_calc" class="section-header">
         <div class="title-click">
@@ -673,6 +657,8 @@
         </div>
       </div>
     </main>
+
+    <!-- ستون سوم: تاریخچه -->
     <section class="card">
       <div id="hdr_history" class="section-header">
         <div class="title-click">
@@ -730,7 +716,8 @@
           </div>
           <div id="history_list" class="history-compact space-y-2"></div>
         </div>
-        <!-- اصلاح شده: استفاده از کلاس استاندارد modal-overlay -->
+
+        <!-- مودال جزئیات -->
         <div id="detail_modal" class="hidden modal-overlay">
           <div class="modal-content p-6 max-w-2xl">
             <div class="flex justify-between items-center mb-4 border-b border-white/10 pb-3">
@@ -749,7 +736,7 @@
     </section>
   </div>
   
-  <!-- اصلاح شده: حذف mx-4 اضافی و استفاده از کلاس‌های جدید -->
+  <!-- مودال آمار -->
   <div id="stats_modal" class="hidden modal-overlay">
     <div class="modal-content p-6 max-w-md">
       <div class="flex justify-between items-center mb-4 border-b border-white/10 pb-3">
@@ -761,6 +748,7 @@
     </div>
   </div>
   
+  <!-- مودال مدیریت بک‌آپ -->
   <div id="backups_modal" class="hidden modal-overlay">
     <div class="modal-content p-6 max-w-2xl">
       <div class="flex justify-between items-center mb-4 border-b border-white/10 pb-3">
@@ -771,9 +759,9 @@
       </div>
     </div>
   </div>
-  
+
   <script>
-    // ---------- helpers ----------
+    // ---------- Helpers ----------
     const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
     const storageGet = k => JSON.parse(localStorage.getItem('calc_pro_3_' + k) || 'null');
     const storageSet = (k, v) => localStorage.setItem('calc_pro_3_' + k, JSON.stringify(v));
@@ -802,41 +790,24 @@
     
     ensureDefaults();
     
-    // ---------- تشخیص دستگاه موبایل/تبلت ----------
-    function isMobileOrTablet() {
-      return window.innerWidth <= 1024;
-    }
-    
-    // ---------- مدیریت وضعیت باکس‌ها بر اساس دستگاه ----------
-    function initializeBoxStates() {
-      const boxPairs = document.getElementById('box_pairs');
-      const boxCalc = document.getElementById('box_calc');
-      const boxHistory = document.getElementById('box_history');
-      
-      if (isMobileOrTablet()) {
-        if (boxPairs) boxPairs.classList.add('hidden');
-        if (boxCalc) boxCalc.classList.add('hidden');
-        if (boxHistory) boxHistory.classList.add('hidden');
-      } else {
-        if (boxPairs) boxPairs.classList.remove('hidden');
-        if (boxCalc) boxCalc.classList.remove('hidden');
-        if (boxHistory) boxHistory.classList.remove('hidden');
-      }
-    }
-    
-    // ---------- DOM refs ----------
+    // ---------- DOM Refs ----------
     const $ = id => document.getElementById(id);
+    
+    // جفت‌ارزها
     const pairSelect = $('pair_select');
-    const historyPairFilter = $('history_pair_filter');
     const newPairName = $('new_pair_name');
     const addPairBtn = $('add_pair_btn');
     const clearPairsBtn = $('clear_pairs_btn');
     const categoriesContainer = $('categories_container');
+    
+    // دسته‌بندی‌ها
     const categorySelect = $('category_select');
     const newCategoryName = $('new_category_name');
     const addCategoryBtn = $('add_category_btn');
     const deleteCategoryBtn = $('delete_category_btn');
     const categoriesList = $('categories_list');
+    
+    // ماشین حساب
     const inputY1 = $('input_y1');
     const inputCurrentHigh = $('input_current_high');
     const inputY2 = $('input_y2');
@@ -849,28 +820,37 @@
     const errorMessage = $('error_message');
     const voiceStatus = $('voice_status');
     const closestInfo = $('closest_info');
-    const exportBtn = $('export_btn');
-    const importFile = $('import_file');
-    const importBtn = $('import_btn');
+    
+    // تاریخچه
     const historyDate = $('history_date');
+    const historyPairFilter = $('history_pair_filter');
     const historyList = $('history_list');
     const entriesCount = $('entries_count');
     const toggleHistoryBtn = $('toggle_history_btn');
     const historyPanel = $('history_panel');
-    const quickPrune = $('quick_prune');
+    
+    // مودال‌ها
     const detailModal = $('detail_modal');
     const detailContent = $('detail_content');
     const closeDetail = $('close_detail');
     const editRecordBtn = $('edit_record_btn');
     const moveRecordBtn = $('move_record_btn');
     const deleteRecordBtn = $('delete_record_btn');
+    const statsModal = $('stats_modal');
+    const backupsModal = $('backups_modal');
+    
+    // مدیریت باکس‌ها
     const togglePairsHdr = $('hdr_pairs');
     const boxPairs = $('box_pairs');
     const toggleCalcHdr = $('hdr_calc');
     const boxCalc = $('box_calc');
     const toggleHistoryHdr = $('hdr_history');
     const boxHistory = $('box_history');
+    
+    // ورود صوتی
     const microToggle = $('micro_toggle');
+    
+    // حالت چندتاریخی
     const toggleMultiDateBtn = $('toggle_multi_date');
     const singleDateSection = $('single_date_section');
     const multiDateSection = $('multi_date_section');
@@ -878,104 +858,25 @@
     const dateRangesContainer = $('date_ranges_container');
     const addDateBtn = $('add_date_btn');
     const applyMultiDateBtn = $('apply_multi_date_btn');
+    
+    // مدیریت داده‌ها
+    const exportBtn = $('export_btn');
+    const importFile = $('import_file');
+    const importBtn = $('import_btn');
     const showStatsBtn = $('show_stats_btn');
     const manageBackupsBtn = $('manage_backups_btn');
     const manualPruneBtn = $('manual_prune_btn');
     const closeStats = $('close_stats');
     const closeBackups = $('close_backups');
-    const statsModal = $('stats_modal');
-    const backupsModal = $('backups_modal');
     const statsContent = $('stats_content');
     const backupsContent = $('backups_content');
     
-    // ---------- Multi-date state & controls ----------
+    // ---------- State Variables ----------
     let isMultiDate = false;
     let dateRanges = [];
     
-    function resetMultiDateUI() {
-      if (dateRangesContainer) dateRangesContainer.innerHTML = '';
-      dateRanges = [];
-    }
+    // ---------- Core Functions ----------
     
-    function addMultiDateRangeUI() {
-      if (!dateRangesContainer) return;
-      
-      const id = Date.now().toString() + '_' + Math.random().toString(16).slice(2);
-      dateRanges.push({ id, date: null });
-      
-      const div = document.createElement('div');
-      div.className = 'date-range-item';
-      div.id = 'range_' + id;
-      div.innerHTML = `
-        <div class="flex gap-2 items-center">
-          <input type="date" class="multi-date-input flex-1" data-id="${id}">
-          <button class="small-btn bg-rose-600 hover:bg-rose-700 remove-range" data-id="${id}">✕</button>
-        </div>`;
-      
-      dateRangesContainer.appendChild(div);
-      
-      const input = div.querySelector('.multi-date-input');
-      const removeBtn = div.querySelector('.remove-range');
-      
-      if (input) {
-        input.addEventListener('change', (e) => {
-          const rid = e.target.dataset.id;
-          const item = dateRanges.find(r => r.id === rid);
-          if (item) item.date = e.target.value;
-        });
-      }
-      
-      if (removeBtn) {
-        removeBtn.addEventListener('click', (e) => {
-          const rid = e.target.dataset.id;
-          dateRanges = dateRanges.filter(r => r.id !== rid);
-          const row = document.getElementById('range_' + rid);
-          if (row && row.parentNode) row.parentNode.removeChild(row);
-          renderHistory();
-        });
-      }
-    }
-    
-    if (toggleMultiDateBtn) {
-      toggleMultiDateBtn.addEventListener('click', () => {
-        isMultiDate = !isMultiDate;
-        if (isMultiDate) {
-          toggleMultiDateBtn.textContent = 'غیرفعال کردن چندتاریخی';
-          if (singleDateSection) singleDateSection.classList.add('hidden');
-          if (multiDateSection) multiDateSection.classList.remove('hidden');
-          if (historyDate) historyDate.value = '';
-          if (dateRanges.length === 0) addMultiDateRangeUI();
-        } else {
-          toggleMultiDateBtn.textContent = 'فعال کردن حالت چندتاریخی';
-          if (singleDateSection) singleDateSection.classList.remove('hidden');
-          if (multiDateSection) multiDateSection.classList.add('hidden');
-          resetMultiDateUI();
-          renderHistory();
-        }
-      });
-    }
-    
-    if (addDateBtn) {
-      addDateBtn.addEventListener('click', (e) => {
-        e.preventDefault();
-        addMultiDateRangeUI();
-      });
-    }
-    
-    if (applyMultiDateBtn) {
-      applyMultiDateBtn.addEventListener('click', (e) => {
-        e.preventDefault();
-        renderHistory();
-      });
-    }
-    
-    // ---------- UI utils ----------
-    function safeForEach(arr, fn) { 
-      if (!Array.isArray(arr)) return; 
-      arr.forEach(fn);
-    }
-    
-    // ---------- توابع جدید برای پردازش فرمت نقطه‌دار بدون اعشار ----------
     function parseFormattedInteger(str) {
       if (!str) return { rawNumber: NaN, format: { hasDot: false } };
       
@@ -1065,28 +966,7 @@
       return { pairs: closestPairs, minDistance };
     }
     
-    function renderClosestInfo(closestPairs, minDistance, inputFormat) {
-      if (!closestInfo) return;
-      
-      if (closestPairs.length === 0) {
-        closestInfo.classList.add('hidden');
-        return;
-      }
-      
-      const displayDist = formatOutputByInputFormat(minDistance, inputFormat);
-      let closestText = `<div class="text-sm font-semibold mb-2">نزدیک‌ترین اعداد (فاصله: ${displayDist}):</div>`;
-      
-      closestPairs.forEach(pair => {
-        const display1 = formatOutputByInputFormat(pair[0].value, inputFormat);
-        const display2 = formatOutputByInputFormat(pair[1].value, inputFormat);
-        closestText += `<div class="text-xs mb-1">• ${pair[0].label} (${display1}) و ${pair[1].label} (${display2})</div>`;
-      });
-      
-      closestInfo.innerHTML = closestText;
-      closestInfo.classList.remove('hidden');
-    }
-    
-    function computeOutputs(y1, y2, currentLow, currentHigh) {
+    function computeOutputs(y1, y2) {
       const result1 = Math.floor(Math.pow(Math.sqrt(y1) - 1, 2));
       const result2 = Math.floor(Math.pow(Math.sqrt(y1) - 0.5, 2));
       const result3 = Math.floor(Math.pow(Math.sqrt(y2) + 1, 2));
@@ -1101,288 +981,51 @@
       return 'box-gray';
     }
     
-    function buildDisplayOutputs(outputs, currentLow, currentHigh, inputFormat, closestPairs = []) {
-      const results = [];
-      
-      if (!isNaN(outputs[0])) results.push({ label: "فرمول ۱ (سقف)", value: outputs[0] });
-      if (!isNaN(outputs[1])) results.push({ label: "فرمول ۲ (سقف)", value: outputs[1] });
-      if (!isNaN(outputs[2])) results.push({ label: "فرمول ۳ (کف)", value: outputs[2] });
-      if (!isNaN(outputs[3])) results.push({ label: "فرمول ۴ (کف)", value: outputs[3] });
-      
-      results.sort((a, b) => a.value - b.value);
-      
-      return results.map((result, index) => {
-        const color = decideColor(result.value, currentLow, currentHigh);
-        const displayVal = formatOutputByInputFormat(result.value, inputFormat);
-        const suffix = (result.value < currentLow ? ' ↓ زیر کف فعلی' : (result.value > currentHigh ? ' ↑ بالای سقف فعلی' : ''));
-        
-        return { 
-          order: index + 1, 
-          label: result.label,
-          raw: result.value, 
-          display: displayVal, 
-          color: color, 
-          suffix: suffix 
-        };
-      });
-    }
+    // ---------- Render Functions ----------
     
-    function renderResultsDisplay(outputsDisplay) {
-      if (!resultsList) return;
-      
-      resultsList.innerHTML = '';
-      
-      safeForEach(outputsDisplay, it => {
-        const span = document.createElement('span');
-        span.className = `box-out ${it.color} cursor-pointer hover:opacity-80 transition-opacity`;
-        span.title = `کلیک برای کپی: ${it.display}`;
-        span.innerHTML = `<span class="num-label">${it.order}.</span> (${it.label}) ${it.display} ${it.suffix}`;
-        span.addEventListener('click', () => copyToClipboard(it.display));
-        
-        const p = document.createElement('div'); 
-        p.appendChild(span); 
-        resultsList.appendChild(p);
-      });
-    }
-    
-    function copyToClipboard(text) {
-      navigator.clipboard.writeText(text).then(() => {
-        const message = document.createElement('div');
-        message.className = 'fixed top-4 left-1/2 transform -translate-x-1/2 bg-green-600 text-white px-4 py-2 rounded-lg shadow-lg z-50 animate-bounce';
-        message.innerHTML = `✅ عدد <strong>${text}</strong> کپی شد`;
-        document.body.appendChild(message);
-        
-        setTimeout(() => {
-          if (document.body.contains(message)) {
-            document.body.removeChild(message);
-          }
-        }, 2000);
-      }).catch(err => {
-        console.error('خطا در کپی کردن: ', err);
-        const textArea = document.createElement('textarea');
-        textArea.value = text;
-        document.body.appendChild(textArea);
-        textArea.select();
-        document.execCommand('copy');
-        document.body.removeChild(textArea);
-      });
-    }
-    
-    // ---------- مدیریت داده‌ها ----------
-    function saveEntry(pairId, inputs, outputsDisplay, note = '', dateISO = null, inputFormat = null, closestInfo = null) {
-      const entries = storageGet('entries') || [];
-      const si = dateISO || nowISO();
-      
-      const entry = { 
-        id: uid(), 
-        pairId, 
-        dateISO: si, 
-        dateDisplay: formatGregorian(si), 
-        inputs, 
-        outputsDisplay, 
-        note,
-        inputFormat: inputFormat,
-        closestInfo: closestInfo || null
-      };
-      
-      entries.push(entry); 
-      storageSet('entries', entries);
-      
-      if (AUTO_PRUNE_ENABLED) pruneOldEntries();
-      renderHistory();
-    }
-    
-    function pruneOldEntries() {
-      if (!AUTO_PRUNE_ENABLED) return;
-      
-      const entries = storageGet('entries') || [];
-      const cutoff = Date.now() - (MAX_DAYS * 24 * 60 * 60 * 1000);
-      const kept = entries.filter(e => new Date(e.dateISO).getTime() >= cutoff);
-      
-      if (kept.length !== entries.length) storageSet('entries', kept);
-    }
-    
-    initializeBoxStates();
-    
-    // ---------- event listeners ----------
-    if (calculateButton) {
-      calculateButton.addEventListener('click', () => {
-        if (!inputY1 || !inputY2 || !inputCurrentHigh || !inputCurrentLow) { 
-          if (errorMessage) errorMessage.textContent = 'خطا: برخی فیلدها موجود نیستند.'; 
-          return; 
-        }
-        
-        if (errorMessage) errorMessage.textContent = '';
-        
-        try {
-          const parsedY1 = parseFormattedInteger(inputY1.value);
-          const parsedCurrentHigh = parseFormattedInteger(inputCurrentHigh.value);
-          const parsedY2 = parseFormattedInteger(inputY2.value);
-          const parsedCurrentLow = parseFormattedInteger(inputCurrentLow.value);
-          
-          const y1 = parsedY1.rawNumber;
-          const currentHigh = parsedCurrentHigh.rawNumber;
-          const y2 = parsedY2.rawNumber;
-          const currentLow = parsedCurrentLow.rawNumber;
-          
-          if (isNaN(y1) || isNaN(y2) || isNaN(currentLow) || isNaN(currentHigh)) throw new Error('لطفاً چهار فیلد اصلی را با اعداد معتبر پر کنید.');
-          if (y1 < 0 || y2 < 0) throw new Error('لطفاً فقط اعداد مثبت وارد کنید.');
-          
-          const outputs = computeOutputs(y1, y2, currentLow, currentHigh);
-          
-          const resultsForClosest = [];
-          if (!isNaN(outputs[0])) resultsForClosest.push({ label: "فرمول ۱ (سقف)", value: outputs[0] });
-          if (!isNaN(outputs[1])) resultsForClosest.push({ label: "فرمول ۲ (سقف)", value: outputs[1] });
-          if (!isNaN(outputs[2])) resultsForClosest.push({ label: "فرمول ۳ (کف)", value: outputs[2] });
-          if (!isNaN(outputs[3])) resultsForClosest.push({ label: "فرمول ۴ (کف)", value: outputs[3] });
-          
-          const { pairs: closestPairs, minDistance } = findClosestNumbers(resultsForClosest);
-          const displays = buildDisplayOutputs(outputs, currentLow, currentHigh, parsedY1.format, closestPairs);
-          
-          renderResultsDisplay(displays);
-          renderClosestInfo(closestPairs, minDistance, parsedY1.format);
-          
-          let chosenISO = null;
-          if (datePicker && datePicker.value) {
-            const dp = datePicker.value;
-            const now = new Date();
-            const timePart = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}:${now.getSeconds().toString().padStart(2, '0')}`;
-            const iso = new Date(dp + 'T' + timePart);
-            
-            if (!isNaN(iso)) chosenISO = iso.toISOString();
-          }
-          
-          if (!chosenISO) chosenISO = nowISO();
-          
-          const pairId = pairSelect ? pairSelect.value || null : null;
-          const note = noteInput ? noteInput.value || '' : '';
-          
-          saveEntry(pairId, {
-            y1, y2, currentLow, currentHigh,
-            originalY1: inputY1.value,
-            originalCurrentHigh: inputCurrentHigh.value,
-            originalY2: inputY2.value,
-            originalCurrentLow: inputCurrentLow.value
-          }, displays, note, chosenISO, parsedY1.format, {
-            closestPairs: closestPairs,
-            minDistance: minDistance
-          });
-          
-        } catch (err) { 
-          if (errorMessage) errorMessage.textContent = 'خطا: ' + err.message; 
-        }
-      });
-    }
-    
-    if (resetButton) {
-      resetButton.addEventListener('click', () => {
-        if (inputY1) inputY1.value = '';
-        if (inputY2) inputY2.value = '';
-        if (inputCurrentHigh) inputCurrentHigh.value = '';
-        if (inputCurrentLow) inputCurrentLow.value = '';
-        if (resultsList) resultsList.innerHTML = '';
-        if (errorMessage) errorMessage.textContent = '';
-        if (closestInfo) {
-          closestInfo.innerHTML = '';
-          closestInfo.classList.add('hidden');
-        }
-      });
-    }
-    
-    // ---------- مدیریت جفت‌ارزها ----------
     function renderPairs() {
       const pairs = storageGet('pairs') || [];
       
-      if (pairSelect) pairSelect.innerHTML = '';
-      if (historyPairFilter) historyPairFilter.innerHTML = '<option value="">همه جفت‌ارزها</option>';
-      if (multiDatePairFilter) multiDatePairFilter.innerHTML = '<option value="">همه جفت‌ارزها</option>';
-      
-      pairs.forEach(p => {
-        if (pairSelect) {
+      if (pairSelect) {
+        pairSelect.innerHTML = '';
+        pairs.forEach(p => {
           const opt = document.createElement('option');
           opt.value = p.id;
           opt.textContent = p.name;
           pairSelect.appendChild(opt);
-        }
+        });
         
-        if (historyPairFilter) {
-          const opt2 = document.createElement('option');
-          opt2.value = p.id;
-          opt2.textContent = p.name;
-          historyPairFilter.appendChild(opt2);
+        if (pairs.length === 0) {
+          const opt = document.createElement('option');
+          opt.value = '';
+          opt.textContent = 'ابتدا یک جفت‌ارز اضافه کنید';
+          pairSelect.appendChild(opt);
         }
-        
-        if (multiDatePairFilter) {
-          const opt3 = document.createElement('option');
-          opt3.value = p.id;
-          opt3.textContent = p.name;
-          multiDatePairFilter.appendChild(opt3);
-        }
-      });
+      }
       
-      if (pairs.length === 0 && pairSelect) {
-        const opt = document.createElement('option');
-        opt.value = '';
-        opt.textContent = 'ابتدا یک جفت‌ارز اضافه کنید';
-        pairSelect.appendChild(opt);
+      if (historyPairFilter) {
+        historyPairFilter.innerHTML = '<option value="">همه جفت‌ارزها</option>';
+        pairs.forEach(p => {
+          const opt = document.createElement('option');
+          opt.value = p.id;
+          opt.textContent = p.name;
+          historyPairFilter.appendChild(opt);
+        });
+      }
+      
+      if (multiDatePairFilter) {
+        multiDatePairFilter.innerHTML = '<option value="">همه جفت‌ارزها</option>';
+        pairs.forEach(p => {
+          const opt = document.createElement('option');
+          opt.value = p.id;
+          opt.textContent = p.name;
+          multiDatePairFilter.appendChild(opt);
+        });
       }
       
       renderCategories();
     }
     
-    function addPair(name) {
-      if (!name || !name.trim()) return;
-      
-      const pairs = storageGet('pairs') || [];
-      const selectedCategory = categorySelect ? categorySelect.value : null;
-      
-      pairs.push({
-        id: uid(), 
-        name: name.trim(),
-        categoryId: selectedCategory || null
-      });
-      
-      storageSet('pairs', pairs);
-      renderPairs();
-    }
-    
-    function swapPairs(i, j) {
-      const pairs = storageGet('pairs') || [];
-      if (!pairs[i] || !pairs[j]) return;
-      
-      [pairs[i], pairs[j]] = [pairs[j], pairs[i]];
-      storageSet('pairs', pairs);
-      renderPairs();
-    }
-    
-    function movePairToCategory(pairId, newCategoryId) {
-      const pairs = storageGet('pairs') || [];
-      const pair = pairs.find(p => p.id === pairId);
-      
-      if (pair) {
-        pair.categoryId = newCategoryId || null;
-        storageSet('pairs', pairs);
-        renderPairs();
-      }
-    }
-    
-    if (addPairBtn) {
-      addPairBtn.addEventListener('click', () => { 
-        addPair(newPairName ? newPairName.value : ''); 
-        if (newPairName) newPairName.value = ''; 
-      });
-    }
-    
-    if (clearPairsBtn) {
-      clearPairsBtn.addEventListener('click', () => { 
-        if (confirm('آیا همه جفت‌ارزها حذف شوند؟')) { 
-          storageSet('pairs', []); 
-          renderPairs(); 
-        } 
-      });
-    }
-    
-    // ---------- مدیریت دسته‌بندی‌ها ----------
     function renderCategories() {
       const categories = storageGet('categories') || [];
       const pairs = storageGet('pairs') || [];
@@ -1482,91 +1125,127 @@
       });
     }
     
-    function addCategory(name) {
-      if (!name || !name.trim()) return;
-      
-      const categories = storageGet('categories') || [];
-      
-      if (categories.some(cat => cat.name === name.trim())) {
-        alert('این نام دسته‌بندی قبلاً وجود دارد!');
-        return;
-      }
-      
-      categories.push({id: uid(), name: name.trim()});
-      storageSet('categories', categories);
-      renderCategories();
+    // ---------- Event Listeners ----------
+    
+    // جفت‌ارزها
+    if (addPairBtn) {
+      addPairBtn.addEventListener('click', () => {
+        const name = newPairName.value.trim();
+        if (!name) return;
+        
+        const pairs = storageGet('pairs') || [];
+        const selectedCategory = categorySelect.value || null;
+        
+        pairs.push({
+          id: uid(),
+          name: name,
+          categoryId: selectedCategory
+        });
+        
+        storageSet('pairs', pairs);
+        renderPairs();
+        newPairName.value = '';
+      });
     }
     
-    function deleteCategory() {
-      const selectedCategoryId = categorySelect ? categorySelect.value : null;
-      
-      if (!selectedCategoryId) {
-        alert('لطفاً یک دسته‌بندی را انتخاب کنید!');
-        return;
-      }
-      
-      const categories = storageGet('categories') || [];
-      const category = categories.find(cat => cat.id === selectedCategoryId);
-      
-      if (!category) return;
-      
-      const pairs = storageGet('pairs') || [];
-      const pairsInCategory = pairs.filter(p => p.categoryId === selectedCategoryId);
-      
-      if (pairsInCategory.length > 0) {
-        if (!confirm(`دسته‌بندی "${category.name}" دارای ${pairsInCategory.length} جفت‌ارز است. آیا می‌خواهید این دسته‌بندی حذف شود و جفت‌ارزهای آن به "بدون دسته‌بندی" منتقل شوند؟`)) {
+    if (clearPairsBtn) {
+      clearPairsBtn.addEventListener('click', () => {
+        if (confirm('آیا همه جفت‌ارزها حذف شوند؟')) {
+          storageSet('pairs', []);
+          renderPairs();
+        }
+      });
+    }
+    
+    // دسته‌بندی‌ها
+    if (addCategoryBtn) {
+      addCategoryBtn.addEventListener('click', () => {
+        const name = newCategoryName.value.trim();
+        if (!name) return;
+        
+        const categories = storageGet('categories') || [];
+        
+        if (categories.some(cat => cat.name === name)) {
+          alert('این نام دسته‌بندی قبلاً وجود دارد!');
           return;
         }
         
-        pairsInCategory.forEach(p => { p.categoryId = null; });
-        storageSet('pairs', pairs);
-      } else {
-        if (!confirm(`آیا از حذف دسته‌بندی "${category.name}" مطمئن هستید؟`)) return;
-      }
-      
-      const updatedCategories = categories.filter(cat => cat.id !== selectedCategoryId);
-      storageSet('categories', updatedCategories);
-      renderCategories();
-      renderPairs();
-    }
-    
-    if (addCategoryBtn) {
-      addCategoryBtn.addEventListener('click', () => { 
-        addCategory(newCategoryName ? newCategoryName.value : ''); 
-        if (newCategoryName) newCategoryName.value = ''; 
+        categories.push({id: uid(), name: name});
+        storageSet('categories', categories);
+        renderCategories();
+        newCategoryName.value = '';
       });
     }
     
     if (deleteCategoryBtn) {
-      deleteCategoryBtn.addEventListener('click', deleteCategory);
-    }
-    
-    if (categoriesContainer) {
-      categoriesContainer.addEventListener('click', (e) => {
-        const btn = e.target.closest('button'); 
-        if (!btn) return;
-        
-        const action = btn.dataset.action; 
-        const id = btn.dataset.id;
-        const pairs = storageGet('pairs') || []; 
-        const idx = pairs.findIndex(p => p.id === id);
-        
-        if (action === 'up' && idx > 0) swapPairs(idx, idx - 1);
-        if (action === 'down' && idx < pairs.length - 1) swapPairs(idx, idx + 1);
-        
-        if (action === 'delete') { 
-          if (!confirm('آیا حذف شود؟')) return; 
-          pairs.splice(idx, 1); 
-          storageSet('pairs', pairs); 
-          renderPairs(); 
+      deleteCategoryBtn.addEventListener('click', () => {
+        const selectedCategoryId = categorySelect.value;
+        if (!selectedCategoryId) {
+          alert('لطفاً یک دسته‌بندی را انتخاب کنید!');
+          return;
         }
         
-        if (action === 'edit') { 
-          const newName = prompt('نام جدید:', pairs[idx].name); 
-          if (newName && newName.trim()) { 
-            pairs[idx].name = newName.trim(); 
-            storageSet('pairs', pairs); 
-            renderPairs(); 
+        const categories = storageGet('categories') || [];
+        const category = categories.find(cat => cat.id === selectedCategoryId);
+        if (!category) return;
+        
+        const pairs = storageGet('pairs') || [];
+        const pairsInCategory = pairs.filter(p => p.categoryId === selectedCategoryId);
+        
+        if (pairsInCategory.length > 0) {
+          if (!confirm(`دسته‌بندی "${category.name}" دارای ${pairsInCategory.length} جفت‌ارز است. آیا می‌خواهید این دسته‌بندی حذف شود و جفت‌ارزهای آن به "بدون دسته‌بندی" منتقل شوند؟`)) {
+            return;
+          }
+          
+          pairsInCategory.forEach(p => { p.categoryId = null; });
+          storageSet('pairs', pairs);
+        } else {
+          if (!confirm(`آیا از حذف دسته‌بندی "${category.name}" مطمئن هستید؟`)) return;
+        }
+        
+        const updatedCategories = categories.filter(cat => cat.id !== selectedCategoryId);
+        storageSet('categories', updatedCategories);
+        renderCategories();
+        renderPairs();
+      });
+    }
+    
+    // مدیریت جفت‌ارزها در لیست
+    if (categoriesContainer) {
+      categoriesContainer.addEventListener('click', (e) => {
+        const btn = e.target.closest('button');
+        if (!btn) return;
+        
+        const action = btn.dataset.action;
+        const id = btn.dataset.id;
+        const pairs = storageGet('pairs') || [];
+        const idx = pairs.findIndex(p => p.id === id);
+        
+        if (action === 'up' && idx > 0) {
+          [pairs[idx], pairs[idx - 1]] = [pairs[idx - 1], pairs[idx]];
+          storageSet('pairs', pairs);
+          renderPairs();
+        }
+        
+        if (action === 'down' && idx < pairs.length - 1) {
+          [pairs[idx], pairs[idx + 1]] = [pairs[idx + 1], pairs[idx]];
+          storageSet('pairs', pairs);
+          renderPairs();
+        }
+        
+        if (action === 'delete') {
+          if (!confirm('آیا حذف شود؟')) return;
+          pairs.splice(idx, 1);
+          storageSet('pairs', pairs);
+          renderPairs();
+        }
+        
+        if (action === 'edit') {
+          const newName = prompt('نام جدید:', pairs[idx].name);
+          if (newName && newName.trim()) {
+            pairs[idx].name = newName.trim();
+            storageSet('pairs', pairs);
+            renderPairs();
           }
         }
       });
@@ -1575,12 +1254,293 @@
         if (e.target.classList.contains('move-category')) {
           const pairId = e.target.dataset.id;
           const newCategoryId = e.target.value || null;
-          movePairToCategory(pairId, newCategoryId);
+          
+          const pairs = storageGet('pairs') || [];
+          const pair = pairs.find(p => p.id === pairId);
+          if (pair) {
+            pair.categoryId = newCategoryId;
+            storageSet('pairs', pairs);
+            renderPairs();
+          }
         }
       });
     }
     
+    // ماشین حساب
+    if (calculateButton) {
+      calculateButton.addEventListener('click', () => {
+        if (!inputY1 || !inputY2 || !inputCurrentHigh || !inputCurrentLow) {
+          if (errorMessage) errorMessage.textContent = 'خطا: برخی فیلدها موجود نیستند.';
+          return;
+        }
+        
+        if (errorMessage) errorMessage.textContent = '';
+        
+        try {
+          const parsedY1 = parseFormattedInteger(inputY1.value);
+          const parsedCurrentHigh = parseFormattedInteger(inputCurrentHigh.value);
+          const parsedY2 = parseFormattedInteger(inputY2.value);
+          const parsedCurrentLow = parseFormattedInteger(inputCurrentLow.value);
+          
+          const y1 = parsedY1.rawNumber;
+          const currentHigh = parsedCurrentHigh.rawNumber;
+          const y2 = parsedY2.rawNumber;
+          const currentLow = parsedCurrentLow.rawNumber;
+          
+          if (isNaN(y1) || isNaN(y2) || isNaN(currentLow) || isNaN(currentHigh)) {
+            throw new Error('لطفاً چهار فیلد اصلی را با اعداد معتبر پر کنید.');
+          }
+          
+          if (y1 < 0 || y2 < 0) throw new Error('لطفاً فقط اعداد مثبت وارد کنید.');
+          
+          const outputs = computeOutputs(y1, y2);
+          
+          const resultsForClosest = [];
+          if (!isNaN(outputs[0])) resultsForClosest.push({ label: "فرمول ۱ (سقف)", value: outputs[0] });
+          if (!isNaN(outputs[1])) resultsForClosest.push({ label: "فرمول ۲ (سقف)", value: outputs[1] });
+          if (!isNaN(outputs[2])) resultsForClosest.push({ label: "فرمول ۳ (کف)", value: outputs[2] });
+          if (!isNaN(outputs[3])) resultsForClosest.push({ label: "فرمول ۴ (کف)", value: outputs[3] });
+          
+          const { pairs: closestPairs, minDistance } = findClosestNumbers(resultsForClosest);
+          
+          // نمایش نتایج
+          const resultsDisplay = [];
+          const resultsWithLabels = [
+            { label: "فرمول ۱ (سقف)", value: outputs[0] },
+            { label: "فرمول ۲ (سقف)", value: outputs[1] },
+            { label: "فرمول ۳ (کف)", value: outputs[2] },
+            { label: "فرمول ۴ (کف)", value: outputs[3] }
+          ].filter(r => !isNaN(r.value));
+          
+          resultsWithLabels.sort((a, b) => a.value - b.value);
+          
+          resultsWithLabels.forEach((result, index) => {
+            const color = decideColor(result.value, currentLow, currentHigh);
+            const displayVal = formatOutputByInputFormat(result.value, parsedY1.format);
+            const suffix = (result.value < currentLow ? ' ↓ زیر کف فعلی' : 
+                          (result.value > currentHigh ? ' ↑ بالای سقف فعلی' : ''));
+            
+            resultsDisplay.push({
+              order: index + 1,
+              label: result.label,
+              display: displayVal,
+              color: color,
+              suffix: suffix
+            });
+          });
+          
+          // رندر نتایج
+          if (resultsList) {
+            resultsList.innerHTML = '';
+            resultsDisplay.forEach(item => {
+              const div = document.createElement('div');
+              div.innerHTML = `
+                <span class="box-out ${item.color} cursor-pointer hover:opacity-80 transition-opacity" 
+                      onclick="copyToClipboard('${item.display}')"
+                      title="کلیک برای کپی: ${item.display}">
+                  <span class="num-label">${item.order}.</span> (${item.label}) ${item.display} ${item.suffix}
+                </span>
+              `;
+              resultsList.appendChild(div);
+            });
+          }
+          
+          // نمایش نزدیک‌ترین اعداد
+          if (closestInfo) {
+            if (closestPairs.length > 0) {
+              const displayDist = formatOutputByInputFormat(minDistance, parsedY1.format);
+              let closestText = `<div class="text-sm font-semibold mb-2">نزدیک‌ترین اعداد (فاصله: ${displayDist}):</div>`;
+              
+              closestPairs.forEach(pair => {
+                const display1 = formatOutputByInputFormat(pair[0].value, parsedY1.format);
+                const display2 = formatOutputByInputFormat(pair[1].value, parsedY1.format);
+                closestText += `<div class="text-xs mb-1">• ${pair[0].label} (${display1}) و ${pair[1].label} (${display2})</div>`;
+              });
+              
+              closestInfo.innerHTML = closestText;
+              closestInfo.classList.remove('hidden');
+            } else {
+              closestInfo.classList.add('hidden');
+            }
+          }
+          
+          // ذخیره رکورد
+          let chosenISO = null;
+          if (datePicker && datePicker.value) {
+            const dp = datePicker.value;
+            const now = new Date();
+            const timePart = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}:${now.getSeconds().toString().padStart(2, '0')}`;
+            const iso = new Date(dp + 'T' + timePart);
+            
+            if (!isNaN(iso)) chosenISO = iso.toISOString();
+          }
+          
+          if (!chosenISO) chosenISO = nowISO();
+          
+          const pairId = pairSelect ? pairSelect.value || null : null;
+          const note = noteInput ? noteInput.value || '' : '';
+          
+          const entries = storageGet('entries') || [];
+          entries.push({
+            id: uid(),
+            pairId: pairId,
+            dateISO: chosenISO,
+            dateDisplay: formatGregorian(chosenISO),
+            inputs: {
+              y1, y2, currentLow, currentHigh,
+              originalY1: inputY1.value,
+              originalCurrentHigh: inputCurrentHigh.value,
+              originalY2: inputY2.value,
+              originalCurrentLow: inputCurrentLow.value
+            },
+            outputsDisplay: resultsDisplay,
+            note: note,
+            inputFormat: parsedY1.format,
+            closestInfo: {
+              closestPairs: closestPairs,
+              minDistance: minDistance
+            }
+          });
+          
+          storageSet('entries', entries);
+          renderHistory();
+          
+        } catch (err) {
+          if (errorMessage) errorMessage.textContent = 'خطا: ' + err.message;
+        }
+      });
+    }
+    
+    if (resetButton) {
+      resetButton.addEventListener('click', () => {
+        if (inputY1) inputY1.value = '';
+        if (inputY2) inputY2.value = '';
+        if (inputCurrentHigh) inputCurrentHigh.value = '';
+        if (inputCurrentLow) inputCurrentLow.value = '';
+        if (resultsList) resultsList.innerHTML = '';
+        if (errorMessage) errorMessage.textContent = '';
+        if (closestInfo) {
+          closestInfo.innerHTML = '';
+          closestInfo.classList.add('hidden');
+        }
+      });
+    }
+    
+    // تابع کپی به کلیپ‌بورد
+    function copyToClipboard(text) {
+      navigator.clipboard.writeText(text).then(() => {
+        const message = document.createElement('div');
+        message.className = 'fixed top-4 left-1/2 transform -translate-x-1/2 bg-green-600 text-white px-4 py-2 rounded-lg shadow-lg z-50 animate-bounce';
+        message.innerHTML = `✅ عدد <strong>${text}</strong> کپی شد`;
+        document.body.appendChild(message);
+        
+        setTimeout(() => {
+          if (document.body.contains(message)) {
+            document.body.removeChild(message);
+          }
+        }, 2000);
+      }).catch(err => {
+        console.error('خطا در کپی کردن: ', err);
+      });
+    }
+    
     // ---------- تاریخچه ----------
+    
+    function renderHistory() {
+      const entries = (storageGet('entries') || []).slice();
+      entries.sort((a, b) => new Date(b.dateISO).getTime() - new Date(a.dateISO).getTime());
+      
+      if (entriesCount) entriesCount.textContent = entries.length;
+      
+      if (multiDateSection && !multiDateSection.classList.contains('hidden')) {
+        const selectedPair = multiDatePairFilter ? multiDatePairFilter.value : null;
+        const selectedDates = dateRanges.filter(r => r.date).map(r => r.date);
+        
+        if (selectedDates.length > 0) {
+          renderMultiDateHistory(selectedPair, selectedDates);
+          return;
+        }
+      }
+      
+      const filterDate = historyDate && historyDate.value ? new Date(historyDate.value).toDateString() : null;
+      const filterPair = historyPairFilter && historyPairFilter.value ? historyPairFilter.value : null;
+      
+      if (historyList) historyList.innerHTML = '';
+      
+      let filtered = entries;
+      
+      if (!filterDate) {
+        const today = new Date().toDateString();
+        filtered = entries.filter(e => new Date(e.dateISO).toDateString() === today);
+      } else {
+        filtered = entries.filter(e => new Date(e.dateISO).toDateString() === filterDate);
+      }
+      
+      if (filterPair) filtered = filtered.filter(e => e.pairId === filterPair);
+      
+      if (filtered.length === 0) {
+        if (historyList) historyList.innerHTML = '<div class="muted text-sm text-center py-4">رکوردی جهت نمایش وجود ندارد.</div>';
+        return;
+      }
+      
+      filtered.forEach(e => {
+        const pair = (storageGet('pairs') || []).find(p => p.id === e.pairId);
+        const pairName = pair?.name || '—';
+        const category = pair ? (storageGet('categories') || []).find(c => c.id === pair.categoryId) : null;
+        
+        const wrapper = document.createElement('div');
+        wrapper.className = 'history-entry-compact flex flex-col gap-3 hover:border-white/20 transition-colors';
+        
+        let closestHTML = '';
+        if (e.closestInfo && e.closestInfo.closestPairs && e.closestInfo.closestPairs.length > 0) {
+          const displayDist = formatOutputByInputFormat(e.closestInfo.minDistance, e.inputFormat);
+          
+          closestHTML = `
+            <div class="mt-2 pt-2 border-t border-white/10">
+              <div class="text-xs muted mb-1">نزدیک‌ترین اعداد (فاصله: ${displayDist}):</div>
+              <div class="text-xs space-y-1">
+                ${e.closestInfo.closestPairs.map(pair =>
+                  `• ${pair[0].label} و ${pair[1].label}`
+                ).join('<br>')}
+              </div>
+            </div>
+          `;
+        }
+        
+        wrapper.innerHTML = `
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <div class="text-sm font-semibold">${pairName}</div>
+              ${category ? `<span class="text-xs bg-blue-600 px-2 py-1 rounded">${category.name}</span>` : ''}
+            </div>
+            <div class="text-xs muted">${e.dateDisplay}</div>
+          </div>
+          <div class="flex gap-2 flex-wrap justify-center">
+            ${e.outputsDisplay.map(it =>
+              `<span class="box-out ${it.color} cursor-pointer hover:opacity-80 transition-opacity"
+                     title="کلیک برای کپی: ${it.display}"
+                     onclick="copyToClipboard('${it.display}')">
+                <span class="num-label">${it.order}.</span> (${it.label}) ${it.display} ${it.suffix}
+              </span>`
+            ).join('')}
+          </div>
+          ${closestHTML}
+        `;
+        
+        const bottom = document.createElement('div');
+        bottom.className = 'flex gap-2 justify-end';
+        
+        const viewBtn = document.createElement('button');
+        viewBtn.className = 'small-btn bg-indigo-600 hover:bg-indigo-700 rounded transition-colors';
+        viewBtn.textContent = 'نمایش جزئیات';
+        viewBtn.addEventListener('click', () => showDetail(e.id));
+        
+        bottom.appendChild(viewBtn);
+        wrapper.appendChild(bottom);
+        historyList.appendChild(wrapper);
+      });
+    }
+    
     function renderMultiDateHistory(selectedPair, selectedDates) {
       const entries = (storageGet('entries') || []).slice();
       
@@ -1637,13 +1597,7 @@
         
         const title = document.createElement('div');
         title.className = 'text-xs muted mb-2 font-semibold';
-        
-        try {
-          title.textContent = 'تاریخ: ' + new Date(dateKey).toLocaleDateString('en-CA');
-        } catch (_) {
-          title.textContent = 'تاریخ: ' + dateKey;
-        }
-        
+        title.textContent = 'تاریخ: ' + new Date(dateKey).toLocaleDateString('en-CA');
         group.appendChild(title);
         
         if (groupEntries.length === 0) {
@@ -1660,7 +1614,7 @@
             const pairName = pair?.name || '—';
             const category = pair ? categories.find(c => c.id === pair.categoryId) : null;
             
-            const wrapper = document.createElement('div'); 
+            const wrapper = document.createElement('div');
             wrapper.className = 'history-entry-compact flex flex-col gap-3 hover:border-white/20 transition-colors';
             
             let closestHTML = '';
@@ -1671,7 +1625,7 @@
                 <div class="mt-2 pt-2 border-t border-white/10">
                   <div class="text-xs muted mb-1">نزدیک‌ترین اعداد (فاصله: ${displayDist}):</div>
                   <div class="text-xs space-y-1">
-                    ${e.closestInfo.closestPairs.map(pair => 
+                    ${e.closestInfo.closestPairs.map(pair =>
                       `• ${pair[0].label} و ${pair[1].label}`
                     ).join('<br>')}
                   </div>
@@ -1688,8 +1642,8 @@
                 <div class="text-xs muted">${e.dateDisplay}</div>
               </div>
               <div class="flex gap-2 flex-wrap justify-center">
-                ${e.outputsDisplay.map(it => 
-                  `<span class="box-out ${it.color} cursor-pointer hover:opacity-80 transition-opacity" 
+                ${e.outputsDisplay.map(it =>
+                  `<span class="box-out ${it.color} cursor-pointer hover:opacity-80 transition-opacity"
                          title="کلیک برای کپی: ${it.display}"
                          onclick="copyToClipboard('${it.display}')">
                     <span class="num-label">${it.order}.</span> (${it.label}) ${it.display} ${it.suffix}
@@ -1702,8 +1656,8 @@
             const bottom = document.createElement('div');
             bottom.className = 'flex gap-2 justify-end';
             
-            const viewBtn = document.createElement('button'); 
-            viewBtn.className = 'small-btn bg-indigo-600 hover:bg-indigo-700 rounded transition-colors'; 
+            const viewBtn = document.createElement('button');
+            viewBtn.className = 'small-btn bg-indigo-600 hover:bg-indigo-700 rounded transition-colors';
             viewBtn.textContent = 'نمایش جزئیات';
             viewBtn.addEventListener('click', () => showDetail(e.id));
             
@@ -1721,104 +1675,92 @@
       }
     }
     
-    function renderHistory() {
-      if (multiDateSection && !multiDateSection.classList.contains('hidden')) {
-        const selectedPair = multiDatePairFilter ? multiDatePairFilter.value : null;
-        const selectedDates = dateRanges.filter(r => r.date).map(r => r.date);
-        
-        if (selectedDates.length > 0) {
-          renderMultiDateHistory(selectedPair, selectedDates);
-          return;
+    // مدیریت حالت چندتاریخی
+    if (toggleMultiDateBtn) {
+      toggleMultiDateBtn.addEventListener('click', () => {
+        isMultiDate = !isMultiDate;
+        if (isMultiDate) {
+          toggleMultiDateBtn.textContent = 'غیرفعال کردن چندتاریخی';
+          if (singleDateSection) singleDateSection.classList.add('hidden');
+          if (multiDateSection) multiDateSection.classList.remove('hidden');
+          if (historyDate) historyDate.value = '';
+          if (dateRanges.length === 0) addMultiDateRangeUI();
+        } else {
+          toggleMultiDateBtn.textContent = 'فعال کردن حالت چندتاریخی';
+          if (singleDateSection) singleDateSection.classList.remove('hidden');
+          if (multiDateSection) multiDateSection.classList.add('hidden');
+          resetMultiDateUI();
+          renderHistory();
         }
-      }
-      
-      const entries = (storageGet('entries') || []).slice();
-      entries.sort((a, b) => new Date(b.dateISO).getTime() - new Date(a.dateISO).getTime());
-      
-      if (entriesCount) entriesCount.textContent = entries.length;
-      
-      const filterDate = historyDate && historyDate.value ? new Date(historyDate.value).toDateString() : null;
-      const filterPair = historyPairFilter && historyPairFilter.value ? historyPairFilter.value : null;
-      
-      if (historyList) historyList.innerHTML = '';
-      
-      let filtered = entries;
-      
-      if (!filterDate) {
-        const today = new Date().toDateString();
-        filtered = entries.filter(e => new Date(e.dateISO).toDateString() === today);
-      } else {
-        filtered = entries.filter(e => new Date(e.dateISO).toDateString() === filterDate);
-      }
-      
-      if (filterPair) filtered = filtered.filter(e => e.pairId === filterPair);
-      
-      if (filtered.length === 0) { 
-        if (historyList) historyList.innerHTML = '<div class="muted text-sm text-center py-4">رکوردی جهت نمایش وجود ندارد.</div>'; 
-        return;
-      }
-      
-      safeForEach(filtered, e => {
-        const pair = (storageGet('pairs') || []).find(p => p.id === e.pairId);
-        const pairName = pair?.name || '—';
-        const category = pair ? (storageGet('categories') || []).find(c => c.id === pair.categoryId) : null;
-        
-        const wrapper = document.createElement('div'); 
-        wrapper.className = 'history-entry-compact flex flex-col gap-3 hover:border-white/20 transition-colors';
-        
-        let closestHTML = '';
-        if (e.closestInfo && e.closestInfo.closestPairs && e.closestInfo.closestPairs.length > 0) {
-          const displayDist = formatOutputByInputFormat(e.closestInfo.minDistance, e.inputFormat);
-          
-          closestHTML = `
-            <div class="mt-2 pt-2 border-t border-white/10">
-              <div class="text-xs muted mb-1">نزدیک‌ترین اعداد (فاصله: ${displayDist}):</div>
-              <div class="text-xs space-y-1">
-                ${e.closestInfo.closestPairs.map(pair => 
-                  `• ${pair[0].label} و ${pair[1].label}`
-                ).join('<br>')}
-              </div>
-            </div>
-          `;
-        }
-        
-        wrapper.innerHTML = `
-          <div class="flex items-center justify-between">
-            <div class="flex items-center gap-2">
-              <div class="text-sm font-semibold">${pairName}</div>
-              ${category ? `<span class="text-xs bg-blue-600 px-2 py-1 rounded">${category.name}</span>` : ''}
-            </div>
-            <div class="text-xs muted">${e.dateDisplay}</div>
-          </div>
-          <div class="flex gap-2 flex-wrap justify-center">
-            ${e.outputsDisplay.map(it => 
-              `<span class="box-out ${it.color} cursor-pointer hover:opacity-80 transition-opacity" 
-                     title="کلیک برای کپی: ${it.display}"
-                     onclick="copyToClipboard('${it.display}')">
-                <span class="num-label">${it.order}.</span> (${it.label}) ${it.display} ${it.suffix}
-              </span>`
-            ).join('')}
-          </div>
-          ${closestHTML}
-        `;
-        
-        const bottom = document.createElement('div'); 
-        bottom.className = 'flex gap-2 justify-end';
-        
-        const viewBtn = document.createElement('button'); 
-        viewBtn.className = 'small-btn bg-indigo-600 hover:bg-indigo-700 rounded transition-colors';
-        viewBtn.textContent = 'نمایش جزئیات'; 
-        viewBtn.addEventListener('click', () => showDetail(e.id));
-        
-        bottom.appendChild(viewBtn);
-        wrapper.appendChild(bottom);
-        historyList.appendChild(wrapper);
       });
     }
     
+    function resetMultiDateUI() {
+      if (dateRangesContainer) dateRangesContainer.innerHTML = '';
+      dateRanges = [];
+    }
+    
+    function addMultiDateRangeUI() {
+      if (!dateRangesContainer) return;
+      
+      const id = Date.now().toString() + '_' + Math.random().toString(16).slice(2);
+      dateRanges.push({ id, date: null });
+      
+      const div = document.createElement('div');
+      div.className = 'date-range-item';
+      div.id = 'range_' + id;
+      div.innerHTML = `
+        <div class="flex gap-2 items-center">
+          <input type="date" class="multi-date-input flex-1" data-id="${id}">
+          <button class="small-btn bg-rose-600 hover:bg-rose-700 remove-range" data-id="${id}">✕</button>
+        </div>`;
+      
+      dateRangesContainer.appendChild(div);
+      
+      const input = div.querySelector('.multi-date-input');
+      const removeBtn = div.querySelector('.remove-range');
+      
+      if (input) {
+        input.addEventListener('change', (e) => {
+          const rid = e.target.dataset.id;
+          const item = dateRanges.find(r => r.id === rid);
+          if (item) item.date = e.target.value;
+        });
+      }
+      
+      if (removeBtn) {
+        removeBtn.addEventListener('click', (e) => {
+          const rid = e.target.dataset.id;
+          dateRanges = dateRanges.filter(r => r.id !== rid);
+          const row = document.getElementById('range_' + rid);
+          if (row && row.parentNode) row.parentNode.removeChild(row);
+          renderHistory();
+        });
+      }
+    }
+    
+    if (addDateBtn) {
+      addDateBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        addMultiDateRangeUI();
+      });
+    }
+    
+    if (applyMultiDateBtn) {
+      applyMultiDateBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        renderHistory();
+      });
+    }
+    
+    if (historyDate) historyDate.addEventListener('change', renderHistory);
+    if (historyPairFilter) historyPairFilter.addEventListener('change', renderHistory);
+    
+    // ---------- مودال جزئیات ----------
+    
     function showDetail(entryId) {
       const entries = storageGet('entries') || [];
-      const e = entries.find(x => x.id === entryId); 
+      const e = entries.find(x => x.id === entryId);
       if (!e) return;
       
       const pair = (storageGet('pairs') || []).find(p => p.id === e.pairId);
@@ -1836,7 +1778,7 @@
             <div class="text-xs muted mb-3">نزدیک‌ترین اعداد</div>
             <div class="text-sm space-y-2">
               <div class="font-semibold">فاصله: ${displayDist}</div>
-              ${e.closestInfo.closestPairs.map(pair => 
+              ${e.closestInfo.closestPairs.map(pair =>
                 `<div class="flex justify-between items-center p-2 bg-white/5 rounded">
                   <div>${pair[0].label} و ${pair[1].label}</div>
                 </div>`
@@ -1880,7 +1822,7 @@
         <div class="bg-white/5 p-4 rounded">
           <div class="text-xs muted mb-3">خروجی‌ها (مرتب‌شده)</div>
           <div class="flex flex-wrap gap-2 justify-center">
-            ${e.outputsDisplay.map(it => 
+            ${e.outputsDisplay.map(it =>
               `<span class="box-out ${it.color} cursor-default text-sm">
                 <span class="num-label">${it.order}.</span> (${it.label}) ${it.display} ${it.suffix}
               </span>`
@@ -1892,8 +1834,6 @@
       
       if (detailModal) {
         detailModal.classList.remove('hidden');
-        // detailModal is now using generic modal-overlay which has flex center built-in
-        // no need to add extra class center-modal unless specific override needed, but removed it for consistency
       }
       
       if (editRecordBtn) editRecordBtn.onclick = () => editRecord(e.id);
@@ -1902,23 +1842,23 @@
     }
     
     if (closeDetail) {
-      closeDetail.addEventListener('click', () => { 
+      closeDetail.addEventListener('click', () => {
         if (detailModal) {
           detailModal.classList.add('hidden');
         }
       });
     }
     
-    function deleteRecord(id) { 
-      if (!confirm('آیا از حذف این رکورد مطمئن هستید؟')) return; 
+    function deleteRecord(id) {
+      if (!confirm('آیا از حذف این رکورد مطمئن هستید؟')) return;
       
-      const entries = storageGet('entries') || []; 
+      const entries = storageGet('entries') || [];
       const idx = entries.findIndex(x => x.id === id);
-      if (idx === -1) return; 
+      if (idx === -1) return;
       
-      entries.splice(idx, 1); 
-      storageSet('entries', entries); 
-      renderHistory(); 
+      entries.splice(idx, 1);
+      storageSet('entries', entries);
+      renderHistory();
       
       if (detailModal) {
         detailModal.classList.add('hidden');
@@ -1927,26 +1867,26 @@
     
     function editRecord(id) {
       const entries = storageGet('entries') || [];
-      const e = entries.find(x => x.id === id); 
+      const e = entries.find(x => x.id === id);
       if (!e) return;
       
       if (!confirm('مقادیر رکورد در فرم بارگذاری خواهد شد. پس از ویرایش دکمه‌” محاسبه را بزنید تا رکورد جدید ذخیره شود. رکورد قدیمی حذف می‌شود. ادامۀ می‌دهید؟')) return;
       
       if (pairSelect) pairSelect.value = e.pairId || '';
-      if (inputY1) inputY1.value = e.inputs.originalY1; 
-      if (inputCurrentHigh) inputCurrentHigh.value = e.inputs.originalCurrentHigh; 
+      if (inputY1) inputY1.value = e.inputs.originalY1;
+      if (inputCurrentHigh) inputCurrentHigh.value = e.inputs.originalCurrentHigh;
       if (inputY2) inputY2.value = e.inputs.originalY2;
-      if (inputCurrentLow) inputCurrentLow.value = e.inputs.originalCurrentLow; 
-      if (noteInput) noteInput.value = e.note || ''; 
+      if (inputCurrentLow) inputCurrentLow.value = e.inputs.originalCurrentLow;
+      if (noteInput) noteInput.value = e.note || '';
       if (datePicker) datePicker.value = e.dateDisplay.split(' ')[0] || '';
       
       const idx = entries.findIndex(x => x.id === id);
-      if (idx !== -1) { 
-        entries.splice(idx, 1); 
-        storageSet('entries', entries); 
+      if (idx !== -1) {
+        entries.splice(idx, 1);
+        storageSet('entries', entries);
       }
       
-      renderHistory(); 
+      renderHistory();
       
       if (detailModal) {
         detailModal.classList.add('hidden');
@@ -1956,137 +1896,31 @@
     }
     
     function moveRecord(id) {
-      const newDate = prompt('تاریخ جدید (YYYY-MM-DD) را وارد کنید:'); 
+      const newDate = prompt('تاریخ جدید (YYYY-MM-DD) را وارد کنید:');
       if (!newDate) return;
       
-      const d = new Date(newDate + 'T00:00:00'); 
-      if (isNaN(d)) { 
-        alert('تاریخ نامعتبر.'); 
-        return; 
+      const d = new Date(newDate + 'T00:00:00');
+      if (isNaN(d)) {
+        alert('تاریخ نامعتبر.');
+        return;
       }
       
       const entries = storageGet('entries') || [];
-      const e = entries.find(x => x.id === id); 
+      const e = entries.find(x => x.id === id);
       if (!e) return;
       
-      e.dateISO = d.toISOString(); 
-      e.dateDisplay = formatGregorian(e.dateISO); 
-      storageSet('entries', entries); 
-      renderHistory(); 
+      e.dateISO = d.toISOString();
+      e.dateDisplay = formatGregorian(e.dateISO);
+      storageSet('entries', entries);
+      renderHistory();
       
       if (detailModal) {
         detailModal.classList.add('hidden');
       }
     }
     
-    // ---------- backup/import ----------
-    function showNotification(message, type = 'success') {
-      const toast = document.createElement('div');
-      toast.className = `fixed top-4 left-1/2 transform -translate-x-1/2 px-4 py-2 rounded-lg shadow-lg z-50 animate-bounce ${type === 'success' ? 'bg-green-600 text-white' : 'bg-red-600 text-white'}`;
-      toast.innerHTML = message;
-      document.body.appendChild(toast);
-      
-      setTimeout(() => {
-        if (document.body.contains(toast)) {
-          document.body.removeChild(toast);
-        }
-      }, 4000);
-    }
+    // ---------- مدیریت باکس‌ها ----------
     
-    if (exportBtn) {
-      exportBtn.addEventListener('click', () => {
-        try {
-          const payload = { 
-            pairs: storageGet('pairs') || [], 
-            entries: storageGet('entries') || [], 
-            categories: storageGet('categories') || [],
-            meta: {
-              created: new Date().toISOString(),
-              version: '3.0',
-              entryCount: (storageGet('entries') || []).length,
-              pairCount: (storageGet('pairs') || []).length,
-              categoryCount: (storageGet('categories') || []).length,
-              backupId: uid()
-            }
-          };
-          
-          const blob = new Blob([JSON.stringify(payload, null, 2)], {type: 'application/json;charset=utf-8'});
-          const url = URL.createObjectURL(blob); 
-          const a = document.createElement('a'); 
-          a.href = url; 
-          a.download = 'calculator_pro_w_d_p3-' + new Date().toISOString().slice(0, 10) + '.json'; 
-          document.body.appendChild(a); 
-          a.click(); 
-          a.remove(); 
-          URL.revokeObjectURL(url);
-          
-          showNotification('✅ فایل پشتیبان با موفقیت دانلود شد');
-        } catch (err) {
-          console.error('خطا در دانلود بک‌آپ:', err);
-          showNotification('❌ خطا در دانلود فایل پشتیبان: ' + err.message, 'error');
-        }
-      });
-    }
-    
-    if (importBtn) {
-      importBtn.addEventListener('click', () => importFile && importFile.click());
-    }
-    
-    if (importFile) {
-      importFile.addEventListener('change', (e) => { 
-        const f = e.target.files[0]; 
-        if (!f) return; 
-        
-        const reader = new FileReader(); 
-        reader.onload = () => { 
-          try { 
-            const obj = JSON.parse(reader.result); 
-            if (!obj) throw new Error('فایل نامعتبر');
-            
-            const currentData = {
-              pairs: storageGet('pairs') || [],
-              entries: storageGet('entries') || [],
-              categories: storageGet('categories') || []
-            };
-            
-            try {
-              if (Array.isArray(obj.pairs)) storageSet('pairs', obj.pairs);
-              else storageSet('pairs', []);
-              
-              if (Array.isArray(obj.entries)) storageSet('entries', obj.entries);
-              else storageSet('entries', []);
-              
-              if (Array.isArray(obj.categories)) storageSet('categories', obj.categories);
-              else storageSet('categories', []);
-              
-              showNotification('بک‌آپ با موفقیت بارگذاری شد', 'success');
-              renderPairs(); 
-              renderHistory(); 
-              
-              let message = '✅ بک‌آپ با موفقیت بارگذاری شد!\n';
-              message += `📊 اطلاعات بک‌آپ:\n`;
-              message += `• ${obj.entries?.length || 0} رکورد تاریخی\n`;
-              message += `• ${obj.pairs?.length || 0} جفت‌ارز\n`;
-              message += `• ${obj.categories?.length || 0} دسته‌بندی\n`;
-              
-              alert(message);
-            } catch (error) {
-              storageSet('pairs', currentData.pairs);
-              storageSet('entries', currentData.entries);
-              storageSet('categories', currentData.categories);
-              throw error;
-            }
-          } catch (err) { 
-            alert('خطا در بارگذاری بک‌آپ: ' + err.message);
-          } 
-        }; 
-        
-        reader.readAsText(f); 
-        importFile.value = ''; 
-      });
-    }
-    
-    // ---------- UI controls ----------
     function updateToggleButton(isOpen) {
       const toggleIcon = document.getElementById('toggle_icon');
       const toggleText = document.getElementById('toggle_text');
@@ -2112,45 +1946,66 @@
         const isCurrentlyHidden = historyPanel.classList.contains('hidden');
         
         if (isCurrentlyHidden) {
-          historyPanel.classList.remove('hidden'); 
+          historyPanel.classList.remove('hidden');
           updateToggleButton(true);
           const today = new Date().toISOString().split('T')[0];
           if (historyDate) historyDate.value = today;
           renderHistory();
-        } else { 
-          historyPanel.classList.add('hidden'); 
+        } else {
+          historyPanel.classList.add('hidden');
           updateToggleButton(false);
         }
       });
     }
     
-    if (historyDate) historyDate.addEventListener('change', renderHistory);
-    if (historyPairFilter) historyPairFilter.addEventListener('change', renderHistory);
-    
     if (togglePairsHdr) {
-      togglePairsHdr.addEventListener('click', () => { 
-        if (boxPairs) boxPairs.classList.toggle('hidden'); 
+      togglePairsHdr.addEventListener('click', () => {
+        if (boxPairs) boxPairs.classList.toggle('hidden');
       });
     }
     
     if (toggleCalcHdr) {
-      toggleCalcHdr.addEventListener('click', () => { 
-        if (boxCalc) boxCalc.classList.toggle('hidden'); 
+      toggleCalcHdr.addEventListener('click', () => {
+        if (boxCalc) boxCalc.classList.toggle('hidden');
       });
     }
     
     if (toggleHistoryHdr) {
-      toggleHistoryHdr.addEventListener('click', () => { 
-        if (boxHistory) boxHistory.classList.toggle('hidden'); 
+      toggleHistoryHdr.addEventListener('click', () => {
+        if (boxHistory) boxHistory.classList.toggle('hidden');
       });
     }
     
-    // ---------- Voice Command ----------
+    // ---------- ورود صوتی ----------
+    
     let recognition = null;
     let isRecording = false;
     let isVoiceActive = false;
     let currentField = null;
     const numericFields = [inputY1, inputCurrentHigh, inputY2, inputCurrentLow];
+    
+    if (microToggle) {
+      microToggle.addEventListener('click', () => {
+        if (isVoiceActive) {
+          stopVoiceRecognition();
+          microToggle.textContent = '🎙 فعال کردن صوت';
+          if (voiceStatus) voiceStatus.textContent = 'اتصال صوتی قطع شد';
+        } else {
+          isVoiceActive = true;
+          microToggle.textContent = '🎙 قطع صوت';
+          microToggle.classList.add('connected');
+          
+          if (voiceStatus) voiceStatus.textContent = 'اتصال صوتی فعال شد. روی فیلد مورد نظر کلیک کنید.';
+          
+          const emptyField = numericFields.find(field => !field.value || field.value.trim() === '');
+          if (emptyField) {
+            emptyField.focus();
+          } else {
+            numericFields[0].focus();
+          }
+        }
+      });
+    }
     
     function parseNumberFromTranscript(transcript) {
       if (!transcript) return null;
@@ -2165,9 +2020,9 @@
     
     function startVoiceRecognition() {
       const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-      if (!SpeechRecognition) { 
+      if (!SpeechRecognition) {
         if (voiceStatus) voiceStatus.textContent = 'مرورگر شما از تشخیص صوت پشتیبانی نمی‌کند.';
-        return; 
+        return;
       }
       
       recognition = new SpeechRecognition();
@@ -2180,7 +2035,6 @@
         isRecording = true;
         if (microToggle) microToggle.classList.add('recording');
         if (voiceStatus && currentField) {
-          const fieldName = getFieldName(currentField);
           voiceStatus.textContent = `🎤 در حال گوش دادن لطفاً عدد را بگویید`;
         }
       };
@@ -2217,7 +2071,6 @@
         
         if (numStr && currentField) {
           currentField.value = numStr;
-          const fieldName = getFieldName(currentField);
           if (voiceStatus) voiceStatus.textContent = `✅ عدد "${numStr}" در فیلد مورد نظر وارد شد`;
           
           const currentIndex = numericFields.indexOf(currentField);
@@ -2256,18 +2109,7 @@
       if (voiceStatus) voiceStatus.textContent = 'اتصال صوتی قطع شد';
     }
     
-    function getFieldName(field) {
-      const names = {
-        [inputY1]: 'عدد سقف',
-        [inputCurrentHigh]: 'عدد فعلی سقف', 
-        [inputY2]: 'عدد کف',
-        [inputCurrentLow]: 'عدد فعلی کف'
-      };
-      
-      return names[field] || 'این فیلد';
-    }
-    
-    safeForEach(numericFields, (field) => {
+    numericFields.forEach((field) => {
       if (!field) return;
       
       field.addEventListener('focus', () => {
@@ -2276,36 +2118,97 @@
         if (isVoiceActive && !isRecording) {
           startVoiceRecognition();
         } else if (isVoiceActive) {
-          const fieldName = getFieldName(field);
           if (voiceStatus) voiceStatus.textContent = `🎤 در حال گوش دادن لطفاً عدد را بگویید`;
         }
       });
     });
     
-    if (microToggle) {
-      microToggle.addEventListener('click', () => {
-        if (isVoiceActive) {
-          stopVoiceRecognition();
-          microToggle.textContent = '🎙 فعال کردن صوت';
-          if (voiceStatus) voiceStatus.textContent = 'اتصال صوتی قطع شد';
-        } else {
-          isVoiceActive = true;
-          microToggle.textContent = '🎙 قطع صوت';
-          microToggle.classList.add('connected');
+    // ---------- پشتیبان‌گیری ----------
+    
+    if (exportBtn) {
+      exportBtn.addEventListener('click', () => {
+        try {
+          const payload = {
+            pairs: storageGet('pairs') || [],
+            entries: storageGet('entries') || [],
+            categories: storageGet('categories') || [],
+            meta: {
+              created: new Date().toISOString(),
+              version: '3.0',
+              entryCount: (storageGet('entries') || []).length,
+              pairCount: (storageGet('pairs') || []).length,
+              categoryCount: (storageGet('categories') || []).length,
+              backupId: uid()
+            }
+          };
           
-          if (voiceStatus) voiceStatus.textContent = 'اتصال صوتی فعال شد. روی فیلد مورد نظر کلیک کنید.';
+          const blob = new Blob([JSON.stringify(payload, null, 2)], {type: 'application/json;charset=utf-8'});
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = 'calculator_pro_w_d_p3-' + new Date().toISOString().slice(0, 10) + '.json';
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          URL.revokeObjectURL(url);
           
-          const emptyField = numericFields.find(field => !field.value || field.value.trim() === '');
-          if (emptyField) {
-            emptyField.focus();
-          } else {
-            numericFields[0].focus();
-          }
+          showNotification('✅ فایل پشتیبان با موفقیت دانلود شد');
+        } catch (err) {
+          console.error('خطا در دانلود بک‌آپ:', err);
+          showNotification('❌ خطا در دانلود فایل پشتیبان: ' + err.message, 'error');
         }
       });
     }
     
-    // ---------- Modal Functions ----------
+    if (importBtn) {
+      importBtn.addEventListener('click', () => importFile && importFile.click());
+    }
+    
+    if (importFile) {
+      importFile.addEventListener('change', (e) => {
+        const f = e.target.files[0];
+        if (!f) return;
+        
+        const reader = new FileReader();
+        reader.onload = () => {
+          try {
+            const obj = JSON.parse(reader.result);
+            if (!obj) throw new Error('فایل نامعتبر');
+            
+            if (Array.isArray(obj.pairs)) storageSet('pairs', obj.pairs);
+            if (Array.isArray(obj.entries)) storageSet('entries', obj.entries);
+            if (Array.isArray(obj.categories)) storageSet('categories', obj.categories);
+            
+            showNotification('بک‌آپ با موفقیت بارگذاری شد', 'success');
+            renderPairs();
+            renderHistory();
+            
+            alert('✅ بک‌آپ با موفقیت بارگذاری شد!');
+          } catch (err) {
+            alert('خطا در بارگذاری بک‌آپ: ' + err.message);
+          }
+        };
+        
+        reader.readAsText(f);
+        importFile.value = '';
+      });
+    }
+    
+    function showNotification(message, type = 'success') {
+      const toast = document.createElement('div');
+      toast.className = `fixed top-4 left-1/2 transform -translate-x-1/2 px-4 py-2 rounded-lg shadow-lg z-50 animate-bounce ${type === 'success' ? 'bg-green-600 text-white' : 'bg-red-600 text-white'}`;
+      toast.innerHTML = message;
+      document.body.appendChild(toast);
+      
+      setTimeout(() => {
+        if (document.body.contains(toast)) {
+          document.body.removeChild(toast);
+        }
+      }, 4000);
+    }
+    
+    // ---------- مودال آمار ----------
+    
     if (showStatsBtn) {
       showStatsBtn.addEventListener('click', () => {
         if (statsModal) {
@@ -2353,7 +2256,6 @@
       manageBackupsBtn.addEventListener('click', () => {
         if (backupsModal) backupsModal.classList.remove('hidden');
         
-        // در اینجا می‌توانید محتوای مدیریت بک‌آپ‌ها را اضافه کنید
         if (backupsContent) {
           backupsContent.innerHTML = `
             <div class="text-center py-4">
@@ -2394,8 +2296,16 @@
       });
     }
     
-    // ---------- شروع اولیه ----------
-    if ((storageGet('pairs') || []).length === 0) { 
+    // ---------- مقداردهی اولیه ----------
+    
+    window.addEventListener('load', () => {
+      const today = new Date().toISOString().split('T')[0];
+      if (historyDate) historyDate.value = today;
+      setTimeout(() => { if (inputY1) inputY1.focus(); }, 1000);
+    });
+    
+    // داده‌های اولیه
+    if ((storageGet('pairs') || []).length === 0) {
       storageSet('pairs', [
         {id: uid(), name: 'EURUSD', categoryId: 'forex'},
         {id: uid(), name: 'GBPUSD', categoryId: 'forex'},
@@ -2404,24 +2314,16 @@
       ]);
     }
     
-    window.addEventListener('load', () => {
-      const today = new Date().toISOString().split('T')[0];
-      if (historyDate) historyDate.value = today;
-      setTimeout(() => { if (inputY1) inputY1.focus(); }, 1000);
-    });
-    
-    renderPairs(); 
+    renderPairs();
     renderHistory();
     
-    setTimeout(() => {
-      console.log('✅ سیستم Calculator PRO - برنامه سوم آماده است!');
-    }, 1000);
+    console.log('✅ سیستم Calculator PRO - برنامه سوم آماده است!');
   </script>
   
   <div class="signature">
     طراحی و ساخت توسط ❤️ سعید شیخ احمد صفاری
   </div>
-    <BR>
-    <BR>
+  <br>
+  <br>
 </body>
 </html>
