@@ -1671,7 +1671,7 @@ function setupTableDragScroll() {
 // ---------- Event Listeners ----------
 document.getElementById('deleteSelectedSymbol').addEventListener('click', ()=>{
   const sym = document.getElementById('selectedSymbol').value;
-  if(!sym){ alert('یک جفت انتخاب کنید'); return; }
+  if(!sym){ showToast('یک جفت انتخاب کنید'); return; }
   if(!confirm(`آیا مطمئنی می‌خواهی جفت "${sym}" و تمام داده‌هایش حذف شود؟`)) return;
   delete store.symbols[sym];
   const idx = store.symbolOrder.indexOf(sym);
@@ -1684,7 +1684,7 @@ document.getElementById('deleteSelectedSymbol').addEventListener('click', ()=>{
 });
   document.getElementById('addSymbolBtn').addEventListener('click', ()=>{
   const name = document.getElementById('newSymbol').value.trim().toUpperCase();
-  if(!name){ alert('نام معتبر وارد کنید'); return; }
+  if(!name){ showToast('نام معتبر وارد کنید'); return; }
   const sym = ensureSymbol(name);
   if(sym){
     document.getElementById('selectedSymbol').value = name;
@@ -1695,20 +1695,20 @@ document.getElementById('deleteSelectedSymbol').addEventListener('click', ()=>{
   document.getElementById('useMidBtn').addEventListener('click', ()=>{
   const h = parseNum(document.getElementById('inputHigh').value);
   const l = parseNum(document.getElementById('inputLow').value);
-  if(h===null && l===null){ alert('ابتدا مقدار Mid یا High/Low را وارد کنید'); return; }
+  if(h===null && l===null){ showToast('ابتدا مقدار Mid یا High/Low را وارد کنید'); return; }
   if(h===null) document.getElementById('inputHigh').value = String(l);
   if(l===null) document.getElementById('inputLow').value = String(h);
 });
   document.getElementById('addDayBtn').addEventListener('click', ()=>{
   const symName = document.getElementById('selectedSymbol').value;
-  if(!symName){ alert('ابتدا یک جفت را انتخاب کنید'); return; }
+  if(!symName){ showToast('ابتدا یک جفت را انتخاب کنید'); return; }
   const high = parseNum(document.getElementById('inputHigh').value);
   const low = parseNum(document.getElementById('inputLow').value);
   const date = document.getElementById('inputDate').value || null;
-  if(high===null || low===null){ alert('High و Low معتبر وارد کنید'); return; }
+  if(high===null || low===null){ showToast('High و Low معتبر وارد کنید'); return; }
   const ok = addDayToSymbol(symName, high, low, date);
-  if(ok){ alert('ثبت شد'); renderSummaryForRange(symName, true, 5); document.getElementById('inputHigh').value = ''; document.getElementById('inputLow').value = ''; }
-  else alert('خطا در ثبت');
+  if(ok){ showToast('ثبت شد'); renderSummaryForRange(symName, true, 5); document.getElementById('inputHigh').value = ''; document.getElementById('inputLow').value = ''; }
+  else showToast('خطا در ثبت');
 });
   document.getElementById('daysRangeToggle').addEventListener('click', () => {
   document.getElementById('daysRangeSection').style.display = 'block';
@@ -1731,18 +1731,18 @@ document.getElementById('deleteSelectedSymbol').addEventListener('click', ()=>{
 });
   document.getElementById('showDateRangeBtn').addEventListener('click', ()=>{
   const symName = document.getElementById('selectedSymbol3').value;
-  if(!symName){ alert('یک جفت انتخاب کنید'); return; }
+  if(!symName){ showToast('یک جفت انتخاب کنید'); return; }
   const startDate = document.getElementById('startDate').value;
   const endDate = document.getElementById('endDate').value;
   
-  if(!startDate || !endDate){ alert('لطفاً تاریخ شروع و پایان را انتخاب کنید'); return; }
-  if(new Date(startDate) > new Date(endDate)){ alert('تاریخ شروع نمی‌تواند بعد از تاریخ پایان باشد'); return; }
+  if(!startDate || !endDate){ showToast('لطفاً تاریخ شروع و پایان را انتخاب کنید'); return; }
+  if(new Date(startDate) > new Date(endDate)){ showToast('تاریخ شروع نمی‌تواند بعد از تاریخ پایان باشد'); return; }
   
   renderSummaryForRange(symName, false, null, startDate, endDate);
 });
   document.getElementById('showHistoryBtn').addEventListener('click', ()=>{
   const symName = document.getElementById('selectedSymbol3').value;
-  if(!symName){ alert('یک جفت انتخاب کنید'); return; }
+  if(!symName){ showToast('یک جفت انتخاب کنید'); return; }
   const requestedDays = parseInt(document.getElementById('analysisDays').value) || 5;
   renderSummaryForRange(symName, true, requestedDays);
 });
@@ -1770,14 +1770,14 @@ document.getElementById('deleteSelectedSymbol').addEventListener('click', ()=>{
   document.getElementById('manualPruneBtn').addEventListener('click', function() {
   const days = parseInt(document.getElementById('manualPruneDays').value) || 365;
   if (days < 1) {
-    alert('تعداد روز باید بیشتر از ۰ باشد');
+    showToast('تعداد روز باید بیشتر از ۰ باشد');
     return;
   }
   
   if (confirm(`آیا از حذف رکوردهای قدیمی‌تر از ${days} روز مطمئن هستید؟\nاین عمل غیرقابل بازگشت است.`)) {
     const result = manualPruneOldEntries(days);
     if (result.totalDeleted > 0) {
-      alert(`✅ ${result.totalDeleted} رکورد قدیمی حذف شد.\nجفت‌ارزهای affected: ${result.affectedSymbols.join(', ')}`);
+      showToast(`✅ ${result.totalDeleted} رکورد قدیمی حذف شد.\nجفت‌ارزهای affected: ${result.affectedSymbols.join(', ')}`);
       const currentSymbol = document.getElementById('selectedSymbol3').value;
       if (currentSymbol) {
     
@@ -1794,7 +1794,7 @@ document.getElementById('deleteSelectedSymbol').addEventListener('click', ()=>{
         }
       }
     } else {
-      alert('ℹ️ هیچ رکورد قدیمی‌ای برای حذف یافت نشد.');
+      showToast('ℹ️ هیچ رکورد قدیمی‌ای برای حذف یافت نشد.');
     }
   }
 });
@@ -1849,7 +1849,7 @@ document.getElementById('importBtn').addEventListener('click', () => {
         try {
             let importedObj = JSON.parse(reader.result);
             if (!importedObj || !importedObj.symbols) {
-                alert('فایل بک‌آپ معتبر نیست یا ساختار اشتباهی دارد.');
+                showToast('فایل بک‌آپ معتبر نیست یا ساختار اشتباهی دارد.');
      
            return;
             }
@@ -1897,11 +1897,11 @@ document.getElementById('importBtn').addEventListener('click', () => {
                 if (window._chart) window._chart.destroy();
             }
 
-            alert('بازیابی اطلاعات با موفقیت انجام شد.');
+            showToast('بازیابی اطلاعات با موفقیت انجام شد.');
             e.target.value = '';
 
         } catch (err) {
-            alert('خطا در خواندن فایل: ' + err);
+            showToast('خطا در خواندن فایل: ' + err);
         }
     };
     reader.readAsText(f);
@@ -1927,7 +1927,7 @@ document.getElementById('cancelEditBtn').addEventListener('click', ()=>{ current
   const d = document.getElementById('editDate').value || new Date().toISOString().slice(0,10);
   const h = parseNum(document.getElementById('editHigh').value);
   const l = parseNum(document.getElementById('editLow').value);
-  if(h===null || l===null){ alert('High و Low معتبر وارد کنید'); return; }
+  if(h===null || l===null){ showToast('High و Low معتبر وارد کنید'); return; }
   sym.history[idx].date = d; sym.history[idx].high = h; sym.history[idx].low = l; sym.history[idx].mid = computeMid(h,l);
   recomputeAnalysesForSymbol(sym); saveStore();
   currentEdit = null; document.getElementById('editModal').style.display='none'; document.getElementById('modalBg').style.display='none';
@@ -1960,7 +1960,7 @@ document.getElementById('doMoveBtn').addEventListener('click', ()=>{
   const { symName, idx } = currentMove;
   const sym = store.symbols[symName]; if(!sym) return;
   const to = parseInt(document.getElementById('moveToIndex').value);
-  if(isNaN(to) || to < 1) { alert('شمارهٔ ردیف معتبر وارد کن'); return; }
+  if(isNaN(to) || to < 1) { showToast('شمارهٔ ردیف معتبر وارد کن'); return; }
   const hist = sym.history;
   const toIndex = Math.max(0, Math.min(hist.length-1, hist.length - to));
   const [item] = hist.splice(idx,1);
