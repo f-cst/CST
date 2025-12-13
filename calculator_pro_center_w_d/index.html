@@ -487,6 +487,21 @@
     .toast-success { background: rgba(34, 197, 94, 0.95); color: white; border: 1px solid rgba(34, 197, 94, 0.3); }
     .toast-error { background: rgba(239, 68, 68, 0.95); color: white; border: 1px solid rgba(239, 68, 68, 0.3); }
   
+
+/* FIX: align date input and delete button inline in multi-date mode */
+.date-range-item{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  flex-wrap:nowrap;
+}
+.date-range-item input[type="date"]{
+  flex:1;
+}
+.date-range-item button{
+  flex-shrink:0;
+}
+
 </style>
 </head>
 <body>
